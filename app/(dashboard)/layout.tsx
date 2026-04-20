@@ -2,6 +2,8 @@ import { createClient } from '@/lib/infrastructure/supabase/server'
 import { Header } from '@/components/layout/Header'
 import { BottomNav } from '@/components/layout/BottomNav'
 
+export const runtime = 'edge'
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
