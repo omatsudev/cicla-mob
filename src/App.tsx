@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
+import { useProfile } from '@/lib/context/ProfileContext'
 
 import Login from '@/pages/Login'
 import Cadastro from '@/pages/Cadastro'
@@ -14,6 +15,13 @@ import Calendario from '@/pages/Calendario'
 import Historico from '@/pages/Historico'
 import Notificacoes from '@/pages/Notificacoes'
 import Perfil from '@/pages/Perfil'
+
+function ManGuard({ children }: { children: React.ReactNode }) {
+  const { isMan, loading } = useProfile()
+  if (loading) return null
+  if (isMan) return <Navigate to="/" replace />
+  return <>{children}</>
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -71,7 +79,7 @@ export default function App() {
           }
         >
           <Route path="/" element={<Dashboard />} />
-          <Route path="/registrar" element={<Registrar />} />
+          <Route path="/registrar" element={<ManGuard><Registrar /></ManGuard>} />
           <Route path="/calendario" element={<Calendario />} />
           <Route path="/historico" element={<Historico />} />
           <Route path="/notificacoes" element={<Notificacoes />} />

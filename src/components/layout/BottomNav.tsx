@@ -1,15 +1,19 @@
 import { NavLink } from 'react-router-dom'
 import { Home, PlusCircle, Calendar, History, User } from 'lucide-react'
+import { useProfile } from '@/lib/context/ProfileContext'
 
-const links = [
-  { to: '/', label: 'Início', icon: Home, exact: true },
-  { to: '/registrar', label: 'Registrar', icon: PlusCircle },
-  { to: '/calendario', label: 'Calendário', icon: Calendar },
-  { to: '/historico', label: 'Histórico', icon: History },
-  { to: '/perfil', label: 'Perfil', icon: User },
+const allLinks = [
+  { to: '/', label: 'Início', icon: Home, exact: true, manOnly: false },
+  { to: '/registrar', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: true },
+  { to: '/calendario', label: 'Calendário', icon: Calendar, exact: false, manOnly: false },
+  { to: '/historico', label: 'Histórico', icon: History, exact: false, manOnly: false },
+  { to: '/perfil', label: 'Perfil', icon: User, exact: false, manOnly: false },
 ]
 
 export function BottomNav() {
+  const { isMan } = useProfile()
+  const links = allLinks.filter(l => !(l.womanOnly && isMan))
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-100 safe-bottom">
       <div className="max-w-lg mx-auto flex">

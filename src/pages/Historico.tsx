@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Download } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getRecordHistory } from '@/lib/application/use-cases/GetRecordHistoryUseCase'
 import { CycleStatusBadge } from '@/components/ui/badge'
@@ -13,21 +14,21 @@ import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
 
 export default function Historico() {
+  const { dataUserId, loading: profileLoading } = useProfile()
   const [records, setRecords] = useState<InterpretedRecord[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session?.user) return
-      const repository = new SupabaseDailyRecordRepository(supabase)
-      const result = await getRecordHistory(session.user.id, repository)
+    if (profileLoading || !dataUserId) return
+    const repository = new SupabaseDailyRecordRepository(supabase)
+    getRecordHistory(dataUserId, repository).then(result => {
       setRecords(result.records as InterpretedRecord[])
       setTotal(result.total)
       setLoading(false)
     })
-  }, [])
+  }, [dataUserId, profileLoading])
 
   async function handleExport() {
     setIsExporting(true)

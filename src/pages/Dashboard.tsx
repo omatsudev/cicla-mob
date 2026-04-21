@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getDashboardData } from '@/lib/application/use-cases/GetDashboardDataUseCase'
 import { CycleStatusCard } from '@/components/cycle/CycleStatusCard'
@@ -21,23 +22,40 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
+  const { isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session?.user) return
-      const repository = new SupabaseDailyRecordRepository(supabase)
-      const result = await getDashboardData(session.user.id, repository)
+    if (profileLoading) return
+    if (!dataUserId) { setLoading(false); return }
+    const repository = new SupabaseDailyRecordRepository(supabase)
+    getDashboardData(dataUserId, repository).then(result => {
       setData(result as DashboardData)
       setLoading(false)
     })
-  }, [])
+  }, [dataUserId, profileLoading])
 
-  if (loading) {
+  if (loading || profileLoading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="animate-spin w-8 h-8 border-4 border-rose-200 border-t-rose-600 rounded-full" />
+      </div>
+    )
+  }
+
+  if (isMan && !isLinked) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 px-4">
+        <p className="text-4xl">👤</p>
+        <h2 className="text-lg font-semibold text-gray-800">Conta não vinculada</h2>
+        <p className="text-sm text-gray-500 max-w-xs">
+          Peça para sua esposa adicionar o seu e-mail no perfil dela em{' '}
+          <strong>Perfil → Vincular parceiro(a)</strong>.
+        </p>
+        <a href="/perfil" className="text-sm text-rose-600 font-medium hover:underline">
+          Ir para o perfil
+        </a>
       </div>
     )
   }
@@ -58,12 +76,11 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Registro de hoje</CardTitle>
-              <Link
-                to="/registrar"
-                className="text-xs text-rose-600 font-medium hover:underline"
-              >
-                Editar
-              </Link>
+              {!isMan && (
+                <Link to="/registrar" className="text-xs text-rose-600 font-medium hover:underline">
+                  Editar
+                </Link>
+              )}
             </div>
           </CardHeader>
           <CardContent>

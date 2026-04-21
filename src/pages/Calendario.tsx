@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getMonthlyCalendar } from '@/lib/application/use-cases/GetMonthlyCalendarUseCase'
 import { CycleCalendar } from '@/components/cycle/CycleCalendar'
@@ -9,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { MonthlyCalendarData } from '@/lib/application/use-cases/GetMonthlyCalendarUseCase'
 
 export default function Calendario() {
+  const { dataUserId, loading: profileLoading } = useProfile()
   const [searchParams] = useSearchParams()
   const now = new Date()
   const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : now.getFullYear()
@@ -18,15 +20,14 @@ export default function Calendario() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (profileLoading || !dataUserId) return
     setLoading(true)
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session?.user) return
-      const repository = new SupabaseDailyRecordRepository(supabase)
-      const data = await getMonthlyCalendar(session.user.id, year, month, repository)
+    const repository = new SupabaseDailyRecordRepository(supabase)
+    getMonthlyCalendar(dataUserId, year, month, repository).then(data => {
       setCalendarData(data)
       setLoading(false)
     })
-  }, [year, month])
+  }, [dataUserId, profileLoading, year, month])
 
   if (loading) {
     return (
