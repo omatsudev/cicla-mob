@@ -32,7 +32,7 @@ export function ProfileForm({ email, profile, partner }: Props) {
   const handleLink = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
-    startTransition(() => linkPartnerAction(fd))
+    startTransition(() => { linkPartnerAction(fd) })
     setPartnerEmail('')
   }
 
