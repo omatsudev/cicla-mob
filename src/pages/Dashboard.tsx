@@ -69,6 +69,7 @@ export default function Dashboard() {
       <CycleStatusCard
         summary={statusSummary}
         showRegisterPrompt={!todayRecord}
+        isMan={isMan}
       />
 
       {todayRecord && (
