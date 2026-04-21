@@ -52,7 +52,7 @@ export default function CadastroPage() {
       return
     }
 
-    router.push('/dashboard')
+    router.push('/')
     router.refresh()
   }
 
@@ -83,7 +83,7 @@ export default function CadastroPage() {
                 type={type}
                 autoComplete={autocomplete}
                 placeholder={placeholder}
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
                 {...register(id as keyof CadastroFormData)}
               />
               {errors[id as keyof CadastroFormData] && (

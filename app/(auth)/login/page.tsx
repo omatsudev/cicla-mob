@@ -42,7 +42,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/dashboard')
+    router.push('/')
     router.refresh()
   }
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               placeholder="seu@email.com"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
+              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
               {...register('email')}
             />
             {errors.email && (
@@ -84,7 +84,7 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               placeholder="••••••••"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
+              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition"
               {...register('password')}
             />
             {errors.password && (

@@ -48,7 +48,7 @@ export function DailyRecordForm({ defaultDate, existingRecord }: DailyRecordForm
       return
     }
 
-    router.push('/dashboard')
+    router.push('/')
     router.refresh()
   }
 
