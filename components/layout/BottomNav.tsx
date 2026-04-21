@@ -2,14 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, PlusCircle, Calendar, History } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Calendar, Bell, UserCircle } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 const NAV_ITEMS = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Início' },
+  { href: '/', icon: LayoutDashboard, label: 'Início' },
   { href: '/registrar', icon: PlusCircle, label: 'Registrar' },
   { href: '/calendario', icon: Calendar, label: 'Calendário' },
-  { href: '/historico', icon: History, label: 'Histórico' },
+  { href: '/notificacoes', icon: Bell, label: 'Alertas' },
+  { href: '/perfil', icon: UserCircle, label: 'Perfil' },
 ]
 
 export function BottomNav() {
@@ -19,7 +20,7 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 safe-area-pb">
       <div className="flex items-stretch max-w-lg mx-auto">
         {NAV_ITEMS.map(({ href, icon: Icon, label }) => {
-          const isActive = pathname === href
+          const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
           return (
             <Link
               key={href}
@@ -29,8 +30,8 @@ export function BottomNav() {
                 isActive ? 'text-rose-600' : 'text-gray-400 hover:text-gray-600',
               )}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
-              <span className="text-[10px] font-medium">{label}</span>
+              <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} />
+              <span className="text-[9px] font-medium">{label}</span>
             </Link>
           )
         })}
