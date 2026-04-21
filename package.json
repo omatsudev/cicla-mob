@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:cf": "npx @opennextjs/cloudflare@latest build",
+    "build:cf": "npx @opennextjs/cloudflare build",
     "preview:cf": "npm run build:cf && npx wrangler pages dev"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^0",
+    "@opennextjs/cloudflare": "^1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
