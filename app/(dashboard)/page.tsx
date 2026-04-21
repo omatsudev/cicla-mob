@@ -11,8 +11,6 @@ import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
 import Link from 'next/link'
 
-export const runtime = 'edge'
-
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

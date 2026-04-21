@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 
-export const runtime = 'edge'
 import { ptBR } from 'date-fns/locale'
 import { createClient } from '@/lib/infrastructure/supabase/server'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'

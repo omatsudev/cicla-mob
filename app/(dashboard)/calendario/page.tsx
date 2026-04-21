@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/infrastructure/supabase/server'
 
-export const runtime = 'edge'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getMonthlyCalendar } from '@/lib/application/use-cases/GetMonthlyCalendarUseCase'
 import { CycleCalendar } from '@/components/cycle/CycleCalendar'

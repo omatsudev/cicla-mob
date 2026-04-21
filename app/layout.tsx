@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
-export const runtime = 'edge'
-
 export const metadata: Metadata = {
   title: 'Cicla MOB — Método de Ovulação Billings',
   description: 'Acompanhe seu ciclo com o Método de Ovulação Billings de forma simples e segura.',
