@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { User, Bell, Heart, Link2, Unlink } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { User, Bell, Heart, Link2, Unlink, LogOut } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
 import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
@@ -11,6 +12,7 @@ import { USER_TYPE_LABELS } from '@/lib/domain/enums/UserType'
 import { COUPLE_OBJECTIVE_LABELS } from '@/lib/domain/enums/CoupleObjective'
 
 export default function Perfil() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [partner, setPartner] = useState<{ id: string; name: string } | null>(null)
@@ -276,6 +278,16 @@ export default function Perfil() {
             </form>
           </CardContent>
         </Card>
+
+        {/* Logout */}
+        <button
+          type="button"
+          onClick={async () => { await supabase.auth.signOut(); navigate('/login', { replace: true }) }}
+          className="w-full flex items-center justify-center gap-2 border border-gray-200 text-gray-500 py-3 rounded-xl text-sm hover:bg-gray-50 transition"
+        >
+          <LogOut size={16} />
+          Sair da conta
+        </button>
 
         {/* Partner linking */}
         <Card>
