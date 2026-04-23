@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { format } from 'date-fns'
+import { format, parseISO, isToday } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { supabase } from '@/lib/supabase'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { DailyRecordForm } from '@/components/forms/DailyRecordForm'
@@ -8,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 
 export default function Registrar() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const today = format(new Date(), 'yyyy-MM-dd')
   const targetDate = searchParams.get('date') ?? today
 
@@ -16,6 +17,7 @@ export default function Registrar() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    setLoading(true)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session?.user) return
       const repository = new SupabaseDailyRecordRepository(supabase)
@@ -24,6 +26,10 @@ export default function Registrar() {
       setLoading(false)
     })
   }, [targetDate])
+
+  const dateLabel = isToday(parseISO(targetDate))
+    ? 'Hoje'
+    : format(parseISO(targetDate), "d 'de' MMMM", { locale: ptBR })
 
   if (loading) {
     return (
@@ -35,13 +41,20 @@ export default function Registrar() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold text-gray-900">
-          {existingRecord ? 'Editar registro' : 'Novo registro'}
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Registre o que você sentiu e observou hoje na vulva.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">
+            {existingRecord ? 'Editar registro' : 'Novo registro'}
+          </h1>
+          <p className="text-sm text-rose-600 font-medium mt-0.5">{dateLabel}</p>
+        </div>
+        <input
+          type="date"
+          value={targetDate}
+          max={today}
+          onChange={e => setSearchParams({ date: e.target.value })}
+          className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+        />
       </div>
 
       <Card>
@@ -53,7 +66,7 @@ export default function Registrar() {
         </CardHeader>
         <CardContent>
           <DailyRecordForm
-            defaultDate={today}
+            defaultDate={targetDate}
             existingRecord={existingRecord}
           />
         </CardContent>
