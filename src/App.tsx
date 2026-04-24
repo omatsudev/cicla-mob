@@ -9,6 +9,7 @@ import { useProfile } from '@/lib/context/ProfileContext'
 
 import Login from '@/pages/Login'
 import Cadastro from '@/pages/Cadastro'
+import Convite from '@/pages/Convite'
 import Dashboard from '@/pages/Dashboard'
 import Registrar from '@/pages/Registrar'
 import Calendario from '@/pages/Calendario'
@@ -64,6 +65,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
+        <Route path="/convite" element={<Convite />} />
+
         {/* Auth routes */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />

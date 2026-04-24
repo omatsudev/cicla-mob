@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Bell, Heart, Link2, Unlink, LogOut } from 'lucide-react'
+import { User, Bell, Heart, Link2, Unlink, LogOut, Copy, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
 import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
@@ -18,8 +18,9 @@ export default function Perfil() {
   const [partner, setPartner] = useState<{ id: string; name: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState(false)
-  const [partnerEmail, setPartnerEmail] = useState('')
-  const [partnerError, setPartnerError] = useState('')
+  const [inviteLink, setInviteLink] = useState('')
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -63,36 +64,25 @@ export default function Perfil() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  async function handleLink(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setPartnerError('')
+  async function handleGenerateInvite() {
+    setInviteLoading(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.user) return
-
-    // Look up partner by email in mob_user_profiles via a function or direct lookup
-    // We query auth.users via RPC or search profiles by email stored in the table
-    const { data: partnerProfile } = await supabase
-      .from('mob_user_profiles')
-      .select('id, name')
-      .eq('email', partnerEmail)
-      .maybeSingle()
-
-    if (!partnerProfile) {
-      setPartnerError('Parceiro não encontrado. Verifique o e-mail.')
-      return
+    const { data } = await supabase
+      .from('mob_invites')
+      .insert({ inviter_id: session.user.id })
+      .select('token')
+      .single()
+    if (data?.token) {
+      setInviteLink(`${window.location.origin}/convite?token=${data.token}`)
     }
+    setInviteLoading(false)
+  }
 
-    const profileRepo = new SupabaseUserProfileRepository(supabase)
-    const myProfile = await profileRepo.findById(session.user.id)
-    if (!myProfile) return
-
-    const coupleRepo = new SupabaseCoupleRepository(supabase)
-    const womanId = myProfile.userType === 'woman' ? session.user.id : partnerProfile.id
-    const manId = myProfile.userType === 'man' ? session.user.id : partnerProfile.id
-    await coupleRepo.link(womanId, manId)
-
-    setPartner({ id: partnerProfile.id, name: partnerProfile.name ?? '' })
-    setPartnerEmail('')
+  async function handleCopy() {
+    await navigator.clipboard.writeText(inviteLink)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   async function handleUnlink() {
@@ -319,29 +309,31 @@ export default function Perfil() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleLink} className="space-y-3">
+              <div className="space-y-3">
                 <p className="text-xs text-gray-500">
-                  Informe o e-mail do(a) seu(sua) parceiro(a) para vincular os perfis e receber notificações cruzadas.
+                  Gere um link de convite e envie para seu parceiro(a). Ao clicar, ele(a) cria a conta e o vínculo é feito automaticamente.
                 </p>
-                <input
-                  name="partnerEmail"
-                  type="email"
-                  value={partnerEmail}
-                  onChange={(e) => setPartnerEmail(e.target.value)}
-                  placeholder="email@parceiro.com"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
-                />
-                {partnerError && (
-                  <p className="text-xs text-red-500">{partnerError}</p>
+                {inviteLink ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5">
+                      <p className="text-xs text-gray-600 flex-1 truncate">{inviteLink}</p>
+                      <button type="button" onClick={handleCopy} className="shrink-0 text-rose-600">
+                        {copied ? <Check size={16} /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-gray-400">Válido por 7 dias e de uso único.</p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleGenerateInvite}
+                    disabled={inviteLoading}
+                    className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition text-sm"
+                  >
+                    {inviteLoading ? 'Gerando...' : 'Gerar link de convite'}
+                  </button>
                 )}
-                <button
-                  type="submit"
-                  disabled={!partnerEmail}
-                  className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition text-sm"
-                >
-                  Vincular parceiro(a)
-                </button>
-              </form>
+              </div>
             )}
           </CardContent>
         </Card>
