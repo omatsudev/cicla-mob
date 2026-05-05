@@ -5,11 +5,35 @@ import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
-import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 
-const CELL_W = 48 // px per column
+const MOB_RULE: Record<CycleStatus, string> = {
+  menstruacao: 'R1',
+  mancha:      'R3',
+  pbi_seco:    'R2',
+  pbi_muco:    'R2',
+  mudanca:     '',
+  fertil:      '',
+  apice:       'A',
+  pos_apice_1: '1',
+  pos_apice_2: '2',
+  pos_apice_3: '3',
+  infertil_pos_apice: 'RA',
+}
+
+// Row heights (must match between label col and day cols)
+const ROW = {
+  diaCiclo: 'h-6',
+  simbolo:  'h-9',
+  diaMes:   'h-5',
+  sensacao: 'h-24',
+  regra:    'h-6',
+}
+
+const LABEL_W = 'w-[68px] min-w-[68px]'
+const COL_W   = 'w-9 min-w-[36px]'
 
 interface Props {
   data: CycleCalendarData
@@ -22,26 +46,22 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const today = format(new Date(), 'yyyy-MM-dd')
 
-  // Find next day to mark: first day with no record whose date ≤ today (or today itself)
-  const nextDayToMark = data.days.find(d => {
+  // First unmarked day whose expected date ≤ today
+  const nextDayToMark = !isMan ? data.days.find(d => {
     if (d.record) return false
-    if (!d.date) {
-      // Day hasn't happened yet — compute expected date from startDate
-      if (!data.startDate) return false
-      const expected = format(addDays(parseISO(data.startDate), d.cycleDay - 1), 'yyyy-MM-dd')
-      return expected <= today
-    }
-    return d.date <= today
-  })
+    const expected = data.startDate
+      ? format(addDays(parseISO(data.startDate), d.cycleDay - 1), 'yyyy-MM-dd')
+      : null
+    return (expected ?? d.date ?? '') <= today
+  }) : undefined
 
-  // Scroll so that nextDayToMark (or today) is visible, roughly centered-right
+  // Auto-scroll so next-to-mark column is near right edge
   useEffect(() => {
-    if (!scrollRef.current) return
-    const targetDay = nextDayToMark?.cycleDay ?? data.days.find(d => d.isToday)?.cycleDay
-    if (targetDay) {
-      const containerWidth = scrollRef.current.clientWidth
-      const targetScroll = (targetDay - 1) * CELL_W - containerWidth + CELL_W * 2
-      scrollRef.current.scrollLeft = Math.max(0, targetScroll)
+    const target = nextDayToMark?.cycleDay ?? data.days.find(d => d.isToday)?.cycleDay
+    if (scrollRef.current && target) {
+      const colW = 36
+      const visW = scrollRef.current.clientWidth
+      scrollRef.current.scrollLeft = Math.max(0, (target - 1) * colW - visW + colW * 2.5)
     }
     setSelectedDay(null)
   }, [data.cycleIndex, data.startDate])
@@ -56,24 +76,16 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
     <div className="space-y-4">
       {/* Cycle navigation */}
       <div className="flex items-center justify-between">
-        <button
-          onClick={() => onNavigate(data.cycleIndex + 1)}
-          disabled={data.cycleIndex >= data.totalCycles - 1}
-          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30"
-        >
+        <button onClick={() => onNavigate(data.cycleIndex + 1)} disabled={data.cycleIndex >= data.totalCycles - 1}
+          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30">
           <ChevronLeft size={20} className="text-gray-600" />
         </button>
         <div className="text-center">
           <p className="text-base font-semibold text-gray-800">{cycleLabel}</p>
-          {startLabel && (
-            <p className="text-xs text-gray-400 capitalize mt-0.5">Início: {startLabel}</p>
-          )}
+          {startLabel && <p className="text-xs text-gray-400 capitalize mt-0.5">Início: {startLabel}</p>}
         </div>
-        <button
-          onClick={() => onNavigate(data.cycleIndex - 1)}
-          disabled={data.cycleIndex <= 0}
-          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30"
-        >
+        <button onClick={() => onNavigate(data.cycleIndex - 1)} disabled={data.cycleIndex <= 0}
+          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30">
           <ChevronRight size={20} className="text-gray-600" />
         </button>
       </div>
@@ -82,83 +94,102 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
         <div className="text-center py-8 text-gray-400 text-sm">Nenhum ciclo registrado ainda.</div>
       ) : (
         <>
-          {/* Horizontal scroll strip */}
-          <div
-            ref={scrollRef}
-            className="overflow-x-auto -mx-2 px-2 pb-2"
-            style={{ scrollbarWidth: 'none' }}
-          >
-            <div className="flex gap-1.5" style={{ minWidth: 'max-content' }}>
+          {/* WOOMB-style grid */}
+          <div ref={scrollRef} className="overflow-x-auto -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none' }}>
+            <div className="flex" style={{ minWidth: 'max-content' }}>
+
+              {/* ── Sticky label column ── */}
+              <div className={cn('sticky left-0 z-20 bg-white border-r-2 border-gray-300 flex flex-col', LABEL_W)}>
+                <Cell cls={cn(ROW.diaCiclo, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia ciclo</Cell>
+                <Cell cls={cn(ROW.simbolo,  'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Símbolo</Cell>
+                <Cell cls={cn(ROW.diaMes,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia mês</Cell>
+                <Cell cls={cn(ROW.sensacao, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500 items-start pt-1')}>
+                  <span>Descrição das</span>
+                  <span>sensações</span>
+                </Cell>
+                <Cell cls={cn(ROW.regra, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
+              </div>
+
+              {/* ── Day columns ── */}
               {data.days.map((day) => {
                 const status = day.record?.cycleStatus ?? null
-                const info = status ? CYCLE_STATUS_DISPLAY[status] : null
-                const isSelected = selectedDay === day.cycleDay
-                const isNextToMark = !isMan && nextDayToMark?.cycleDay === day.cycleDay
+                const info   = status ? CYCLE_STATUS_DISPLAY[status] : null
+                const isNext = nextDayToMark?.cycleDay === day.cycleDay
+                const isSel  = selectedDay === day.cycleDay
 
-                // Compute expected date even if record doesn't exist yet
                 const expectedDate = data.startDate
                   ? format(addDays(parseISO(data.startDate), day.cycleDay - 1), 'yyyy-MM-dd')
-                  : day.date
+                  : day.date ?? ''
+                const targetDate = day.date ?? expectedDate
 
-                const dateLabel = (day.date ?? expectedDate)
-                  ? format(parseISO((day.date ?? expectedDate)!), 'dd/MM')
+                const dateLabel = targetDate
+                  ? format(parseISO(targetDate), 'dd/MM')
                   : ''
+
+                const sensacaoText = day.record
+                  ? SENSATION_LABELS[day.record.sensation]
+                  : ''
+
+                const mobRule = status ? MOB_RULE[status] : ''
 
                 return (
                   <button
                     key={day.cycleDay}
-                    onClick={() => setSelectedDay(isSelected ? null : day.cycleDay)}
+                    onClick={() => setSelectedDay(isSel ? null : day.cycleDay)}
                     className={cn(
-                      'flex flex-col items-center rounded-xl border transition active:scale-95 pt-1.5 pb-1 gap-1',
-                      'focus:outline-none',
-                      isSelected && 'ring-2 ring-blue-400 ring-offset-1',
-                      day.isToday && !isSelected && 'ring-2 ring-rose-400 ring-offset-1',
-                      isNextToMark
-                        ? 'border-rose-300 bg-rose-50 w-14'
-                        : info
-                          ? cn('border', info.borderColor, info.bgColor, 'w-12')
-                          : 'border-gray-200 bg-gray-100 w-12',
+                      'flex flex-col border-r border-gray-200 transition focus:outline-none',
+                      COL_W,
+                      isSel   && 'bg-blue-50',
+                      isNext  && !isSel && 'bg-rose-50',
+                      day.isToday && 'outline outline-1 outline-rose-400',
                     )}
-                    style={{ minWidth: isNextToMark ? 56 : CELL_W }}
                   >
-                    {/* Day number */}
-                    <span className={cn(
-                      'text-[10px] font-bold leading-none',
-                      info ? info.textColor : isNextToMark ? 'text-rose-500' : 'text-gray-300',
-                    )}>
+                    {/* Row 1: Dia do ciclo */}
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
                       {String(day.cycleDay).padStart(2, '0')}
-                    </span>
+                    </div>
 
-                    {/* Symbol or + button */}
-                    {isNextToMark ? (
-                      <Link
-                        to={`/registrar?date=${expectedDate ?? today}`}
-                        onClick={e => e.stopPropagation()}
-                        className="flex flex-col items-center justify-center w-10 h-10 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition"
-                      >
-                        <Plus size={18} />
-                      </Link>
-                    ) : (
-                      <div className={cn(
-                        'w-10 h-10 rounded-lg border flex items-center justify-center',
-                        info ? cn(info.bgColor, info.borderColor) : 'bg-gray-100 border-gray-200',
-                      )}>
-                        <span className={cn(
-                          'text-[13px] font-bold',
-                          info ? info.textColor : 'text-gray-300',
+                    {/* Row 2: Symbol */}
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 p-0.5', ROW.simbolo)}>
+                      {isNext ? (
+                        <Link
+                          to={`/registrar?date=${targetDate}`}
+                          onClick={e => e.stopPropagation()}
+                          className="w-full h-full rounded flex items-center justify-center bg-rose-500 text-white hover:bg-rose-600 transition"
+                        >
+                          <Plus size={14} />
+                        </Link>
+                      ) : (
+                        <div className={cn(
+                          'w-full h-full rounded flex items-center justify-center text-[11px] font-bold',
+                          info ? cn(info.bgColor, info.textColor, 'border', info.borderColor) : 'bg-gray-100 text-gray-300',
                         )}>
                           {info?.symbol ?? '·'}
-                        </span>
-                      </div>
-                    )}
+                        </div>
+                      )}
+                    </div>
 
-                    {/* Date */}
-                    <span className={cn(
-                      'text-[9px] leading-none',
-                      isNextToMark ? 'text-rose-400 font-medium' : info ? info.textColor + ' opacity-70' : 'text-gray-300',
-                    )}>
+                    {/* Row 3: Dia do mês */}
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] text-gray-500', ROW.diaMes)}>
                       {dateLabel}
-                    </span>
+                    </div>
+
+                    {/* Row 4: Sensação (vertical text) */}
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 overflow-hidden', ROW.sensacao)}>
+                      {sensacaoText && (
+                        <span
+                          className="text-[9px] text-gray-700 leading-tight"
+                          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                        >
+                          {sensacaoText}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Row 5: Regra MOB */}
+                    <div className={cn('flex items-center justify-center text-[9px] font-bold text-gray-600', ROW.regra)}>
+                      {mobRule}
+                    </div>
                   </button>
                 )
               })}
@@ -179,9 +210,7 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
                     </p>
                   )}
                 </div>
-                <button onClick={() => setSelectedDay(null)} className="text-xs text-gray-400 hover:text-gray-600 p-1">
-                  ✕
-                </button>
+                <button onClick={() => setSelectedDay(null)} className="text-xs text-gray-400 hover:text-gray-600 p-1">✕</button>
               </div>
 
               {selectedDayData.record ? (
@@ -189,29 +218,20 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
                   {(() => {
                     const info = CYCLE_STATUS_DISPLAY[selectedDayData.record.cycleStatus]
                     return (
-                      <span className={cn(
-                        'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border',
-                        info.bgColor, info.textColor, info.borderColor,
-                      )}>
+                      <span className={cn('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border', info.bgColor, info.textColor, info.borderColor)}>
                         {info.symbol} {info.label}
                       </span>
                     )
                   })()}
-                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                    <div><span className="font-medium">Sensação: </span>{SENSATION_LABELS[selectedDayData.record.sensation]}</div>
-                    <div><span className="font-medium">Muco: </span>{MUCUS_APPEARANCE_LABELS[selectedDayData.record.mucusAppearance]}</div>
-                  </div>
+                  <p className="text-xs text-gray-500">{selectedDayData.record.ruleApplied}</p>
                   {selectedDayData.record.notes && (
                     <p className="text-xs text-gray-500 italic border-t border-gray-50 pt-2">{selectedDayData.record.notes}</p>
                   )}
-                  <div className="flex items-center justify-between pt-1">
-                    <p className="text-[10px] text-gray-400">{selectedDayData.record.ruleApplied}</p>
-                    {!isMan && (
-                      <Link to={`/registrar?date=${selectedDayData.date}`} className="text-xs text-rose-600 font-medium hover:underline">
-                        Editar
-                      </Link>
-                    )}
-                  </div>
+                  {!isMan && (
+                    <Link to={`/registrar?date=${selectedDayData.date}`} className="block text-xs text-rose-600 font-medium hover:underline text-right">
+                      Editar registro
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
@@ -227,6 +247,14 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
           )}
         </>
       )}
+    </div>
+  )
+}
+
+function Cell({ cls, children }: { cls?: string; children: React.ReactNode }) {
+  return (
+    <div className={cn('flex flex-col items-center justify-center text-[9px]', cls)}>
+      {children}
     </div>
   )
 }
