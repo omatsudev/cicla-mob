@@ -29,7 +29,11 @@ export function CycleDayCell({ dayOfMonth, record, isToday, onClick }: CycleDayC
     >
       <span className="font-semibold text-[11px] leading-none">{dayOfMonth}</span>
       {displayInfo && (
-        <span className="text-[9px] mt-0.5 opacity-80">{displayInfo.symbol}</span>
+        <span className="flex flex-col items-center mt-0.5 opacity-80 leading-none gap-px">
+          {displayInfo.symbol.split('').map((c, i) => (
+            <span key={i} className="text-[9px]">{c}</span>
+          ))}
+        </span>
       )}
     </button>
   )

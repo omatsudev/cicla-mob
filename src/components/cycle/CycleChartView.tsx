@@ -161,10 +161,12 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
                         </Link>
                       ) : (
                         <div className={cn(
-                          'w-full h-full rounded flex items-center justify-center text-[11px] font-bold',
+                          'w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none gap-px',
                           info ? cn(info.bgColor, info.textColor, 'border', info.borderColor) : 'bg-gray-100 text-gray-300',
                         )}>
-                          {info?.symbol ?? '·'}
+                          {(info?.symbol ?? '·').split('').map((c, i) => (
+                            <span key={i}>{c}</span>
+                          ))}
                         </div>
                       )}
                     </div>

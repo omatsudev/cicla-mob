@@ -23,13 +23,13 @@ export function FertilityLegend() {
             <div key={status} className="flex items-center gap-2">
               <div
                 className={cn(
-                  'w-6 h-6 rounded-md border flex items-center justify-center text-[9px] font-bold flex-shrink-0',
+                  'w-6 h-6 rounded-md border flex flex-col items-center justify-center text-[9px] font-bold flex-shrink-0 leading-none gap-px',
                   info.bgColor,
                   info.textColor,
                   info.borderColor,
                 )}
               >
-                {info.symbol}
+                {info.symbol.split('').map((c, i) => <span key={i}>{c}</span>)}
               </div>
               <span className="text-xs text-gray-600 leading-tight">{info.label}</span>
             </div>

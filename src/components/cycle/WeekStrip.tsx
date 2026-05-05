@@ -43,7 +43,9 @@ export function WeekStrip({ recentDays, today }: WeekStripProps) {
                 )}
                 title={displayInfo?.label}
               >
-                {displayInfo ? displayInfo.symbol : '?'}
+                {displayInfo
+                  ? displayInfo.symbol.split('').map((c, i) => <span key={i} className="block leading-none">{c}</span>)
+                  : '?'}
               </div>
               <span className="text-[10px] text-gray-500">{format(day, 'd')}</span>
             </div>
