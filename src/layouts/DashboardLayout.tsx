@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { ProfileProvider, useProfile } from '@/lib/context/ProfileContext'
 import { Header } from '@/components/layout/Header'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { PWAInstallBanner } from '@/components/PWAInstallBanner'
 
 function Layout() {
   const { profile } = useProfile()
@@ -11,6 +12,7 @@ function Layout() {
       <main className="flex-1 max-w-lg mx-auto w-full px-4 pt-4 pb-24">
         <Outlet />
       </main>
+      <PWAInstallBanner />
       <BottomNav />
     </div>
   )
