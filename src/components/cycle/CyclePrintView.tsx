@@ -83,15 +83,12 @@ const LABEL_W  = 21   // mm (row label column inside table)
 // Day col: auto flex
 
 // Row heights inside each cycle block (mm)
-const H_HDR  = 8    // cycle name header
-const H_DAY  = 7    // "Dia do Ciclo" 01-35 numbers
+// No separate cycle-name header row — name goes in the Dia do Ciclo label cell
+const H_DAY  = 9    // "Dia do Ciclo" row (includes cycle name in label)
 const H_SIMB = 13   // symbols
-const H_DATE = 6.5  // dates
-const H_MOB  = 6.5  // MOB rule
-// Sensações: flex:1 (fills rest of cycle block height)
-
-// Page: 198mm / 3 cycles ≈ 66mm per cycle
-// Fixed rows: 8+7+13+6.5+6.5 = 41mm → sensações ≈ 25mm
+const H_DATE = 6    // dates
+const H_MOB  = 6    // MOB rule
+// Sensações: flex:1 → 198/3 - (9+13+6+6) = 66-34 = 32mm per cycle
 
 type Day = CycleCalendarData['days'][0]
 
@@ -171,8 +168,9 @@ function CycleBlock({
 }) {
   const days = cycle?.days ?? BLANK_DAYS
   const startLabel = cycle?.startDate
-    ? format(parseISO(cycle.startDate), "d/MM/yyyy", { locale: ptBR })
-    : '—'
+    ? format(parseISO(cycle.startDate), "dd/MM/yy", { locale: ptBR })
+    : ''
+  const cycleInfo = cycle ? [name, startLabel].filter(Boolean).join(' — ') : ''
 
   return (
     <div style={{
@@ -180,20 +178,24 @@ function CycleBlock({
       borderBottom: isLast ? 'none' : `1.5px solid ${DARK}`,
     }}>
 
-      {/* Cycle name header */}
-      <div style={{
-        height: mm(H_HDR), flexShrink: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#d1d5db', borderBottom: `1px solid ${DARK}`,
-        fontSize: 7, fontWeight: 'bold',
-        WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
-      } as React.CSSProperties}>
-        {name}{cycle ? `  —  Início: ${startLabel}` : ''}
-      </div>
-
-      {/* "Dia do Ciclo" numbers row */}
+      {/* "Dia do Ciclo" numbers row — cycle name embedded in label cell */}
       <RowWrap height={H_DAY}>
-        <LabelCell height={H_DAY}>Dia do<br />Ciclo</LabelCell>
+        <div style={{
+          width: mm(LABEL_W), flexShrink: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          textAlign: 'center', padding: '1px 2px',
+          borderRight: `1px solid ${MID}`,
+          background: '#e5e7eb',
+          WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+        } as React.CSSProperties}>
+          <span style={{ fontSize: 6, fontWeight: 'bold', lineHeight: 1.2 }}>Dia do Ciclo</span>
+          {cycleInfo && (
+            <span style={{ fontSize: 4.5, color: '#444', lineHeight: 1.3, marginTop: '0.5mm' }}>
+              {cycleInfo}
+            </span>
+          )}
+        </div>
         {Array.from({ length: 35 }, (_, i) => (
           <DayCell key={i} bg="#e5e7eb" bold fontSize={6} isLast={i === 34}>
             {String(i + 1).padStart(2, '0')}
@@ -203,7 +205,7 @@ function CycleBlock({
 
       {/* Symbol row */}
       <RowWrap height={H_SIMB}>
-        <LabelCell height={H_SIMB}>Primeiro dia<br />da Menstruação</LabelCell>
+        <LabelCell height={H_SIMB}>Primeiro dia<br />Menstruação</LabelCell>
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
           return (
@@ -234,7 +236,7 @@ function CycleBlock({
 
       {/* Sensações row — flex: 1, vertical text */}
       <RowWrap flex>
-        <LabelCell flex>Descrições das<br />Sensações e<br />do Fluxo</LabelCell>
+        <LabelCell flex>Descrições das<br />Sensações e do<br />Fluxo</LabelCell>
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
           const sensacao = day.record ? SENSATION_LABELS[day.record.sensation] : ''
