@@ -106,7 +106,7 @@ function LabelCell({ children, height }: { children: React.ReactNode; height?: n
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       textAlign: 'center', padding: '1px 2px',
       fontSize: 5.5, fontWeight: 'bold', lineHeight: 1.2,
-      borderRight: `1px solid ${MID}`,
+      border: `1px solid ${MID}`,
       background: '#f3f4f6',
       WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
     } as React.CSSProperties}>
@@ -184,7 +184,7 @@ function CycleBlock({
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           textAlign: 'center', padding: '1px 2px',
-          borderRight: `1px solid ${MID}`,
+          border: `1px solid ${MID}`,
           background: '#e5e7eb',
           WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
         } as React.CSSProperties}>
@@ -327,7 +327,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
               display: 'flex', flexDirection: 'row',
               alignItems: 'center', justifyContent: 'center',
               gap: '1mm',
-              borderRight: `1.5px solid ${DARK}`,
+              border: `1.5px solid ${DARK}`,
             }}>
               <span style={{
                 writingMode: 'vertical-rl',
