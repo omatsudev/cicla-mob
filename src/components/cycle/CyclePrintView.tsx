@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { format, parseISO, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
@@ -44,16 +45,16 @@ function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleed
   }
 
   const configs: Partial<Record<CycleStatus, { bg: string; color: string; chars: string[] }>> = {
-    menstruacao:         { bg: '#ef4444', color: 'white',  chars: ['●'] },
-    pbi_seco:           { bg: '#22c55e', color: 'white',  chars: ['|'] },
-    pbi_muco:           { bg: '#fde047', color: '#333',   chars: ['='] },
-    mudanca:            { bg: 'white',   color: '#333',   chars: ['O'] },
-    fertil:             { bg: 'white',   color: '#333',   chars: ['O'] },
-    apice:              { bg: 'white',   color: '#333',   chars: ['O','✕'] },
-    pos_apice_1:        { bg: 'white',   color: '#333',   chars: ['1','='] },
-    pos_apice_2:        { bg: 'white',   color: '#333',   chars: ['2','='] },
-    pos_apice_3:        { bg: 'white',   color: '#333',   chars: ['3','='] },
-    infertil_pos_apice: { bg: '#fde047', color: '#333',   chars: ['='] },
+    menstruacao:         { bg: '#ef4444', color: 'white', chars: ['●'] },
+    pbi_seco:           { bg: '#22c55e', color: 'white', chars: ['|'] },
+    pbi_muco:           { bg: '#fde047', color: '#333',  chars: ['='] },
+    mudanca:            { bg: 'white',   color: '#333',  chars: ['O'] },
+    fertil:             { bg: 'white',   color: '#333',  chars: ['O'] },
+    apice:              { bg: 'white',   color: '#333',  chars: ['O', '✕'] },
+    pos_apice_1:        { bg: 'white',   color: '#333',  chars: ['1', '='] },
+    pos_apice_2:        { bg: 'white',   color: '#333',  chars: ['2', '='] },
+    pos_apice_3:        { bg: 'white',   color: '#333',  chars: ['3', '='] },
+    infertil_pos_apice: { bg: '#fde047', color: '#333',  chars: ['='] },
   }
 
   const cfg = configs[status]
@@ -67,22 +68,21 @@ function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleed
 
 const BORDER = '#555'
 const LIGHT  = '#ccc'
-
-const colWidths = { dia: 16, simb: 20, data: 26, mob: 18 }
+const colW = { dia: 16, simb: 20, data: 26, mob: 18 }
 
 function ColHeader() {
   const cell: React.CSSProperties = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: 6, padding: '1px 2px',
+    fontSize: 6, padding: '1px 2px', flexShrink: 0,
     background: '#e5e7eb', borderBottom: `1px solid ${BORDER}`,
     WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
   } as React.CSSProperties
   return (
     <div style={{ display: 'flex', flexShrink: 0 }}>
-      <div style={{ ...cell, width: colWidths.dia,  borderRight: `1px solid ${LIGHT}` }}>Dia</div>
-      <div style={{ ...cell, width: colWidths.simb, borderRight: `1px solid ${LIGHT}` }}>Simb</div>
-      <div style={{ ...cell, width: colWidths.data, borderRight: `1px solid ${LIGHT}` }}>Data</div>
-      <div style={{ ...cell, width: colWidths.mob,  borderRight: `1px solid ${LIGHT}` }}>MOB</div>
+      <div style={{ ...cell, width: colW.dia,  borderRight: `1px solid ${LIGHT}` }}>Dia</div>
+      <div style={{ ...cell, width: colW.simb, borderRight: `1px solid ${LIGHT}` }}>Simb</div>
+      <div style={{ ...cell, width: colW.data, borderRight: `1px solid ${LIGHT}` }}>Data</div>
+      <div style={{ ...cell, width: colW.mob,  borderRight: `1px solid ${LIGHT}` }}>MOB</div>
       <div style={{ ...cell, flex: 1 }}>Sensações</div>
     </div>
   )
@@ -114,22 +114,21 @@ function DayRow({ day, startDate }: { day: CycleCalendarData['days'][0]; startDa
 
   return (
     <div style={{
-      display: 'flex', flex: 1,
+      display: 'flex', flex: 1, minHeight: 0,
       borderBottom: `0.5px solid ${LIGHT}`,
       background: rowBg,
       WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
-      minHeight: 0,
     } as React.CSSProperties}>
-      <div style={{ ...cell, width: colWidths.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+      <div style={{ ...cell, width: colW.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
         {String(day.cycleDay).padStart(2, '0')}
       </div>
-      <div style={{ ...cell, width: colWidths.simb, borderRight: `0.5px solid ${LIGHT}` }}>
+      <div style={{ ...cell, width: colW.simb, borderRight: `0.5px solid ${LIGHT}` }}>
         {status && <PrintSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} />}
       </div>
-      <div style={{ ...cell, width: colWidths.data, borderRight: `0.5px solid ${LIGHT}`, fontSize: 5.5 }}>
+      <div style={{ ...cell, width: colW.data, borderRight: `0.5px solid ${LIGHT}`, fontSize: 5.5 }}>
         {dateLabel}
       </div>
-      <div style={{ ...cell, width: colWidths.mob,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+      <div style={{ ...cell, width: colW.mob,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
         {mob}
       </div>
       <div style={{ ...cell, flex: 1, justifyContent: 'flex-start', padding: '0 2px', fontSize: 5.5 }}>
@@ -170,6 +169,10 @@ function CycleColumn({ cycle, cycleName }: { cycle: CycleCalendarData; cycleName
 }
 
 function BlankCycleColumn() {
+  const cell: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 6, lineHeight: 1.1, overflow: 'hidden',
+  }
   return (
     <div style={{
       flex: 1, border: `1px solid ${BORDER}`, minWidth: 0,
@@ -186,23 +189,17 @@ function BlankCycleColumn() {
       </div>
       <ColHeader />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-        {Array.from({ length: 35 }, (_, i) => {
-          const cell: React.CSSProperties = {
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 6, lineHeight: 1.1, overflow: 'hidden',
-          }
-          return (
-            <div key={i} style={{ display: 'flex', flex: 1, borderBottom: `0.5px solid ${LIGHT}`, background: 'white', minHeight: 0 }}>
-              <div style={{ ...cell, width: colWidths.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
-                {String(i + 1).padStart(2, '0')}
-              </div>
-              <div style={{ ...cell, width: colWidths.simb, borderRight: `0.5px solid ${LIGHT}` }} />
-              <div style={{ ...cell, width: colWidths.data, borderRight: `0.5px solid ${LIGHT}` }} />
-              <div style={{ ...cell, width: colWidths.mob,  borderRight: `0.5px solid ${LIGHT}` }} />
-              <div style={{ ...cell, flex: 1 }} />
+        {Array.from({ length: 35 }, (_, i) => (
+          <div key={i} style={{ display: 'flex', flex: 1, minHeight: 0, borderBottom: `0.5px solid ${LIGHT}`, background: 'white' }}>
+            <div style={{ ...cell, width: colW.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+              {String(i + 1).padStart(2, '0')}
             </div>
-          )
-        })}
+            <div style={{ ...cell, width: colW.simb, borderRight: `0.5px solid ${LIGHT}` }} />
+            <div style={{ ...cell, width: colW.data, borderRight: `0.5px solid ${LIGHT}` }} />
+            <div style={{ ...cell, width: colW.mob,  borderRight: `0.5px solid ${LIGHT}` }} />
+            <div style={{ ...cell, flex: 1 }} />
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -219,65 +216,53 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
     pages.push(cycles.slice(i, i + 3))
   }
 
-  return (
-    <>
+  // Portal renders directly as a body child — avoids blank pages from hidden app content
+  return createPortal(
+    <div id="cicla-print-root" style={{ display: 'none' }}>
       <style>{`
         @media print {
           @page { size: A4 landscape; margin: 0; }
-          body * { visibility: hidden !important; }
-          #cicla-print-root,
-          #cicla-print-root * { visibility: visible !important; }
-          #cicla-print-root {
-            position: static !important;
-            left: auto !important;
-            top: auto !important;
-            width: auto !important;
-            height: auto !important;
-            overflow: visible !important;
-          }
+          body > *:not(#cicla-print-root) { display: none !important; }
+          #cicla-print-root { display: block !important; }
         }
       `}</style>
 
-      <div
-        id="cicla-print-root"
-        style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', overflow: 'hidden', visibility: 'hidden' }}
-      >
-        {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => (
-          <div
-            key={pageIdx}
-            style={{
-              width: '297mm',
-              height: '210mm',
-              padding: '6mm',
-              boxSizing: 'border-box',
-              pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
-              breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
-              pageBreakInside: 'avoid',
-              breakInside: 'avoid',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              fontFamily: 'Arial, sans-serif',
-            } as React.CSSProperties}
-          >
-            <div style={{ fontSize: 8, textAlign: 'center', marginBottom: 3, fontWeight: 'bold', flexShrink: 0 }}>
-              GRÁFICO CICLO MENSTRUAL — WOOMB
-            </div>
-            <div style={{ display: 'flex', gap: 3, flex: 1, minHeight: 0 }}>
-              {pageCycles.map((cycle) => (
-                <CycleColumn
-                  key={cycle.cycleNumber}
-                  cycle={cycle}
-                  cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
-                />
-              ))}
-              {Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
-                <BlankCycleColumn key={`blank-${i}`} />
-              ))}
-            </div>
+      {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => (
+        <div
+          key={pageIdx}
+          style={{
+            width: '297mm',
+            height: '210mm',
+            padding: '6mm',
+            boxSizing: 'border-box',
+            pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
+            breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            fontFamily: 'Arial, sans-serif',
+          } as React.CSSProperties}
+        >
+          <div style={{ fontSize: 8, textAlign: 'center', marginBottom: 3, fontWeight: 'bold', flexShrink: 0 }}>
+            GRÁFICO CICLO MENSTRUAL — WOOMB
           </div>
-        ))}
-      </div>
-    </>
+          <div style={{ display: 'flex', gap: 3, flex: 1, minHeight: 0 }}>
+            {pageCycles.map((cycle) => (
+              <CycleColumn
+                key={cycle.cycleNumber}
+                cycle={cycle}
+                cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
+              />
+            ))}
+            {Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
+              <BlankCycleColumn key={`blank-${i}`} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>,
+    document.body
   )
 }
