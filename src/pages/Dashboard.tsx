@@ -5,7 +5,6 @@ import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getDashboardData } from '@/lib/application/use-cases/GetDashboardDataUseCase'
 import { CycleStatusCard } from '@/components/cycle/CycleStatusCard'
-import { WeekStrip } from '@/components/cycle/WeekStrip'
 import { FertilityLegend } from '@/components/cycle/FertilityLegend'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CycleStatusBadge } from '@/components/ui/badge'
@@ -110,14 +109,6 @@ export default function Dashboard() {
               )}
               <p className="text-[11px] text-gray-400">{todayRecord.ruleApplied}</p>
             </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {recentDays.length > 0 && (
-        <Card>
-          <CardContent className="pt-5">
-            <WeekStrip recentDays={recentDays} today={today} />
           </CardContent>
         </Card>
       )}
