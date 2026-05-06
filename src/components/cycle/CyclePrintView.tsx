@@ -98,12 +98,11 @@ const BLANK_DAYS: Day[] = Array.from({ length: 35 }, (_, i) => ({
 
 const mm = (v: number) => `${v}mm`
 
-function LabelCell({ children, height, flex }: { children: React.ReactNode; height?: number; flex?: boolean }) {
+function LabelCell({ children, height }: { children: React.ReactNode; height?: number }) {
   return (
     <div style={{
       width: mm(LABEL_W), flexShrink: 0,
-      height: height ? mm(height) : undefined,
-      flex: flex ? 1 : undefined,
+      height: height ? mm(height) : '100%',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       textAlign: 'center', padding: '1px 2px',
       fontSize: 5.5, fontWeight: 'bold', lineHeight: 1.2,
@@ -236,7 +235,7 @@ function CycleBlock({
 
       {/* Sensações row — flex: 1, vertical text */}
       <RowWrap flex>
-        <LabelCell flex>Descrições das<br />Sensações e do<br />Fluxo</LabelCell>
+        <LabelCell>Descrições das<br />Sensações e do<br />Fluxo</LabelCell>
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
           const sensacao = day.record ? SENSATION_LABELS[day.record.sensation] : ''
@@ -326,8 +325,8 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
             <div style={{
               width: mm(TITLE_W), flexShrink: 0,
               display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              gap: '3mm',
+              alignItems: 'center', justifyContent: 'space-between',
+              paddingTop: '8mm', paddingBottom: '8mm',
               borderRight: `1.5px solid ${DARK}`,
               paddingRight: '2mm',
             }}>
