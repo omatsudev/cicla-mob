@@ -1,0 +1,3 @@
+ALTER TABLE mob_daily_records
+  ADD COLUMN IF NOT EXISTS mob_rule        TEXT    NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS had_intercourse BOOLEAN NOT NULL DEFAULT FALSE;

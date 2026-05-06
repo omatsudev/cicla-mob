@@ -52,7 +52,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     textColor: 'text-white',
     borderColor: 'border-green-600',
     fertilityLevel: 'infertil',
-    symbol: '—',
+    symbol: '|',
   },
   pbi_muco: {
     label: 'PBI Muco',

@@ -173,7 +173,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                   ? SENSATION_LABELS[day.record.sensation]
                   : ''
 
-                const mobRule = status ? MOB_RULE[status] : ''
+                const mobRule = day.record?.mobRule || (status ? MOB_RULE[status] : '')
 
                 return (
                   <button
@@ -188,8 +188,11 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     )}
                   >
                     {/* Row 1: Dia do ciclo */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
+                    <div className={cn('flex flex-col items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
                       {String(day.cycleDay).padStart(2, '0')}
+                      {day.record?.hadIntercourse && (
+                        <span className="text-[7px] leading-none text-rose-400">♥</span>
+                      )}
                     </div>
 
                     {/* Row 2: Symbol */}
@@ -268,7 +271,12 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                       </span>
                     )
                   })()}
-                  <p className="text-xs text-gray-500">{selectedDayData.record.ruleApplied}</p>
+                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <span>Regra: <strong>{selectedDayData.record.mobRule || (selectedDayData.record.cycleStatus ? MOB_RULE[selectedDayData.record.cycleStatus] : '—') || '—'}</strong></span>
+                    {selectedDayData.record.hadIntercourse && (
+                      <span className="text-rose-500">♥ Relação sexual</span>
+                    )}
+                  </div>
                   {selectedDayData.record.notes && (
                     <p className="text-xs text-gray-500 italic border-t border-gray-50 pt-2">{selectedDayData.record.notes}</p>
                   )}

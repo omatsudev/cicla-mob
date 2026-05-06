@@ -40,6 +40,8 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
   const [mucusAppearance, setMucusAppearance] = useState<MucusAppearance>(existingRecord?.mucusAppearance ?? 'nenhum')
   const [mucusQuantity, setMucusQuantity] = useState<MucusQuantity>(existingRecord?.mucusQuantity ?? 'nenhum')
   const [notes, setNotes] = useState(existingRecord?.notes ?? '')
+  const [mobRule, setMobRule] = useState(existingRecord?.mobRule ?? '')
+  const [hadIntercourse, setHadIntercourse] = useState(existingRecord?.hadIntercourse ?? false)
   const [pendingBleeding, setPendingBleeding] = useState<BleedingIntensity | null>(null)
 
   function handleBleedingSelect(value: BleedingIntensity) {
@@ -83,6 +85,8 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
         mucusQuantity: hasBleeding ? 'nenhum' : mucusQuantity,
         bleedingIntensity: bleeding,
         notes,
+        mobRule,
+        hadIntercourse,
       })
       setSaved(true)
       setTimeout(() => navigate('/'), 1000)
@@ -222,6 +226,48 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
             </fieldset>
           </>
         )}
+
+        {/* MOB Rule */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Regra MOB aplicada</label>
+          <div className="grid grid-cols-4 gap-2">
+            {([
+              { value: '',    label: '—',  desc: 'Não inf.' },
+              { value: 'R1',  label: 'R1', desc: 'Menstruação' },
+              { value: 'R2',  label: 'R2', desc: 'Noites alt.' },
+              { value: 'R3',  label: 'R3', desc: 'Manchas' },
+              { value: 'A',   label: 'A',  desc: 'Ápice' },
+              { value: '1',   label: '1',  desc: '1° pós-A' },
+              { value: '2',   label: '2',  desc: '2° pós-A' },
+              { value: '3',   label: '3',  desc: '3° pós-A' },
+              { value: 'RA',  label: 'RA', desc: 'Regra Ápice' },
+            ]).map(opt => (
+              <label key={opt.value} className="cursor-pointer">
+                <input type="radio" name="mobRule" value={opt.value} checked={mobRule === opt.value}
+                  onChange={() => setMobRule(opt.value)} className="sr-only peer" />
+                <div className="border-2 border-gray-200 peer-checked:border-rose-400 peer-checked:bg-rose-50 rounded-xl py-2 text-center transition">
+                  <p className="text-sm font-bold text-gray-700 peer-checked:text-rose-700">{opt.label || '—'}</p>
+                  <p className="text-[9px] text-gray-400 leading-tight">{opt.desc}</p>
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Intercourse */}
+        <div className="flex items-center justify-between p-3 border border-gray-200 rounded-xl">
+          <div>
+            <p className="text-sm font-semibold text-gray-700">Houve relação sexual?</p>
+            <p className="text-xs text-gray-400 mt-0.5">Marque se houve contato sexual hoje</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setHadIntercourse(v => !v)}
+            className={`w-12 h-6 rounded-full transition-colors ${hadIntercourse ? 'bg-rose-500' : 'bg-gray-200'} relative`}
+          >
+            <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${hadIntercourse ? 'translate-x-6' : 'translate-x-0.5'}`} />
+          </button>
+        </div>
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">

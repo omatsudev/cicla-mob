@@ -13,6 +13,8 @@ export interface DailyRecord {
   readonly mucusQuantity: MucusQuantity
   readonly bleedingIntensity: BleedingIntensity
   readonly notes: string
+  readonly mobRule: string
+  readonly hadIntercourse: boolean
   readonly createdAt: string
   readonly updatedAt: string
 }
@@ -31,4 +33,6 @@ export interface CreateDailyRecordInput {
   mucusQuantity: MucusQuantity
   bleedingIntensity: BleedingIntensity
   notes: string
+  mobRule: string
+  hadIntercourse: boolean
 }
