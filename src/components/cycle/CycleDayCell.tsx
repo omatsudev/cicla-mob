@@ -31,7 +31,7 @@ export function CycleDayCell({ dayOfMonth, record, isToday, onClick }: CycleDayC
       <span className="font-semibold text-[11px] leading-none">{dayOfMonth}</span>
       {record && (
         <span className="flex flex-col items-center mt-0.5 opacity-80 leading-none gap-px text-[9px]">
-          <CycleSymbol status={record.cycleStatus} size="w-4 h-4" />
+          <CycleSymbol status={record.cycleStatus} bleedingIntensity={record.bleedingIntensity} size="w-4 h-4" />
         </span>
       )}
     </button>

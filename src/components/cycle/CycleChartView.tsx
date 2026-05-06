@@ -166,6 +166,9 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                   : day.date ?? ''
                 const targetDate = day.date ?? expectedDate
 
+                // Any past/today unmarked day can be registered (not just the first one)
+                const isMarkable = !isMan && !day.record && !!targetDate && targetDate <= today
+
                 const dateLabel = targetDate
                   ? format(parseISO(targetDate), 'dd/MM')
                   : ''
@@ -198,11 +201,14 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
 
                     {/* Row 2: Symbol */}
                     <div className={cn('flex items-center justify-center border-b border-gray-200 p-0.5', ROW.simbolo)}>
-                      {isNext ? (
+                      {isMarkable ? (
                         <Link
                           to={`/registrar?date=${targetDate}`}
                           onClick={e => e.stopPropagation()}
-                          className="w-full h-full rounded flex items-center justify-center bg-rose-500 text-white hover:bg-rose-600 transition"
+                          className={cn(
+                            'w-full h-full rounded flex items-center justify-center text-white transition',
+                            isNext ? 'bg-rose-500 hover:bg-rose-600' : 'bg-gray-300 hover:bg-gray-400',
+                          )}
                         >
                           <Plus size={14} />
                         </Link>
@@ -212,7 +218,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                           info ? cn(info.bgColor, info.textColor, 'border', info.borderColor) : 'bg-gray-100 text-gray-300',
                         )}>
                           {status
-                            ? <CycleSymbol status={status} />
+                            ? <CycleSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} />
                             : <span>·</span>}
                         </div>
                       )}

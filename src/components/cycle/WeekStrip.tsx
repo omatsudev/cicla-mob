@@ -45,7 +45,7 @@ export function WeekStrip({ recentDays, today }: WeekStripProps) {
                 title={displayInfo?.label}
               >
                 {record
-                  ? <CycleSymbol status={record.cycleStatus} />
+                  ? <CycleSymbol status={record.cycleStatus} bleedingIntensity={record.bleedingIntensity} />
                   : <span>?</span>}
               </div>
               <span className="text-[10px] text-gray-500">{format(day, 'd')}</span>
