@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, addDays, parseISO } from 'date-fns'
 import type { IDailyRecordRepository } from '@/lib/domain/interfaces/IDailyRecordRepository'
 import { interpretCycle } from '@/lib/domain/services/BillingsRulesEngine'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
@@ -46,15 +46,21 @@ export async function getCycleCalendar(
     : interpreted.length
 
   const cycleRecords = interpreted.slice(startIdx, endIdx)
+  const startDate = cycleRecords[0]?.date ?? null
 
   const days: CycleDay[] = Array.from({ length: 35 }, (_, i) => {
     const day = i + 1
     const record = cycleRecords.find(r => r.cycleDay === day) ?? null
+    // Use expected date even when there's no record yet
+    const expectedDate = startDate
+      ? format(addDays(parseISO(startDate), day - 1), 'yyyy-MM-dd')
+      : null
+    const dateForDay = record?.date ?? expectedDate
     return {
       cycleDay: day,
       date: record?.date ?? null,
       record,
-      isToday: record?.date === today,
+      isToday: dateForDay === today,
     }
   })
 

@@ -72,13 +72,14 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
     return (expected ?? d.date ?? '') <= today
   }) : undefined
 
-  // Auto-scroll so next-to-mark column is near right edge
+  // Auto-scroll so today is the last visible column (right edge)
   useEffect(() => {
-    const target = nextDayToMark?.cycleDay ?? data.days.find(d => d.isToday)?.cycleDay
+    const todayCycleDay = data.days.find(d => d.isToday)?.cycleDay
+    const target = todayCycleDay ?? nextDayToMark?.cycleDay
     if (scrollRef.current && target) {
       const colW = 36
       const visW = scrollRef.current.clientWidth
-      scrollRef.current.scrollLeft = Math.max(0, (target - 1) * colW - visW + colW * 2.5)
+      scrollRef.current.scrollLeft = Math.max(0, (target - 1) * colW - visW + colW * 1.5)
     }
     setSelectedDay(null)
   }, [data.cycleIndex, data.startDate])

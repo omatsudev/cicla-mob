@@ -68,17 +68,22 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
   }
 
   if (FETUS_STATUSES.has(status)) {
+    const overlayChars = status === 'apice' ? ['O', '✕'] : ['O']
     return (
       <span className={`relative flex items-center justify-center ${size}`}>
-        <FetusIconSVG />
-        {status === 'apice' && (
-          <span
-            className="absolute inset-0 flex items-center justify-center font-bold"
-            style={{ fontSize: '8px', paddingLeft: '3px', paddingTop: '3px' }}
-          >
-            ✕
-          </span>
-        )}
+        {/* Fetus as faded watermark */}
+        <span className="absolute inset-0 opacity-20">
+          <FetusIconSVG />
+        </span>
+        {/* Prominent WOOMB symbol on top */}
+        <span
+          className="relative z-10 flex flex-col items-center justify-center font-bold leading-none"
+          style={{ fontSize: '9px', gap: 0 }}
+        >
+          {overlayChars.map((c, i) => (
+            <span key={i} style={{ lineHeight: 1 }}>{c}</span>
+          ))}
+        </span>
       </span>
     )
   }
