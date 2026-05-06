@@ -140,7 +140,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
       ) : (
         <>
           {/* WOOMB-style grid */}
-          <div ref={scrollRef} className="overflow-x-scroll -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+          <div ref={scrollRef} className="overflow-x-scroll -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' } as React.CSSProperties}>
             <div className="flex w-max">
 
               {/* ── Sticky label column ── */}
@@ -181,16 +181,20 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                 const mobRule = day.record?.mobRule || (status ? MOB_RULE[status] : '')
 
                 return (
-                  <button
+                  <div
                     key={day.cycleDay}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedDay(isSel ? null : day.cycleDay)}
+                    onKeyDown={e => e.key === 'Enter' && setSelectedDay(isSel ? null : day.cycleDay)}
                     className={cn(
-                      'flex flex-col shrink-0 border-r border-gray-200 transition focus:outline-none',
+                      'flex flex-col shrink-0 border-r border-gray-200 transition cursor-pointer select-none',
                       COL_W,
                       isSel   && 'bg-blue-50',
                       isNext  && !isSel && 'bg-rose-50',
                       day.isToday && 'outline outline-1 outline-rose-400',
                     )}
+                    style={{ touchAction: 'pan-x' }}
                   >
                     {/* Row 1: Dia do ciclo */}
                     <div className={cn('flex flex-col items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
@@ -210,6 +214,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                             'w-full h-full rounded flex items-center justify-center text-white transition',
                             isNext ? 'bg-rose-500 hover:bg-rose-600' : 'bg-gray-300 hover:bg-gray-400',
                           )}
+                          style={{ touchAction: 'manipulation' }}
                         >
                           <Plus size={14} />
                         </Link>
@@ -246,7 +251,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     <div className={cn('flex items-center justify-center text-[9px] font-bold text-gray-600', ROW.regra)}>
                       {mobRule}
                     </div>
-                  </button>
+                  </div>
                 )
               })}
             </div>
