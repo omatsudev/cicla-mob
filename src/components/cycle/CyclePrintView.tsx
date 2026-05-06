@@ -65,6 +65,43 @@ function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleed
   )
 }
 
+function BlankCycleColumn() {
+  const borderColor = '#555'
+  const lightBorder = '#ccc'
+  const headerCell: React.CSSProperties = {
+    textAlign: 'center', fontSize: 6.5, padding: '1px 2px',
+    borderBottom: `1px solid ${lightBorder}`, background: '#e5e7eb',
+    WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+  } as React.CSSProperties
+
+  return (
+    <div style={{ flex: 1, border: `1px solid ${borderColor}`, minWidth: 0, WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
+      <div style={{ background: '#d1d5db', borderBottom: `1px solid ${borderColor}`, padding: '2px 4px', textAlign: 'center', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
+        <div style={{ fontWeight: 'bold', fontSize: 8 }}>&nbsp;</div>
+        <div style={{ fontSize: 6.5, color: '#444' }}>Início: —</div>
+      </div>
+      <div style={{ display: 'flex', borderBottom: `1px solid ${borderColor}` }}>
+        {[['18px','Dia'],['22px','Simb'],['28px','Data'],['20px','MOB'],['1','Sensações']].map(([w, label], i, arr) => (
+          <div key={label} style={{ ...(w === '1' ? { flex: 1 } : { width: w }), ...headerCell, borderRight: i < arr.length - 1 ? `1px solid ${lightBorder}` : undefined }}>
+            {label}
+          </div>
+        ))}
+      </div>
+      {Array.from({ length: 35 }, (_, i) => (
+        <div key={i} style={{ display: 'flex', borderBottom: `0.5px solid ${lightBorder}`, minHeight: '5.5mm', background: 'white', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
+          <div style={{ width: 18, borderRight: `0.5px solid ${lightBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 6.5, fontWeight: 'bold' }}>
+            {String(i + 1).padStart(2, '0')}
+          </div>
+          <div style={{ width: 22, borderRight: `0.5px solid ${lightBorder}` }} />
+          <div style={{ width: 28, borderRight: `0.5px solid ${lightBorder}` }} />
+          <div style={{ width: 20, borderRight: `0.5px solid ${lightBorder}` }} />
+          <div style={{ flex: 1 }} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function CycleColumn({ cycle, cycleName }: { cycle: CycleCalendarData; cycleName: string }) {
   const displayName = cycleName.trim() || `Ciclo ${cycle.cycleNumber}`
   const startLabel = cycle.startDate
@@ -173,11 +210,8 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
           #cicla-print-root,
           #cicla-print-root * { visibility: visible !important; }
           #cicla-print-root {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
+            position: static !important;
             width: 100% !important;
-            height: auto !important;
           }
         }
       `}</style>
@@ -188,34 +222,31 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
         style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', overflow: 'hidden', visibility: 'hidden' }}
       >
         <div style={{ fontFamily: 'Arial, sans-serif', visibility: 'visible' }}>
-          {cycles.length === 0 ? null : (
-            <>
+          {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => (
+            <div
+              key={pageIdx}
+              style={{
+                pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
+                breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
+              }}
+            >
               <div style={{ fontSize: 8, textAlign: 'center', marginBottom: 4, fontWeight: 'bold' }}>
                 GRÁFICO CICLO MENSTRUAL — WOOMB
               </div>
-              {pages.map((pageCycles, pageIdx) => (
-                <div
-                  key={pageIdx}
-                  style={{
-                    display: 'flex', gap: 4,
-                    pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
-                    breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
-                  }}
-                >
-                  {pageCycles.map((cycle) => (
-                    <CycleColumn
-                      key={cycle.cycleNumber}
-                      cycle={cycle}
-                      cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
-                    />
-                  ))}
-                  {pageCycles.length < 3 && Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
-                    <div key={`empty-${i}`} style={{ flex: 1 }} />
-                  ))}
-                </div>
-              ))}
-            </>
-          )}
+              <div style={{ display: 'flex', gap: 4 }}>
+                {pageCycles.map((cycle) => (
+                  <CycleColumn
+                    key={cycle.cycleNumber}
+                    cycle={cycle}
+                    cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
+                  />
+                ))}
+                {Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
+                  <BlankCycleColumn key={`blank-${i}`} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>
