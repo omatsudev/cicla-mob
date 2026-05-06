@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils/cn'
 import { CycleStatus, CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { CycleSymbol } from './CycleSymbol'
 
 const LEGEND_ITEMS: CycleStatus[] = [
   CycleStatus.MENSTRUATION,
@@ -29,7 +30,7 @@ export function FertilityLegend() {
                   info.borderColor,
                 )}
               >
-                {info.symbol.split('').map((c, i) => <span key={i}>{c}</span>)}
+                <CycleSymbol status={status} size="w-4 h-4" />
               </div>
               <span className="text-xs text-gray-600 leading-tight">{info.label}</span>
             </div>

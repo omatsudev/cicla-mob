@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
+import { CycleSymbol } from './CycleSymbol'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 
@@ -210,9 +211,9 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                           'w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none gap-px',
                           info ? cn(info.bgColor, info.textColor, 'border', info.borderColor) : 'bg-gray-100 text-gray-300',
                         )}>
-                          {(info?.symbol ?? '·').split('').map((c, i) => (
-                            <span key={i}>{c}</span>
-                          ))}
+                          {status
+                            ? <CycleSymbol status={status} />
+                            : <span>·</span>}
                         </div>
                       )}
                     </div>

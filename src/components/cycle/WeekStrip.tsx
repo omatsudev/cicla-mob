@@ -3,6 +3,7 @@ import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
+import { CycleSymbol } from './CycleSymbol'
 
 interface WeekStripProps {
   recentDays: InterpretedRecord[]
@@ -43,9 +44,9 @@ export function WeekStrip({ recentDays, today }: WeekStripProps) {
                 )}
                 title={displayInfo?.label}
               >
-                {displayInfo
-                  ? displayInfo.symbol.split('').map((c, i) => <span key={i} className="block leading-none">{c}</span>)
-                  : '?'}
+                {record
+                  ? <CycleSymbol status={record.cycleStatus} />
+                  : <span>?</span>}
               </div>
               <span className="text-[10px] text-gray-500">{format(day, 'd')}</span>
             </div>

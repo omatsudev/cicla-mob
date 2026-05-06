@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
+import { CycleSymbol } from './CycleSymbol'
 
 interface CycleDayCellProps {
   dayOfMonth: number
@@ -28,11 +29,9 @@ export function CycleDayCell({ dayOfMonth, record, isToday, onClick }: CycleDayC
       title={displayInfo?.description}
     >
       <span className="font-semibold text-[11px] leading-none">{dayOfMonth}</span>
-      {displayInfo && (
-        <span className="flex flex-col items-center mt-0.5 opacity-80 leading-none gap-px">
-          {displayInfo.symbol.split('').map((c, i) => (
-            <span key={i} className="text-[9px]">{c}</span>
-          ))}
+      {record && (
+        <span className="flex flex-col items-center mt-0.5 opacity-80 leading-none gap-px text-[9px]">
+          <CycleSymbol status={record.cycleStatus} size="w-4 h-4" />
         </span>
       )}
     </button>
