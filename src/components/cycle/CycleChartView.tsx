@@ -50,6 +50,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
   const [nameInput, setNameInput] = useState('')
   const nameInputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef({ dragging: false, startX: 0, scrollLeft: 0, moved: false })
   const today = format(new Date(), 'yyyy-MM-dd')
 
   function startEditing() {
@@ -157,7 +158,29 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
           <div
             ref={scrollRef}
             className="overflow-x-auto -mx-5 border-t border-b border-gray-200"
-            style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x', overscrollBehaviorX: 'contain' } as React.CSSProperties}
+            style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x', overscrollBehaviorX: 'contain', cursor: dragRef.current.dragging ? 'grabbing' : 'grab' } as React.CSSProperties}
+            onMouseDown={e => {
+              const el = scrollRef.current!
+              dragRef.current = { dragging: true, startX: e.pageX - el.offsetLeft, scrollLeft: el.scrollLeft, moved: false }
+              el.style.cursor = 'grabbing'
+            }}
+            onMouseMove={e => {
+              const d = dragRef.current
+              if (!d.dragging) return
+              e.preventDefault()
+              const x = e.pageX - scrollRef.current!.offsetLeft
+              const delta = x - d.startX
+              if (Math.abs(delta) > 3) d.moved = true
+              scrollRef.current!.scrollLeft = d.scrollLeft - delta
+            }}
+            onMouseUp={() => {
+              dragRef.current.dragging = false
+              if (scrollRef.current) scrollRef.current.style.cursor = 'grab'
+            }}
+            onMouseLeave={() => {
+              dragRef.current.dragging = false
+              if (scrollRef.current) scrollRef.current.style.cursor = 'grab'
+            }}
           >
             <div className="flex w-max">
 
@@ -203,7 +226,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     key={day.cycleDay}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setSelectedDay(isSel ? null : day.cycleDay)}
+                    onClick={() => { if (!dragRef.current.moved) setSelectedDay(isSel ? null : day.cycleDay) }}
                     onKeyDown={e => e.key === 'Enter' && setSelectedDay(isSel ? null : day.cycleDay)}
                     className={cn(
                       'flex flex-col shrink-0 border-r border-gray-200 transition cursor-pointer select-none',
