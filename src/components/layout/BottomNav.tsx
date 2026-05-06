@@ -4,7 +4,7 @@ import { useProfile } from '@/lib/context/ProfileContext'
 
 const allLinks = [
   { to: '/', label: 'Início', icon: Home, exact: true, manOnly: false },
-  { to: '/registrar', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: true },
+  { to: '/registrar', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: false },
   { to: '/calendario', label: 'Ciclos', icon: Calendar, exact: false, manOnly: false },
   { to: '/historico', label: 'Histórico', icon: History, exact: false, manOnly: false },
   { to: '/perfil', label: 'Perfil', icon: User, exact: false, manOnly: false },

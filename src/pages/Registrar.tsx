@@ -6,9 +6,11 @@ import { supabase } from '@/lib/supabase'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { DailyRecordForm } from '@/components/forms/DailyRecordForm'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { useProfile } from '@/lib/context/ProfileContext'
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 
 export default function Registrar() {
+  const { isMan } = useProfile()
   const [searchParams, setSearchParams] = useSearchParams()
   const today = format(new Date(), 'yyyy-MM-dd')
   const targetDate = searchParams.get('date') ?? today
@@ -59,15 +61,18 @@ export default function Registrar() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Observação diária</CardTitle>
+          <CardTitle>{isMan ? 'Anotação do dia' : 'Observação diária'}</CardTitle>
           <CardDescription>
-            Anote a sensação mais próxima da fertilidade observada durante o dia.
+            {isMan
+              ? 'Registre suas observações e se houve relação sexual hoje.'
+              : 'Anote a sensação mais próxima da fertilidade observada durante o dia.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <DailyRecordForm
             defaultDate={targetDate}
             existingRecord={existingRecord}
+            isMan={isMan}
           />
         </CardContent>
       </Card>

@@ -13,6 +13,7 @@ import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
 interface Props {
   defaultDate: string
   existingRecord?: DailyRecord
+  isMan?: boolean
 }
 
 const SENSATION_OPTIONS: { value: Sensation; label: string; description: string }[] = [
@@ -29,7 +30,7 @@ const BLEEDING_OPTIONS: { value: BleedingIntensity; label: string }[] = [
   { value: 'intenso', label: 'Intenso' },
 ]
 
-export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
+export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -128,35 +129,37 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Bleeding */}
-        <fieldset>
-          <legend className="text-sm font-semibold text-gray-700 mb-2">Sangramento</legend>
-          <div className="grid grid-cols-2 gap-2">
-            {BLEEDING_OPTIONS.map(opt => (
-              <label key={opt.value} className="cursor-pointer">
-                <input
-                  type="radio"
-                  name="bleeding"
-                  value={opt.value}
-                  checked={bleeding === opt.value}
-                  onChange={() => handleBleedingSelect(opt.value)}
-                  className="sr-only peer"
-                />
-                <div className="border-2 border-gray-200 peer-checked:border-red-400 peer-checked:bg-red-50 rounded-xl px-3 py-2.5 text-center transition">
-                  <p className="text-sm font-medium text-gray-700 peer-checked:text-red-700">{opt.label}</p>
-                  {bleeding === opt.value && opt.value !== 'nenhum' && (
-                    <p className="text-xs text-red-500 mt-0.5">
-                      {sensation === 'menstruacao' ? '● Menstruação' : '⁚ Mancha'}
-                    </p>
-                  )}
-                </div>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        {/* Bleeding — women only */}
+        {!isMan && (
+          <fieldset>
+            <legend className="text-sm font-semibold text-gray-700 mb-2">Sangramento</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {BLEEDING_OPTIONS.map(opt => (
+                <label key={opt.value} className="cursor-pointer">
+                  <input
+                    type="radio"
+                    name="bleeding"
+                    value={opt.value}
+                    checked={bleeding === opt.value}
+                    onChange={() => handleBleedingSelect(opt.value)}
+                    className="sr-only peer"
+                  />
+                  <div className="border-2 border-gray-200 peer-checked:border-red-400 peer-checked:bg-red-50 rounded-xl px-3 py-2.5 text-center transition">
+                    <p className="text-sm font-medium text-gray-700 peer-checked:text-red-700">{opt.label}</p>
+                    {bleeding === opt.value && opt.value !== 'nenhum' && (
+                      <p className="text-xs text-red-500 mt-0.5">
+                        {sensation === 'menstruacao' ? '● Menstruação' : '⁚ Mancha'}
+                      </p>
+                    )}
+                  </div>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
-        {/* Sensation — only when no bleeding */}
-        {!hasBleeding && (
+        {/* Sensation — only when no bleeding, women only */}
+        {!isMan && !hasBleeding && (
           <fieldset>
             <legend className="text-sm font-semibold text-gray-700 mb-2">Sensação na vulva</legend>
             <div className="grid grid-cols-2 gap-2">
@@ -180,8 +183,8 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
           </fieldset>
         )}
 
-        {/* Mucus — only when no bleeding */}
-        {!hasBleeding && (
+        {/* Mucus — only when no bleeding, women only */}
+        {!isMan && !hasBleeding && (
           <>
             <fieldset>
               <legend className="text-sm font-semibold text-gray-700 mb-2">Aparência do muco</legend>
@@ -227,32 +230,34 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
           </>
         )}
 
-        {/* MOB Rule */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Regra MOB aplicada</label>
-          <div className="grid grid-cols-4 gap-2">
-            {([
-              { value: '',    label: '—',  desc: 'Não inf.' },
-              { value: 'R1',  label: 'R1', desc: 'Menstruação' },
-              { value: 'R2',  label: 'R2', desc: 'Noites alt.' },
-              { value: 'R3',  label: 'R3', desc: 'Manchas' },
-              { value: 'A',   label: 'A',  desc: 'Ápice' },
-              { value: '1',   label: '1',  desc: '1° pós-A' },
-              { value: '2',   label: '2',  desc: '2° pós-A' },
-              { value: '3',   label: '3',  desc: '3° pós-A' },
-              { value: 'RA',  label: 'RA', desc: 'Regra Ápice' },
-            ]).map(opt => (
-              <label key={opt.value} className="cursor-pointer">
-                <input type="radio" name="mobRule" value={opt.value} checked={mobRule === opt.value}
-                  onChange={() => setMobRule(opt.value)} className="sr-only peer" />
-                <div className="border-2 border-gray-200 peer-checked:border-rose-400 peer-checked:bg-rose-50 rounded-xl py-2 text-center transition">
-                  <p className="text-sm font-bold text-gray-700 peer-checked:text-rose-700">{opt.label || '—'}</p>
-                  <p className="text-[9px] text-gray-400 leading-tight">{opt.desc}</p>
-                </div>
-              </label>
-            ))}
+        {/* MOB Rule — women only */}
+        {!isMan && (
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Regra MOB aplicada</label>
+            <div className="grid grid-cols-4 gap-2">
+              {([
+                { value: '',    label: '—',  desc: 'Não inf.' },
+                { value: 'R1',  label: 'R1', desc: 'Menstruação' },
+                { value: 'R2',  label: 'R2', desc: 'Noites alt.' },
+                { value: 'R3',  label: 'R3', desc: 'Manchas' },
+                { value: 'A',   label: 'A',  desc: 'Ápice' },
+                { value: '1',   label: '1',  desc: '1° pós-A' },
+                { value: '2',   label: '2',  desc: '2° pós-A' },
+                { value: '3',   label: '3',  desc: '3° pós-A' },
+                { value: 'RA',  label: 'RA', desc: 'Regra Ápice' },
+              ]).map(opt => (
+                <label key={opt.value} className="cursor-pointer">
+                  <input type="radio" name="mobRule" value={opt.value} checked={mobRule === opt.value}
+                    onChange={() => setMobRule(opt.value)} className="sr-only peer" />
+                  <div className="border-2 border-gray-200 peer-checked:border-rose-400 peer-checked:bg-rose-50 rounded-xl py-2 text-center transition">
+                    <p className="text-sm font-bold text-gray-700 peer-checked:text-rose-700">{opt.label || '—'}</p>
+                    <p className="text-[9px] text-gray-400 leading-tight">{opt.desc}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Intercourse */}
         <div className="flex items-center justify-between p-3 border border-gray-200 rounded-xl">
@@ -289,7 +294,7 @@ export function DailyRecordForm({ defaultDate, existingRecord }: Props) {
           disabled={saving || saved}
           className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition text-sm"
         >
-          {saved ? '✓ Salvo!' : saving ? 'Salvando...' : 'Salvar registro'}
+          {saved ? '✓ Salvo!' : saving ? 'Salvando...' : isMan ? 'Salvar anotação' : 'Salvar registro'}
         </button>
       </form>
     </>

@@ -83,7 +83,7 @@ export default function App() {
           }
         >
           <Route path="/" element={<Dashboard />} />
-          <Route path="/registrar" element={<ManGuard><Registrar /></ManGuard>} />
+          <Route path="/registrar" element={<Registrar />} />
           <Route path="/calendario" element={<Calendario />} />
           <Route path="/historico" element={<Historico />} />
           <Route path="/notificacoes" element={<Notificacoes />} />
