@@ -24,9 +24,9 @@ const BLEEDING_DOT: Partial<Record<BleedingIntensity, 2 | 3 | 5>> = {
 
 function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity }) {
   const box: React.CSSProperties = {
-    width: 16, height: 16, borderRadius: 2, border: '1px solid #666',
+    width: 14, height: 14, borderRadius: 2, border: '1px solid #666',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexDirection: 'column', fontSize: 6, fontWeight: 'bold', lineHeight: 1,
+    flexDirection: 'column', fontSize: 5.5, fontWeight: 'bold', lineHeight: 1,
     flexShrink: 0,
   }
 
@@ -34,7 +34,7 @@ function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleed
     const count = (bleedingIntensity ? BLEEDING_DOT[bleedingIntensity] : undefined) ?? 3
     return (
       <div style={{ ...box, background: '#fca5a5', border: '1px solid #f87171' }}>
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+        <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
           {DOT_POSITIONS[count].map(([cx, cy], i) => (
             <circle key={i} cx={cx} cy={cy} r="1.8" fill="#b91c1c" />
           ))}
@@ -65,39 +65,76 @@ function PrintSymbol({ status, bleedingIntensity }: { status: CycleStatus; bleed
   )
 }
 
-function BlankCycleColumn() {
-  const borderColor = '#555'
-  const lightBorder = '#ccc'
-  const headerCell: React.CSSProperties = {
-    textAlign: 'center', fontSize: 6.5, padding: '1px 2px',
-    borderBottom: `1px solid ${lightBorder}`, background: '#e5e7eb',
+const BORDER = '#555'
+const LIGHT  = '#ccc'
+
+const colWidths = { dia: 16, simb: 20, data: 26, mob: 18 }
+
+function ColHeader() {
+  const cell: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 6, padding: '1px 2px',
+    background: '#e5e7eb', borderBottom: `1px solid ${BORDER}`,
     WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
   } as React.CSSProperties
+  return (
+    <div style={{ display: 'flex', flexShrink: 0 }}>
+      <div style={{ ...cell, width: colWidths.dia,  borderRight: `1px solid ${LIGHT}` }}>Dia</div>
+      <div style={{ ...cell, width: colWidths.simb, borderRight: `1px solid ${LIGHT}` }}>Simb</div>
+      <div style={{ ...cell, width: colWidths.data, borderRight: `1px solid ${LIGHT}` }}>Data</div>
+      <div style={{ ...cell, width: colWidths.mob,  borderRight: `1px solid ${LIGHT}` }}>MOB</div>
+      <div style={{ ...cell, flex: 1 }}>Sensações</div>
+    </div>
+  )
+}
+
+function DayRow({ day, startDate }: { day: CycleCalendarData['days'][0]; startDate: string | null }) {
+  const status = day.record?.cycleStatus ?? null
+  const expectedDate = startDate
+    ? format(addDays(parseISO(startDate), day.cycleDay - 1), 'yyyy-MM-dd')
+    : day.date
+  const targetDate = day.date ?? expectedDate
+  const dateLabel = targetDate ? format(parseISO(targetDate), 'dd/MM') : ''
+  const mob = day.record?.mobRule || (status ? MOB_AUTO[status] : '')
+  const sensacao = day.record ? SENSATION_LABELS[day.record.sensation] : ''
+  const notes = day.record?.notes ?? ''
+  const descricao = [sensacao, notes].filter(Boolean).join(' / ')
+
+  const rowBg =
+    status === 'menstruacao' ? '#fee2e2' :
+    status === 'mancha'      ? '#fecaca' :
+    status === 'pbi_seco'   ? '#dcfce7' :
+    (status === 'pbi_muco' || status === 'infertil_pos_apice') ? '#fefce8' :
+    'white'
+
+  const cell: React.CSSProperties = {
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 6, lineHeight: 1.1, overflow: 'hidden',
+  }
 
   return (
-    <div style={{ flex: 1, border: `1px solid ${borderColor}`, minWidth: 0, WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
-      <div style={{ background: '#d1d5db', borderBottom: `1px solid ${borderColor}`, padding: '2px 4px', textAlign: 'center', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
-        <div style={{ fontWeight: 'bold', fontSize: 8 }}>&nbsp;</div>
-        <div style={{ fontSize: 6.5, color: '#444' }}>Início: —</div>
+    <div style={{
+      display: 'flex', flex: 1,
+      borderBottom: `0.5px solid ${LIGHT}`,
+      background: rowBg,
+      WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+      minHeight: 0,
+    } as React.CSSProperties}>
+      <div style={{ ...cell, width: colWidths.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+        {String(day.cycleDay).padStart(2, '0')}
       </div>
-      <div style={{ display: 'flex', borderBottom: `1px solid ${borderColor}` }}>
-        {[['18px','Dia'],['22px','Simb'],['28px','Data'],['20px','MOB'],['1','Sensações']].map(([w, label], i, arr) => (
-          <div key={label} style={{ ...(w === '1' ? { flex: 1 } : { width: w }), ...headerCell, borderRight: i < arr.length - 1 ? `1px solid ${lightBorder}` : undefined }}>
-            {label}
-          </div>
-        ))}
+      <div style={{ ...cell, width: colWidths.simb, borderRight: `0.5px solid ${LIGHT}` }}>
+        {status && <PrintSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} />}
       </div>
-      {Array.from({ length: 35 }, (_, i) => (
-        <div key={i} style={{ display: 'flex', borderBottom: `0.5px solid ${lightBorder}`, minHeight: '5.5mm', background: 'white', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
-          <div style={{ width: 18, borderRight: `0.5px solid ${lightBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 6.5, fontWeight: 'bold' }}>
-            {String(i + 1).padStart(2, '0')}
-          </div>
-          <div style={{ width: 22, borderRight: `0.5px solid ${lightBorder}` }} />
-          <div style={{ width: 28, borderRight: `0.5px solid ${lightBorder}` }} />
-          <div style={{ width: 20, borderRight: `0.5px solid ${lightBorder}` }} />
-          <div style={{ flex: 1 }} />
-        </div>
-      ))}
+      <div style={{ ...cell, width: colWidths.data, borderRight: `0.5px solid ${LIGHT}`, fontSize: 5.5 }}>
+        {dateLabel}
+      </div>
+      <div style={{ ...cell, width: colWidths.mob,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+        {mob}
+      </div>
+      <div style={{ ...cell, flex: 1, justifyContent: 'flex-start', padding: '0 2px', fontSize: 5.5 }}>
+        {descricao}
+      </div>
     </div>
   )
 }
@@ -105,86 +142,68 @@ function BlankCycleColumn() {
 function CycleColumn({ cycle, cycleName }: { cycle: CycleCalendarData; cycleName: string }) {
   const displayName = cycleName.trim() || `Ciclo ${cycle.cycleNumber}`
   const startLabel = cycle.startDate
-    ? format(parseISO(cycle.startDate), "d/MM/yyyy", { locale: ptBR })
+    ? format(parseISO(cycle.startDate), 'd/MM/yyyy', { locale: ptBR })
     : '—'
 
-  const borderColor = '#555'
-  const lightBorder = '#ccc'
-
-  const headerCell: React.CSSProperties = {
-    textAlign: 'center', fontSize: 6.5, padding: '1px 2px',
-    borderBottom: `1px solid ${lightBorder}`, background: '#e5e7eb',
-    WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
-  } as React.CSSProperties
-
   return (
-    <div style={{ flex: 1, border: `1px solid ${borderColor}`, minWidth: 0, WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
-      {/* Header */}
-      <div style={{ background: '#d1d5db', borderBottom: `1px solid ${borderColor}`, padding: '2px 4px', textAlign: 'center', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>
-        <div style={{ fontWeight: 'bold', fontSize: 8 }}>{displayName}</div>
-        <div style={{ fontSize: 6.5, color: '#444' }}>Início: {startLabel}</div>
+    <div style={{
+      flex: 1, border: `1px solid ${BORDER}`, minWidth: 0,
+      display: 'flex', flexDirection: 'column',
+      WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+    } as React.CSSProperties}>
+      <div style={{
+        background: '#d1d5db', borderBottom: `1px solid ${BORDER}`,
+        padding: '2px 4px', textAlign: 'center', flexShrink: 0,
+        WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+      } as React.CSSProperties}>
+        <div style={{ fontWeight: 'bold', fontSize: 7.5 }}>{displayName}</div>
+        <div style={{ fontSize: 6, color: '#444' }}>Início: {startLabel}</div>
       </div>
-
-      {/* Column headers */}
-      <div style={{ display: 'flex', borderBottom: `1px solid ${borderColor}` }}>
-        {[['18px','Dia'],['22px','Simb'],['28px','Data'],['20px','MOB'],['1','Sensações']].map(([w, label], i, arr) => (
-          <div key={label} style={{ ...(w === '1' ? { flex: 1 } : { width: w }), ...headerCell, borderRight: i < arr.length - 1 ? `1px solid ${lightBorder}` : undefined }}>
-            {label}
-          </div>
+      <ColHeader />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        {cycle.days.map(day => (
+          <DayRow key={day.cycleDay} day={day} startDate={cycle.startDate} />
         ))}
       </div>
+    </div>
+  )
+}
 
-      {/* Day rows */}
-      {cycle.days.map((day) => {
-        const status = day.record?.cycleStatus ?? null
-        const expectedDate = cycle.startDate
-          ? format(addDays(parseISO(cycle.startDate), day.cycleDay - 1), 'yyyy-MM-dd')
-          : day.date
-        const targetDate = day.date ?? expectedDate
-        const dateLabel = targetDate ? format(parseISO(targetDate), 'dd/MM') : ''
-        const mob = day.record?.mobRule || (status ? MOB_AUTO[status] : '')
-        const sensacao = day.record ? SENSATION_LABELS[day.record.sensation] : ''
-        const notes = day.record?.notes ?? ''
-        const descricao = [sensacao, notes].filter(Boolean).join(' / ')
-
-        const rowBg =
-          status === 'menstruacao' ? '#fee2e2' :
-          status === 'mancha'      ? '#fecaca' :
-          status === 'pbi_seco'   ? '#dcfce7' :
-          (status === 'pbi_muco' || status === 'infertil_pos_apice') ? '#fefce8' :
-          'white'
-
-        const row: React.CSSProperties = {
-          display: 'flex', borderBottom: `0.5px solid ${lightBorder}`,
-          minHeight: '5.5mm', background: rowBg,
-          WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
-        } as React.CSSProperties
-
-        const cell: React.CSSProperties = {
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 6.5, lineHeight: 1.2,
-        }
-
-        return (
-          <div key={day.cycleDay} style={row}>
-            <div style={{ ...cell, width: 18, borderRight: `0.5px solid ${lightBorder}`, fontWeight: 'bold' }}>
-              {String(day.cycleDay).padStart(2, '0')}
+function BlankCycleColumn() {
+  return (
+    <div style={{
+      flex: 1, border: `1px solid ${BORDER}`, minWidth: 0,
+      display: 'flex', flexDirection: 'column',
+      WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+    } as React.CSSProperties}>
+      <div style={{
+        background: '#d1d5db', borderBottom: `1px solid ${BORDER}`,
+        padding: '2px 4px', textAlign: 'center', flexShrink: 0,
+        WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+      } as React.CSSProperties}>
+        <div style={{ fontWeight: 'bold', fontSize: 7.5 }}>&nbsp;</div>
+        <div style={{ fontSize: 6, color: '#444' }}>Início: —</div>
+      </div>
+      <ColHeader />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        {Array.from({ length: 35 }, (_, i) => {
+          const cell: React.CSSProperties = {
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 6, lineHeight: 1.1, overflow: 'hidden',
+          }
+          return (
+            <div key={i} style={{ display: 'flex', flex: 1, borderBottom: `0.5px solid ${LIGHT}`, background: 'white', minHeight: 0 }}>
+              <div style={{ ...cell, width: colWidths.dia,  borderRight: `0.5px solid ${LIGHT}`, fontWeight: 'bold' }}>
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div style={{ ...cell, width: colWidths.simb, borderRight: `0.5px solid ${LIGHT}` }} />
+              <div style={{ ...cell, width: colWidths.data, borderRight: `0.5px solid ${LIGHT}` }} />
+              <div style={{ ...cell, width: colWidths.mob,  borderRight: `0.5px solid ${LIGHT}` }} />
+              <div style={{ ...cell, flex: 1 }} />
             </div>
-            <div style={{ ...cell, width: 22, borderRight: `0.5px solid ${lightBorder}` }}>
-              {status && <PrintSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} />}
-            </div>
-            <div style={{ ...cell, width: 28, borderRight: `0.5px solid ${lightBorder}`, fontSize: 6 }}>
-              {dateLabel}
-            </div>
-            <div style={{ ...cell, width: 20, borderRight: `0.5px solid ${lightBorder}`, fontWeight: 'bold', fontSize: 6.5 }}>
-              {mob}
-            </div>
-            <div style={{ ...cell, flex: 1, justifyContent: 'flex-start', padding: '0 2px', fontSize: 6 }}>
-              {descricao}
-            </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -202,10 +221,9 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
 
   return (
     <>
-      {/* Global print styles injected once */}
       <style>{`
         @media print {
-          @page { size: A4 landscape; margin: 8mm; }
+          @page { size: A4 landscape; margin: 0; }
           body * { visibility: hidden !important; }
           #cicla-print-root,
           #cicla-print-root * { visibility: visible !important; }
@@ -213,45 +231,52 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
             position: static !important;
             left: auto !important;
             top: auto !important;
-            width: 100% !important;
+            width: auto !important;
             height: auto !important;
             overflow: visible !important;
           }
         }
       `}</style>
 
-      {/* Always in DOM but invisible on screen; visibility trick makes it appear on print */}
       <div
         id="cicla-print-root"
         style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', overflow: 'hidden', visibility: 'hidden' }}
       >
-        <div style={{ fontFamily: 'Arial, sans-serif', visibility: 'visible' }}>
-          {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => (
-            <div
-              key={pageIdx}
-              style={{
-                pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
-                breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
-              }}
-            >
-              <div style={{ fontSize: 8, textAlign: 'center', marginBottom: 4, fontWeight: 'bold' }}>
-                GRÁFICO CICLO MENSTRUAL — WOOMB
-              </div>
-              <div style={{ display: 'flex', gap: 4 }}>
-                {pageCycles.map((cycle) => (
-                  <CycleColumn
-                    key={cycle.cycleNumber}
-                    cycle={cycle}
-                    cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
-                  />
-                ))}
-                {Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
-                  <BlankCycleColumn key={`blank-${i}`} />
-                ))}
-              </div>
+        {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => (
+          <div
+            key={pageIdx}
+            style={{
+              width: '297mm',
+              height: '210mm',
+              padding: '6mm',
+              boxSizing: 'border-box',
+              pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
+              breakAfter: pageIdx < pages.length - 1 ? 'page' : 'auto',
+              pageBreakInside: 'avoid',
+              breakInside: 'avoid',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              fontFamily: 'Arial, sans-serif',
+            } as React.CSSProperties}
+          >
+            <div style={{ fontSize: 8, textAlign: 'center', marginBottom: 3, fontWeight: 'bold', flexShrink: 0 }}>
+              GRÁFICO CICLO MENSTRUAL — WOOMB
             </div>
-          ))}
-        </div>
+            <div style={{ display: 'flex', gap: 3, flex: 1, minHeight: 0 }}>
+              {pageCycles.map((cycle) => (
+                <CycleColumn
+                  key={cycle.cycleNumber}
+                  cycle={cycle}
+                  cycleName={cycle.startDate ? (cycleNames[cycle.startDate] ?? '') : ''}
+                />
+              ))}
+              {Array.from({ length: 3 - pageCycles.length }).map((_, i) => (
+                <BlankCycleColumn key={`blank-${i}`} />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </>
   )
