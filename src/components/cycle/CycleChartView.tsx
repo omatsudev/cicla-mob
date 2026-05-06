@@ -139,11 +139,11 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
       ) : (
         <>
           {/* WOOMB-style grid */}
-          <div ref={scrollRef} className="overflow-x-auto -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none' }}>
-            <div className="flex" style={{ minWidth: 'max-content' }}>
+          <div ref={scrollRef} className="overflow-x-scroll -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+            <div className="flex w-max">
 
               {/* ── Sticky label column ── */}
-              <div className={cn('sticky left-0 z-20 bg-white border-r-2 border-gray-300 flex flex-col', LABEL_W)}>
+              <div className={cn('sticky left-0 z-20 bg-white border-r-2 border-gray-300 flex flex-col shrink-0', LABEL_W)}>
                 <Cell cls={cn(ROW.diaCiclo, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia ciclo</Cell>
                 <Cell cls={cn(ROW.simbolo,  'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Símbolo</Cell>
                 <Cell cls={cn(ROW.diaMes,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia mês</Cell>
@@ -184,7 +184,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     key={day.cycleDay}
                     onClick={() => setSelectedDay(isSel ? null : day.cycleDay)}
                     className={cn(
-                      'flex flex-col border-r border-gray-200 transition focus:outline-none',
+                      'flex flex-col shrink-0 border-r border-gray-200 transition focus:outline-none',
                       COL_W,
                       isSel   && 'bg-blue-50',
                       isNext  && !isSel && 'bg-rose-50',
