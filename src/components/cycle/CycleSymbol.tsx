@@ -76,9 +76,12 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
         </span>
         {/* Prominent WOOMB oval symbol */}
         <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10 w-full h-full">
-          <ellipse cx="10" cy="10" rx="5.5" ry="7" stroke="currentColor" strokeWidth="1.5" />
+          <ellipse cx="10" cy="10" rx="4.8" ry="6.2" stroke="currentColor" strokeWidth="1.2" />
           {status === 'apice' && (
-            <line x1="7" y1="7" x2="13" y2="13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            <>
+              <line x1="7.5" y1="7.5" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+              <line x1="12.5" y1="7.5" x2="7.5" y2="12.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+            </>
           )}
         </svg>
       </span>
