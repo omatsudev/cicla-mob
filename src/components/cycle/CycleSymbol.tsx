@@ -74,14 +74,17 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
         <span className="absolute inset-0 opacity-20">
           <FetusIconSVG />
         </span>
-        {/* Prominent WOOMB oval symbol */}
+        {/* Prominent WOOMB symbol */}
         <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10 w-full h-full">
-          <ellipse cx="10" cy="10" rx="4.8" ry="6.2" stroke="currentColor" strokeWidth="1.2" />
-          {status === 'apice' && (
+          {status === 'apice' ? (
             <>
-              <line x1="7.5" y1="7.5" x2="12.5" y2="12.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-              <line x1="12.5" y1="7.5" x2="7.5" y2="12.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+              <text x="10" y="8.5" textAnchor="middle" dominantBaseline="middle"
+                fill="currentColor" fontSize="7" fontWeight="600" fontFamily="Arial, sans-serif">O</text>
+              <text x="10" y="15" textAnchor="middle" dominantBaseline="middle"
+                fill="currentColor" fontSize="7" fontWeight="600" fontFamily="Arial, sans-serif">X</text>
             </>
+          ) : (
+            <ellipse cx="10" cy="10" rx="4.8" ry="6.2" stroke="currentColor" strokeWidth="1.2" />
           )}
         </svg>
       </span>
