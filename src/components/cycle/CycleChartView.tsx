@@ -77,12 +77,18 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
   useEffect(() => {
     const todayCycleDay = data.days.find(d => d.isToday)?.cycleDay
     const target = todayCycleDay ?? nextDayToMark?.cycleDay
-    if (scrollRef.current && target) {
-      const colW = 36
-      const visW = scrollRef.current.clientWidth
-      scrollRef.current.scrollLeft = Math.max(0, (target - 1) * colW - visW + colW * 1.5)
-    }
     setSelectedDay(null)
+    if (!target) return
+    const doScroll = () => {
+      const el = scrollRef.current
+      if (!el) return
+      const colW = 36
+      const labelW = 68
+      const visW = el.clientWidth - labelW
+      el.scrollLeft = Math.max(0, labelW + (target - 1) * colW - visW)
+    }
+    // RAF ensures the browser has laid out before we read clientWidth
+    requestAnimationFrame(doScroll)
   }, [data.cycleIndex, data.startDate])
 
   // Desktop: convert vertical mouse-wheel to horizontal scroll (passive:false required)
