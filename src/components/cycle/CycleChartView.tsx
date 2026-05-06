@@ -140,7 +140,18 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
       ) : (
         <>
           {/* WOOMB-style grid */}
-          <div ref={scrollRef} className="overflow-x-scroll -mx-4 border-t border-b border-gray-200" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' } as React.CSSProperties}>
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto -mx-5 border-t border-b border-gray-200"
+            style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x', overscrollBehaviorX: 'contain' } as React.CSSProperties}
+            onWheel={e => {
+              // Let desktop users scroll horizontally with the mouse wheel
+              if (scrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault()
+                scrollRef.current.scrollLeft += e.deltaY
+              }
+            }}
+          >
             <div className="flex w-max">
 
               {/* ── Sticky label column ── */}
