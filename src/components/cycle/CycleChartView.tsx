@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { format, parseISO, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Pencil, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
@@ -38,13 +38,29 @@ const COL_W   = 'w-9 min-w-[36px]'
 interface Props {
   data: CycleCalendarData
   isMan: boolean
+  cycleName?: string
   onNavigate: (newIndex: number) => void
+  onNameSave?: (name: string) => void
 }
 
-export function CycleChartView({ data, isMan, onNavigate }: Props) {
+export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onNameSave }: Props) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [editingName, setEditingName] = useState(false)
+  const [nameInput, setNameInput] = useState('')
+  const nameInputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const today = format(new Date(), 'yyyy-MM-dd')
+
+  function startEditing() {
+    setNameInput(cycleName)
+    setEditingName(true)
+    setTimeout(() => nameInputRef.current?.focus(), 0)
+  }
+
+  function saveName() {
+    setEditingName(false)
+    onNameSave?.(nameInput)
+  }
 
   // First unmarked day whose expected date ≤ today
   const nextDayToMark = !isMan ? data.days.find(d => {
@@ -67,7 +83,8 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
   }, [data.cycleIndex, data.startDate])
 
   const selectedDayData = selectedDay !== null ? data.days[selectedDay - 1] : null
-  const cycleLabel = data.totalCycles === 0 ? 'Sem ciclos' : `Ciclo ${data.cycleNumber}`
+  const defaultLabel = data.totalCycles === 0 ? 'Sem ciclos' : `Ciclo ${data.cycleNumber}`
+  const displayName = cycleName.trim() || defaultLabel
   const startLabel = data.startDate
     ? format(parseISO(data.startDate), "d 'de' MMMM", { locale: ptBR })
     : ''
@@ -75,17 +92,43 @@ export function CycleChartView({ data, isMan, onNavigate }: Props) {
   return (
     <div className="space-y-4">
       {/* Cycle navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <button onClick={() => onNavigate(data.cycleIndex + 1)} disabled={data.cycleIndex >= data.totalCycles - 1}
-          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30">
+          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30 shrink-0">
           <ChevronLeft size={20} className="text-gray-600" />
         </button>
-        <div className="text-center">
-          <p className="text-base font-semibold text-gray-800">{cycleLabel}</p>
+
+        <div className="flex-1 text-center min-w-0">
+          {editingName ? (
+            <div className="flex items-center gap-1 justify-center">
+              <input
+                ref={nameInputRef}
+                value={nameInput}
+                onChange={e => setNameInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') saveName() }}
+                onBlur={saveName}
+                placeholder={defaultLabel}
+                className="text-sm font-semibold text-gray-800 text-center bg-transparent border-b border-rose-400 outline-none w-36"
+              />
+              <button onClick={saveName} className="text-rose-500 shrink-0">
+                <Check size={14} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 justify-center">
+              <p className="text-base font-semibold text-gray-800 truncate">{displayName}</p>
+              {onNameSave && data.totalCycles > 0 && (
+                <button onClick={startEditing} className="text-gray-400 hover:text-gray-600 shrink-0">
+                  <Pencil size={12} />
+                </button>
+              )}
+            </div>
+          )}
           {startLabel && <p className="text-xs text-gray-400 capitalize mt-0.5">Início: {startLabel}</p>}
         </div>
+
         <button onClick={() => onNavigate(data.cycleIndex - 1)} disabled={data.cycleIndex <= 0}
-          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30">
+          className="p-2 rounded-xl hover:bg-gray-100 transition disabled:opacity-30 shrink-0">
           <ChevronRight size={20} className="text-gray-600" />
         </button>
       </div>

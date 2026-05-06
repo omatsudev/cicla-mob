@@ -10,19 +10,49 @@ import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCale
 
 export default function Calendario() {
   const { dataUserId, isMan, loading: profileLoading } = useProfile()
-  const [cycleIndex, setCycleIndex] = useState(0) // 0 = most recent
+  const [cycleIndex, setCycleIndex] = useState(0)
   const [calendarData, setCalendarData] = useState<CycleCalendarData | null>(null)
+  const [cycleName, setCycleName] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (profileLoading || !dataUserId) return
     setLoading(true)
     const repository = new SupabaseDailyRecordRepository(supabase)
-    getCycleCalendar(dataUserId, cycleIndex, repository).then(data => {
+    getCycleCalendar(dataUserId, cycleIndex, repository).then(async data => {
       setCalendarData(data)
+      // Load custom name for this cycle
+      if (data.startDate) {
+        const { data: row } = await supabase
+          .from('mob_cycle_names')
+          .select('name')
+          .eq('user_id', dataUserId)
+          .eq('cycle_start', data.startDate)
+          .maybeSingle()
+        setCycleName(row?.name ?? '')
+      } else {
+        setCycleName('')
+      }
       setLoading(false)
     })
   }, [dataUserId, profileLoading, cycleIndex])
+
+  async function handleNameSave(name: string) {
+    if (!dataUserId || !calendarData?.startDate) return
+    setCycleName(name)
+    if (name.trim()) {
+      await supabase.from('mob_cycle_names').upsert({
+        user_id: dataUserId,
+        cycle_start: calendarData.startDate,
+        name: name.trim(),
+      }, { onConflict: 'user_id,cycle_start' })
+    } else {
+      await supabase.from('mob_cycle_names')
+        .delete()
+        .eq('user_id', dataUserId)
+        .eq('cycle_start', calendarData.startDate)
+    }
+  }
 
   if (loading || profileLoading) {
     return (
@@ -48,7 +78,9 @@ export default function Calendario() {
           <CycleChartView
             data={calendarData}
             isMan={isMan}
+            cycleName={cycleName}
             onNavigate={setCycleIndex}
+            onNameSave={!isMan ? handleNameSave : undefined}
           />
         </CardContent>
       </Card>
