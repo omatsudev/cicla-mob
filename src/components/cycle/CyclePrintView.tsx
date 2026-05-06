@@ -324,11 +324,10 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
             {/* ── Left: vertical title ── */}
             <div style={{
               width: mm(TITLE_W), flexShrink: 0,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'space-between',
-              paddingTop: '8mm', paddingBottom: '8mm',
+              display: 'flex', flexDirection: 'row',
+              alignItems: 'center', justifyContent: 'center',
+              gap: '1mm',
               borderRight: `1.5px solid ${DARK}`,
-              paddingRight: '2mm',
             }}>
               <span style={{
                 writingMode: 'vertical-rl',
