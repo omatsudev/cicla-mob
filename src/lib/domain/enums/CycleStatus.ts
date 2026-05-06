@@ -40,7 +40,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     label: 'Mancha',
     description: 'Sangramento leve / spotting',
     bgColor: 'bg-red-300',
-    textColor: 'text-white',
+    textColor: 'text-red-900',
     borderColor: 'border-red-400',
     fertilityLevel: 'possivel',
     symbol: '⁚',

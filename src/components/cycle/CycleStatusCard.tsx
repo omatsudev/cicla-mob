@@ -89,9 +89,8 @@ export function CycleStatusCard({ summary, showRegisterPrompt, isMan }: CycleSta
         <Link
           to="/registrar"
           className={cn(
-            'block text-center font-semibold rounded-xl py-3 text-sm transition border',
-            'bg-white/80 hover:bg-white',
-            displayInfo.textColor,
+            'block text-center font-semibold rounded-xl py-3 text-sm transition border-2',
+            'bg-white/90 hover:bg-white text-gray-900',
             displayInfo.borderColor,
           )}
         >
