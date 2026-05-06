@@ -84,6 +84,20 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
     setSelectedDay(null)
   }, [data.cycleIndex, data.startDate])
 
+  // Desktop: convert vertical mouse-wheel to horizontal scroll (passive:false required)
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault()
+        el.scrollLeft += e.deltaY
+      }
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [])
+
   const selectedDayData = selectedDay !== null ? data.days[selectedDay - 1] : null
   const defaultLabel = data.totalCycles === 0 ? 'Sem ciclos' : `Ciclo ${data.cycleNumber}`
   const displayName = cycleName.trim() || defaultLabel
@@ -144,13 +158,6 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
             ref={scrollRef}
             className="overflow-x-auto -mx-5 border-t border-b border-gray-200"
             style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x', overscrollBehaviorX: 'contain' } as React.CSSProperties}
-            onWheel={e => {
-              // Let desktop users scroll horizontally with the mouse wheel
-              if (scrollRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                e.preventDefault()
-                scrollRef.current.scrollLeft += e.deltaY
-              }
-            }}
           >
             <div className="flex w-max">
 
