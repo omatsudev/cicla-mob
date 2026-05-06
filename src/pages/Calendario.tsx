@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Download, X, Printer } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useProfile } from '@/lib/context/ProfileContext'
@@ -27,7 +27,6 @@ export default function Calendario() {
   const [toCycle, setToCycle] = useState(1)
   const [excluded, setExcluded] = useState<Set<number>>(new Set())
   const [exportLoading, setExportLoading] = useState(false)
-  const [printReady, setPrintReady] = useState(false)
   const [cyclesToPrint, setCyclesToPrint] = useState<CycleCalendarData[]>([])
 
   useEffect(() => {
@@ -111,11 +110,12 @@ export default function Calendario() {
 
   function handlePrint() {
     setCyclesToPrint(selected)
-    setPrintReady(true)
-    setTimeout(() => {
-      window.print()
-      setPrintReady(false)
-    }, 400)
+    // Two animation frames: first to commit state, second to let the DOM paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print()
+      })
+    })
   }
 
   if (loading || profileLoading) {
@@ -276,10 +276,8 @@ export default function Calendario() {
         </div>
       )}
 
-      {/* Print view (hidden on screen, shown only on print) */}
-      {printReady && (
-        <CyclePrintView cycles={cyclesToPrint} cycleNames={allCycleNames} />
-      )}
+      {/* Always in DOM; visibility trick makes it appear only on print */}
+      <CyclePrintView cycles={cyclesToPrint} cycleNames={allCycleNames} />
     </div>
   )
 }
