@@ -101,7 +101,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
     <div id="cicla-print-root" style={{ display: 'none' }}>
       <style>{`
         @media print {
-          @page { size: A4 portrait; margin: 0; }
+          @page { size: A4 landscape; margin: 0; }
           body > *:not(#cicla-print-root) { display: none !important; }
           #cicla-print-root { display: block !important; }
         }
@@ -118,7 +118,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
           <div
             key={pageIdx}
             style={{
-              width: '210mm', height: '297mm', padding: '6mm',
+              width: '297mm', height: '210mm', padding: '6mm',
               boxSizing: 'border-box',
               pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
               breakAfter:     pageIdx < pages.length - 1 ? 'page'   : 'auto',
