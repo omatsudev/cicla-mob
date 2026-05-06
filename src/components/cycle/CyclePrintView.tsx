@@ -211,7 +211,11 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
           #cicla-print-root * { visibility: visible !important; }
           #cicla-print-root {
             position: static !important;
+            left: auto !important;
+            top: auto !important;
             width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
           }
         }
       `}</style>
