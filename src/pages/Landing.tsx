@@ -100,13 +100,19 @@ const references = [
   {
     name: "Diocese de Petrópolis",
     desc: "Pastoral Familiar e grupos de apoio ao planejamento familiar natural na Diocese de Petrópolis/RJ.",
-    url: "https://www.diocesedepetrópolis.org.br/",
+    url: "https://www.diocesepetrópolis.org.br/",
     highlight: false,
   },
   {
-    name: "CNBB — Pastoral Familiar",
-    desc: "Conferência Nacional dos Bispos do Brasil — orientações sobre planejamento familiar natural.",
-    url: "https://www.cnbb.org.br/",
+    name: "Canção Nova",
+    desc: "Comunidade católica de evangelização — conteúdos sobre família, amor conjugal e planejamento natural.",
+    url: "https://www.cancaonova.com/",
+    highlight: false,
+  },
+  {
+    name: "Santa Sé — Vaticano",
+    desc: "Site oficial do Vaticano com os documentos do magistério, incluindo Humanae Vitae e Familiaris Consortio.",
+    url: "https://www.vatican.va/",
     highlight: false,
   },
 ];
@@ -389,7 +395,8 @@ export default function Landing() {
             <div className="flex flex-wrap justify-center gap-4 text-xs">
               <a href="https://www.cenplafam.com.br/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CENPLAFAM</a>
               <a href="https://www.woomb.org/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">WOOMB International</a>
-              <a href="https://www.cnbb.org.br/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CNBB</a>
+              <a href="https://www.cancaonova.com/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">Canção Nova</a>
+              <a href="https://www.vatican.va/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">Vaticano</a>
             </div>
           </div>
           <p className="text-center text-xs">© {new Date().getFullYear()} Cicla MOB. Todos os direitos reservados.</p>
