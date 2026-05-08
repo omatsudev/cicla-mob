@@ -25,7 +25,7 @@ const features = [
   {
     icon: Droplets,
     title: "Registro diário",
-    desc: "A esposa registra as observações diárias do muco seguindo os critérios do Método Billings. Interface simples, pensada para o dia a dia do casal.",
+    desc: "O casal registra as observações diárias do muco seguindo os critérios do Método Billings. Interface simples, pensada para o dia a dia de ambos.",
     color: "bg-rose-100 text-rose-500",
   },
   {
@@ -37,7 +37,7 @@ const features = [
   {
     icon: Users,
     title: "Conta do casal",
-    desc: "O marido também acessa o app e acompanha o ciclo da esposa em tempo real. Juntos no planejamento familiar.",
+    desc: "Marido e esposa acessam o app, registram e acompanham o ciclo juntos em tempo real. Planejamento familiar de verdade, feito a dois.",
     color: "bg-rose-100 text-rose-500",
   },
   {
@@ -62,7 +62,7 @@ const features = [
 
 const steps = [
   { n: "01", title: "Casal cria a conta", desc: "A esposa se cadastra e convida o marido. Dois em um — uma conta compartilhada para o casal." },
-  { n: "02", title: "Esposa registra diariamente", desc: "Adiciona as observações do muco seguindo as instruções do método Billings." },
+  { n: "02", title: "Registrem diariamente", desc: "Qualquer um do casal pode adicionar as observações do muco seguindo as instruções do método Billings." },
   { n: "03", title: "Casal acompanha junto", desc: "O marido acompanha o gráfico, identificam o período fértil e tomam decisões juntos, em comunhão." },
 ];
 
