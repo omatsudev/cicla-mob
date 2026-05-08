@@ -3,7 +3,7 @@ import { Home, PlusCircle, Calendar, History, User } from 'lucide-react'
 import { useProfile } from '@/lib/context/ProfileContext'
 
 const allLinks = [
-  { to: '/', label: 'Início', icon: Home, exact: true, manOnly: false },
+  { to: '/dashboard', label: 'Início', icon: Home, exact: true, manOnly: false },
   { to: '/registrar', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: false },
   { to: '/calendario', label: 'Ciclos', icon: Calendar, exact: false, manOnly: false },
   { to: '/historico', label: 'Histórico', icon: History, exact: false, manOnly: false },
