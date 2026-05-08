@@ -7,6 +7,7 @@ import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { useProfile } from '@/lib/context/ProfileContext'
 
+import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
 import Cadastro from '@/pages/Cadastro'
 import Convite from '@/pages/Convite'
@@ -20,7 +21,7 @@ import Perfil from '@/pages/Perfil'
 function ManGuard({ children }: { children: React.ReactNode }) {
   const { isMan, loading } = useProfile()
   if (loading) return null
-  if (isMan) return <Navigate to="/" replace />
+  if (isMan) return <Navigate to="/dashboard" replace />
   return <>{children}</>
 }
 
@@ -65,6 +66,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Landing pública */}
+        <Route path="/" element={<Landing />} />
+
         {/* Public routes */}
         <Route path="/convite" element={<Convite />} />
 
@@ -82,7 +86,7 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/registrar" element={<Registrar />} />
           <Route path="/calendario" element={<Calendario />} />
           <Route path="/historico" element={<Historico />} />
@@ -91,7 +95,7 @@ export default function App() {
         </Route>
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )
