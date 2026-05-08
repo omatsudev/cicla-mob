@@ -24,6 +24,15 @@ const MOB_RULE: Record<CycleStatus, string> = {
   infertil_pos_apice: 'RA',
 }
 
+const POST_APICE_STATUSES = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apice_3', 'infertil_pos_apice'])
+
+function getPostApiceStyle(sensation: string) {
+  if (sensation === 'seca') {
+    return { bg: 'bg-green-500', text: 'text-white', border: 'border-green-600', symbol: '|' }
+  }
+  return { bg: 'bg-yellow-300', text: 'text-gray-800', border: 'border-yellow-400', symbol: '=' }
+}
+
 // Row heights (must match between label col and day cols)
 const ROW = {
   diaCiclo: 'h-6',
@@ -31,6 +40,7 @@ const ROW = {
   diaMes:   'h-5',
   sensacao: 'h-24',
   regra:    'h-6',
+  relacao:  'h-5',
 }
 
 const LABEL_W = 'w-[68px] min-w-[68px]'
@@ -199,7 +209,8 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                   <span>Descrição das</span>
                   <span>sensações</span>
                 </Cell>
-                <Cell cls={cn(ROW.regra, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
+                <Cell cls={cn(ROW.regra,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
+                <Cell cls={cn(ROW.relacao, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Relação</Cell>
               </div>
 
               {/* ── Day columns ── */}
@@ -227,6 +238,9 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
 
                 const mobRule = day.record?.mobRule || (status ? MOB_RULE[status] : '')
 
+                const isPostApice = status ? POST_APICE_STATUSES.has(status) : false
+                const postApiceStyle = isPostApice && day.record ? getPostApiceStyle(day.record.sensation) : null
+
                 return (
                   <div
                     key={day.cycleDay}
@@ -244,11 +258,8 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     style={{ touchAction: 'pan-x' }}
                   >
                     {/* Row 1: Dia do ciclo */}
-                    <div className={cn('flex flex-col items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
                       {String(day.cycleDay).padStart(2, '0')}
-                      {day.record?.hadIntercourse && (
-                        <span className="text-[7px] leading-none text-rose-400">♥</span>
-                      )}
                     </div>
 
                     {/* Row 2: Symbol */}
@@ -265,6 +276,13 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                         >
                           <Plus size={14} />
                         </Link>
+                      ) : postApiceStyle ? (
+                        <div className={cn(
+                          'w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none border',
+                          postApiceStyle.bg, postApiceStyle.text, postApiceStyle.border,
+                        )}>
+                          <span>{postApiceStyle.symbol}</span>
+                        </div>
                       ) : (
                         <div className={cn(
                           'w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none gap-px',
@@ -282,8 +300,8 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                       {dateLabel}
                     </div>
 
-                    {/* Row 4: Sensação (vertical text) */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 overflow-hidden', ROW.sensacao)}>
+                    {/* Row 4: Sensação + anotação (vertical) */}
+                    <div className={cn('flex items-center justify-center gap-px border-b border-gray-200 overflow-hidden', ROW.sensacao)}>
                       {sensacaoText && (
                         <span
                           className="text-[9px] text-gray-700 leading-tight"
@@ -292,11 +310,24 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                           {sensacaoText}
                         </span>
                       )}
+                      {day.record?.notes && (
+                        <span
+                          className="text-[8px] text-gray-400 leading-tight"
+                          style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                        >
+                          {day.record.notes}
+                        </span>
+                      )}
                     </div>
 
                     {/* Row 5: Regra MOB */}
-                    <div className={cn('flex items-center justify-center text-[9px] font-bold text-gray-600', ROW.regra)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] font-bold text-gray-600', ROW.regra)}>
                       {mobRule}
+                    </div>
+
+                    {/* Row 6: Relação */}
+                    <div className={cn('flex items-center justify-center text-[9px] font-bold text-rose-500', ROW.relacao)}>
+                      {day.record?.hadIntercourse ? 'R' : ''}
                     </div>
                   </div>
                 )
