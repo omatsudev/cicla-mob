@@ -22,7 +22,9 @@ const BLEEDING_DOT: Partial<Record<BleedingIntensity, 2 | 3 | 5>> = {
   leve: 2, moderado: 3, intenso: 5,
 }
 
-function Sym({ status, bleedingIntensity }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity }) {
+const POST_APICE = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apice_3', 'infertil_pos_apice'])
+
+function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity; sensation?: string }) {
   const base: React.CSSProperties = {
     width: 11, height: 11, borderRadius: 2, flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -37,6 +39,20 @@ function Sym({ status, bleedingIntensity }: { status: CycleStatus; bleedingInten
         <svg width="9" height="9" viewBox="0 0 14 14" fill="none">
           {DOT_POS[n].map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="1.8" fill="#b91c1c" />)}
         </svg>
+      </div>
+    )
+  }
+
+  // Pós-ápice: cor baseada na sensação (verde seca, amarelo úmida)
+  if (POST_APICE.has(status) && sensation) {
+    const isSeca = sensation === 'seca'
+    return (
+      <div style={{ ...base,
+        background: isSeca ? '#22c55e' : '#fde047',
+        color:      isSeca ? '#fff'    : '#333',
+        border: `1px solid ${isSeca ? '#16a34a' : '#ca8a04'}`,
+      }}>
+        <span style={{ lineHeight: 1 }}>{isSeca ? '|' : '='}</span>
       </div>
     )
   }
@@ -88,7 +104,8 @@ const H_DAY  = 9    // "Dia do Ciclo" row (includes cycle name in label)
 const H_SIMB = 13   // symbols
 const H_DATE = 6    // dates
 const H_MOB  = 6    // MOB rule
-// Sensações: flex:1 → 198/3 - (9+13+6+6) = 66-34 = 32mm per cycle
+const H_REL  = 4    // Relação
+// Sensações: flex:1 → 198/3 - (9+13+6+6+4) = 66-38 = 28mm per cycle
 
 type Day = CycleCalendarData['days'][0]
 
@@ -209,7 +226,7 @@ function CycleBlock({
           const status = day.record?.cycleStatus ?? null
           return (
             <DayCell key={i} bg={cellBg(status)} isLast={i === 34}>
-              {status && <Sym status={status} bleedingIntensity={day.record?.bleedingIntensity} />}
+              {status && <Sym status={status} bleedingIntensity={day.record?.bleedingIntensity} sensation={day.record?.sensation} />}
             </DayCell>
           )
         })}
@@ -261,7 +278,7 @@ function CycleBlock({
       </RowWrap>
 
       {/* MOB row */}
-      <RowWrap height={H_MOB} borderBottom={false}>
+      <RowWrap height={H_MOB}>
         <LabelCell height={H_MOB}>Regra MOB</LabelCell>
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
@@ -272,6 +289,18 @@ function CycleBlock({
             </DayCell>
           )
         })}
+      </RowWrap>
+
+      {/* Relação row */}
+      <RowWrap height={H_REL} borderBottom={false}>
+        <LabelCell height={H_REL}>Relação</LabelCell>
+        {days.map((day, i) => (
+          <DayCell key={i} isLast={i === 34} bold fontSize={6}>
+            {day.record?.hadIntercourse && (
+              <span style={{ color: '#e11d48', fontWeight: 'bold', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>R</span>
+            )}
+          </DayCell>
+        ))}
       </RowWrap>
     </div>
   )
