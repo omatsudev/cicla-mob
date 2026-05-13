@@ -90,7 +90,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
         hadIntercourse,
       })
       setSaved(true)
-      setTimeout(() => navigate('/'), 1000)
+      setTimeout(() => navigate('/calendario'), 1000)
     } catch {
       setError('Erro ao salvar. Tente novamente.')
     }
