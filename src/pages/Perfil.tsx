@@ -18,7 +18,7 @@ export default function Perfil() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [partner, setPartner] = useState<{ id: string; name: string } | null>(null)
   const [loading, setLoading] = useState(true)
-  const [saved, setSaved] = useState(false)
+  const [savedForm, setSavedForm] = useState<string | null>(null)
   const [inviteLink, setInviteLink] = useState('')
   const [inviteLoading, setInviteLoading] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -54,7 +54,7 @@ export default function Perfil() {
     })
   }, [])
 
-  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSave(e: React.FormEvent<HTMLFormElement>, formId: string) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget) // captura antes de qualquer await
     const { data: { session } } = await supabase.auth.getSession()
@@ -69,11 +69,10 @@ export default function Perfil() {
       notificationHour: parseInt(fd.get('notificationHour') as string, 10) || 8,
     })
 
-    // Refresh profile
     const updatedProfile = await repo.findById(session.user.id)
     setProfile(updatedProfile)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    setSavedForm(formId)
+    setTimeout(() => setSavedForm(null), 2000)
   }
 
   async function handleGenerateInvite() {
@@ -167,7 +166,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={(e) => handleSave(e, 'dados')} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">E-mail</label>
                 <p className="text-sm text-gray-700">{email}</p>
@@ -210,7 +209,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                {saved ? '✓ Salvo!' : 'Salvar dados'}
+                {savedForm === 'dados' ? '✓ Salvo!' : 'Salvar dados'}
               </button>
             </form>
           </CardContent>
@@ -225,7 +224,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSave} className="space-y-3">
+            <form onSubmit={(e) => handleSave(e, 'objetivo')} className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 {(['get_pregnant', 'avoid_pregnancy'] as const).map((obj) => (
                   <label key={obj} className="cursor-pointer">
@@ -252,7 +251,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                Salvar objetivo
+                {savedForm === 'objetivo' ? '✓ Salvo!' : 'Salvar objetivo'}
               </button>
             </form>
           </CardContent>
@@ -267,7 +266,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={(e) => handleSave(e, 'preferencias')} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-800">Ativar notificações</p>
@@ -315,7 +314,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                Salvar preferências
+                {savedForm === 'preferencias' ? '✓ Salvo!' : 'Salvar preferências'}
               </button>
             </form>
           </CardContent>
