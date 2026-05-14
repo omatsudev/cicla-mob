@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Bell, Heart, Link2, Unlink, LogOut, Copy, Check } from 'lucide-react'
+import { User, Bell, Heart, Link2, LogOut, Copy, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
 import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
@@ -327,35 +327,35 @@ export default function Perfil() {
         </button>
 
         {/* Partner linking */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Link2 size={18} className="text-rose-500" />
-              Vincular parceiro(a)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {partner ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-200">
-                  <div className="w-9 h-9 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold text-sm">
-                    {(partner.name || '?')[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{partner.name || 'Parceiro(a)'}</p>
-                    <p className="text-xs text-green-700">Vinculado</p>
-                  </div>
+        {partner ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Link2 size={18} className="text-rose-500" />
+                Casal vinculado
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-200">
+                <div className="w-9 h-9 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold text-sm">
+                  {(partner.name || '?')[0].toUpperCase()}
                 </div>
-                <button
-                  type="button"
-                  onClick={handleUnlink}
-                  className="w-full flex items-center justify-center gap-2 border border-gray-200 text-gray-500 py-2.5 rounded-xl text-sm hover:bg-gray-50 transition"
-                >
-                  <Unlink size={15} />
-                  Desvincular
-                </button>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">{partner.name || 'Parceiro(a)'}</p>
+                  <p className="text-xs text-green-700">Vinculado</p>
+                </div>
               </div>
-            ) : (
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Link2 size={18} className="text-rose-500" />
+                Vincular parceiro(a)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="space-y-4">
 
                 {/* Solicitar por e-mail */}
@@ -431,9 +431,9 @@ export default function Perfil() {
                   )}
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )
