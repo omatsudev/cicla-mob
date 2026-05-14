@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { UserPlus, X, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
+import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
 import { getDashboardData } from '@/lib/application/use-cases/GetDashboardDataUseCase'
 import { CycleStatusCard } from '@/components/cycle/CycleStatusCard'
 import { FertilityLegend } from '@/components/cycle/FertilityLegend'
@@ -12,6 +14,12 @@ import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
 import type { CurrentStatusSummary } from '@/lib/domain/services/CycleStatusPresenter'
 import type { InterpretedRecord, DailyRecord } from '@/lib/domain/entities/DailyRecord'
+
+interface CoupleRequest {
+  id: string
+  requester_id: string
+  requesterName: string
+}
 
 interface DashboardData {
   statusSummary: CurrentStatusSummary
@@ -24,6 +32,8 @@ export default function Dashboard() {
   const { isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([])
+  const [respondingId, setRespondingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (profileLoading) return
@@ -34,6 +44,69 @@ export default function Dashboard() {
       setLoading(false)
     })
   }, [dataUserId, profileLoading])
+
+  useEffect(() => {
+    if (profileLoading || isLinked) return
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session?.user?.email) return
+      const { data: requests } = await supabase
+        .from('mob_couple_requests')
+        .select('id, requester_id')
+        .eq('target_email', session.user.email)
+        .eq('status', 'pending')
+      if (!requests?.length) return
+
+      const ids = requests.map(r => r.requester_id)
+      const { data: profiles } = await supabase
+        .from('mob_user_profiles')
+        .select('id, name')
+        .in('id', ids)
+
+      setCoupleRequests(requests.map(r => ({
+        id: r.id,
+        requester_id: r.requester_id,
+        requesterName: profiles?.find(p => p.id === r.requester_id)?.name ?? 'Alguém',
+      })))
+    })
+  }, [profileLoading, isLinked])
+
+  async function handleAcceptRequest(req: CoupleRequest) {
+    setRespondingId(req.id)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) return
+
+    const { data: myProfile } = await supabase
+      .from('mob_user_profiles')
+      .select('user_type')
+      .eq('id', session.user.id)
+      .single()
+
+    const { data: requesterProfile } = await supabase
+      .from('mob_user_profiles')
+      .select('user_type')
+      .eq('id', req.requester_id)
+      .single()
+
+    const myType = myProfile?.user_type ?? 'woman'
+    const requesterType = requesterProfile?.user_type ?? 'man'
+
+    const womanId = requesterType === 'woman' ? req.requester_id : session.user.id
+    const manId   = requesterType === 'man'   ? req.requester_id : session.user.id
+
+    const coupleRepo = new SupabaseCoupleRepository(supabase)
+    await coupleRepo.link(womanId, manId)
+    await supabase.from('mob_couple_requests').update({ status: 'accepted' }).eq('id', req.id)
+
+    setCoupleRequests([])
+    window.location.reload()
+  }
+
+  async function handleRejectRequest(id: string) {
+    setRespondingId(id)
+    await supabase.from('mob_couple_requests').update({ status: 'rejected' }).eq('id', id)
+    setCoupleRequests(prev => prev.filter(r => r.id !== id))
+    setRespondingId(null)
+  }
 
   if (loading || profileLoading) {
     return (
@@ -65,6 +138,38 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5">
+
+      {/* Solicitações de vínculo pendentes */}
+      {coupleRequests.map(req => (
+        <div key={req.id} className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+            <UserPlus size={18} className="text-rose-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-800">Solicitação de vínculo</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              <strong>{req.requesterName}</strong> quer se vincular como seu parceiro(a) no Cicla MOB.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => handleAcceptRequest(req)}
+                disabled={respondingId === req.id}
+                className="flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
+              >
+                <Check size={13} /> Aceitar
+              </button>
+              <button
+                onClick={() => handleRejectRequest(req.id)}
+                disabled={respondingId === req.id}
+                className="flex items-center gap-1.5 border border-gray-200 text-gray-500 hover:bg-gray-50 text-xs font-medium px-3 py-2 rounded-lg transition"
+              >
+                <X size={13} /> Recusar
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+
       <CycleStatusCard
         summary={statusSummary}
         showRegisterPrompt={!todayRecord}

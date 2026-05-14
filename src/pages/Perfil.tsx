@@ -21,6 +21,11 @@ export default function Perfil() {
   const [inviteLink, setInviteLink] = useState('')
   const [inviteLoading, setInviteLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [requestEmail, setRequestEmail] = useState('')
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [requestSent, setRequestSent] = useState(false)
+  const [requestError, setRequestError] = useState('')
+  const [pendingSent, setPendingSent] = useState<{ id: string; target_email: string }[]>([])
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -37,6 +42,13 @@ export default function Perfil() {
       ])
       setProfile(p)
       setPartner(pt)
+
+      const { data: sent } = await supabase
+        .from('mob_couple_requests')
+        .select('id, target_email')
+        .eq('requester_id', user.id)
+        .eq('status', 'pending')
+      setPendingSent(sent ?? [])
       setLoading(false)
     })
   }, [])
@@ -83,6 +95,41 @@ export default function Perfil() {
     await navigator.clipboard.writeText(inviteLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  async function handleSendRequest() {
+    if (!requestEmail.trim()) return
+    setRequestLoading(true)
+    setRequestError('')
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) return
+
+    if (requestEmail.toLowerCase() === email.toLowerCase()) {
+      setRequestError('Você não pode se vincular consigo mesmo.')
+      setRequestLoading(false)
+      return
+    }
+
+    const { data, error } = await supabase
+      .from('mob_couple_requests')
+      .insert({ requester_id: session.user.id, target_email: requestEmail.toLowerCase().trim() })
+      .select('id, target_email')
+      .single()
+
+    if (error) {
+      setRequestError('Erro ao enviar solicitação. Tente novamente.')
+    } else {
+      setPendingSent(prev => [...prev, data])
+      setRequestEmail('')
+      setRequestSent(true)
+      setTimeout(() => setRequestSent(false), 3000)
+    }
+    setRequestLoading(false)
+  }
+
+  async function handleCancelRequest(id: string) {
+    await supabase.from('mob_couple_requests').delete().eq('id', id)
+    setPendingSent(prev => prev.filter(r => r.id !== id))
   }
 
   async function handleUnlink() {
@@ -309,30 +356,80 @@ export default function Perfil() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
-                <p className="text-xs text-gray-500">
-                  Gere um link de convite e envie para seu parceiro(a). Ao clicar, ele(a) cria a conta e o vínculo é feito automaticamente.
-                </p>
-                {inviteLink ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5">
-                      <p className="text-xs text-gray-600 flex-1 truncate">{inviteLink}</p>
-                      <button type="button" onClick={handleCopy} className="shrink-0 text-rose-600">
-                        {copied ? <Check size={16} /> : <Copy size={16} />}
-                      </button>
-                    </div>
-                    <p className="text-[11px] text-gray-400">Válido por 7 dias e de uso único.</p>
+              <div className="space-y-4">
+
+                {/* Solicitar por e-mail */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Solicitar vínculo por e-mail</p>
+                  <p className="text-xs text-gray-500">
+                    Se seu parceiro(a) já tem conta, insira o e-mail dele(a). Ele(a) receberá uma notificação para aceitar.
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={requestEmail}
+                      onChange={e => setRequestEmail(e.target.value)}
+                      placeholder="email@parceiro.com"
+                      className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendRequest}
+                      disabled={requestLoading || !requestEmail.trim()}
+                      className="bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-xs font-semibold px-3 py-2 rounded-lg transition"
+                    >
+                      {requestLoading ? '...' : 'Enviar'}
+                    </button>
                   </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleGenerateInvite}
-                    disabled={inviteLoading}
-                    className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition text-sm"
-                  >
-                    {inviteLoading ? 'Gerando...' : 'Gerar link de convite'}
-                  </button>
+                  {requestSent && <p className="text-xs text-green-600">✓ Solicitação enviada!</p>}
+                  {requestError && <p className="text-xs text-red-500">{requestError}</p>}
+                </div>
+
+                {/* Solicitações pendentes enviadas */}
+                {pendingSent.length > 0 && (
+                  <div className="space-y-1.5">
+                    <p className="text-xs font-medium text-gray-500">Aguardando resposta</p>
+                    {pendingSent.map(r => (
+                      <div key={r.id} className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
+                        <p className="text-xs text-gray-700 truncate">{r.target_email}</p>
+                        <button
+                          type="button"
+                          onClick={() => handleCancelRequest(r.id)}
+                          className="text-xs text-gray-400 hover:text-red-500 ml-2 shrink-0"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 )}
+
+                <div className="border-t border-gray-100 pt-3 space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Convidar parceiro(a) sem conta</p>
+                  <p className="text-xs text-gray-500">
+                    Gere um link de convite. Ao clicar, ele(a) cria a conta e o vínculo é feito automaticamente.
+                  </p>
+                  {inviteLink ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5">
+                        <p className="text-xs text-gray-600 flex-1 truncate">{inviteLink}</p>
+                        <button type="button" onClick={handleCopy} className="shrink-0 text-rose-600">
+                          {copied ? <Check size={16} /> : <Copy size={16} />}
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-gray-400">Válido por 7 dias e de uso único.</p>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleGenerateInvite}
+                      disabled={inviteLoading}
+                      className="w-full bg-white border border-rose-300 hover:bg-rose-50 disabled:opacity-60 text-rose-600 font-semibold py-2.5 rounded-xl transition text-sm"
+                    >
+                      {inviteLoading ? 'Gerando...' : 'Gerar link de convite'}
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
