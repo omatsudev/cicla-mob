@@ -81,6 +81,18 @@ export default function Convite() {
       return
     }
 
+    // Garante sessão ativa para as operações seguintes passarem no RLS
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    })
+
+    if (signInError) {
+      setServerError('Conta criada, mas não foi possível fazer login automático. Faça login manualmente.')
+      setIsLoading(false)
+      return
+    }
+
     const userId = signUpData.user.id
 
     // Criar perfil como homem
@@ -102,7 +114,7 @@ export default function Convite() {
       .update({ used_at: new Date().toISOString() })
       .eq('token', invite.token)
 
-    navigate('/')
+    navigate('/dashboard')
   }
 
   if (loadingInvite) {

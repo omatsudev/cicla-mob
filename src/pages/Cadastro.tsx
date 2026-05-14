@@ -50,7 +50,7 @@ export default function Cadastro() {
       return
     }
 
-    navigate('/')
+    navigate('/calendario')
   }
 
   return (
