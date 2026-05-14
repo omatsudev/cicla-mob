@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
 import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { registerPush, unregisterPush } from '@/lib/pushNotifications'
 import type { UserProfile } from '@/lib/domain/entities/UserProfile'
 import type { UserType } from '@/lib/domain/enums/UserType'
 import type { CoupleObjective } from '@/lib/domain/enums/CoupleObjective'
@@ -278,9 +279,14 @@ export default function Perfil() {
                     type="checkbox"
                     name="notificationsEnabledToggle"
                     defaultChecked={profile?.notificationsEnabled ?? false}
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const hidden = e.currentTarget.closest('form')?.querySelector<HTMLInputElement>('input[name="notificationsEnabled"]')
                       if (hidden) hidden.value = e.currentTarget.checked ? 'true' : 'false'
+                      if (e.currentTarget.checked) {
+                        await registerPush()
+                      } else {
+                        await unregisterPush()
+                      }
                     }}
                     className="sr-only peer"
                   />
