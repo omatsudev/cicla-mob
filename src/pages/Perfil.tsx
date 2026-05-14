@@ -56,10 +56,9 @@ export default function Perfil() {
 
   async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    const fd = new FormData(e.currentTarget) // captura antes de qualquer await
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.user) return
-
-    const fd = new FormData(e.currentTarget)
     const repo = new SupabaseUserProfileRepository(supabase)
     await repo.upsert({
       userId: session.user.id,
