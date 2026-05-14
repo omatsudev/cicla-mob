@@ -31,13 +31,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   })
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session?.user) {
-        setValue(v => ({ ...v, loading: false }))
-        return
-      }
-
-      const userId = session.user.id
+    async function loadProfile(userId: string) {
       const profileRepo = new SupabaseUserProfileRepository(supabase)
       const coupleRepo = new SupabaseCoupleRepository(supabase)
 
@@ -57,7 +51,27 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       }
 
       setValue({ profile, dataUserId, isMan, isLinked, loading: false })
+    }
+
+    // Carrega perfil na sessão inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        setValue(v => ({ ...v, loading: false }))
+        return
+      }
+      loadProfile(session.user.id)
     })
+
+    // Re-carrega sempre que a sessão mudar (login, logout, signup)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        setValue({ profile: null, dataUserId: null, isMan: false, isLinked: false, loading: false })
+        return
+      }
+      loadProfile(session.user.id)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
