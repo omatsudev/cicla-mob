@@ -143,7 +143,7 @@ export default function Calendario() {
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 text-rose-600 text-xs font-semibold hover:bg-rose-100 transition shrink-0"
           >
             <Download size={14} />
-            PDF
+            Baixar PDF
           </button>
         )}
       </div>

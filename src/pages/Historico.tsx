@@ -1,24 +1,35 @@
 import { useState, useEffect } from 'react'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Download } from 'lucide-react'
+import { Download, X, Printer } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getRecordHistory } from '@/lib/application/use-cases/GetRecordHistoryUseCase'
+import { getAllCycles } from '@/lib/application/use-cases/GetAllCyclesUseCase'
+import { CyclePrintView } from '@/components/cycle/CyclePrintView'
 import { CycleStatusBadge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
-import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { cn } from '@/lib/utils/cn'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
+import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 
 export default function Historico() {
   const { dataUserId, loading: profileLoading } = useProfile()
   const [records, setRecords] = useState<InterpretedRecord[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [isExporting, setIsExporting] = useState(false)
+
+  const [showExport, setShowExport] = useState(false)
+  const [allCycles, setAllCycles] = useState<CycleCalendarData[]>([])
+  const [allCycleNames, setAllCycleNames] = useState<Record<string, string>>({})
+  const [fromCycle, setFromCycle] = useState(1)
+  const [toCycle, setToCycle] = useState(1)
+  const [excluded, setExcluded] = useState<Set<number>>(new Set())
+  const [exportLoading, setExportLoading] = useState(false)
+  const [cyclesToPrint, setCyclesToPrint] = useState<CycleCalendarData[]>([])
 
   useEffect(() => {
     if (profileLoading || !dataUserId) return
@@ -30,29 +41,51 @@ export default function Historico() {
     })
   }, [dataUserId, profileLoading])
 
-  async function handleExport() {
-    setIsExporting(true)
-    const header = 'Data,Sensação,Aparência do Muco,Sangramento,Status,Dia do Ciclo,Observações'
-    const rows = records.map((r) =>
-      [
-        r.date,
-        SENSATION_LABELS[r.sensation],
-        MUCUS_APPEARANCE_LABELS[r.mucusAppearance],
-        r.bleedingIntensity,
-        CYCLE_STATUS_DISPLAY[r.cycleStatus].label,
-        r.cycleDay,
-        `"${r.notes.replace(/"/g, '""')}"`,
-      ].join(','),
-    )
-    const csv = [header, ...rows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `cicla-mob-historico-${new Date().toISOString().slice(0, 10)}.csv`
-    link.click()
-    URL.revokeObjectURL(url)
-    setIsExporting(false)
+  async function openExport() {
+    if (!dataUserId) return
+    setExportLoading(true)
+    setShowExport(true)
+    const repository = new SupabaseDailyRecordRepository(supabase)
+    const cycles = await getAllCycles(dataUserId, repository)
+    setAllCycles(cycles)
+
+    const startDates = cycles.map(c => c.startDate).filter(Boolean) as string[]
+    const names: Record<string, string> = {}
+    if (startDates.length > 0) {
+      const { data: rows } = await supabase
+        .from('mob_cycle_names')
+        .select('cycle_start, name')
+        .eq('user_id', dataUserId)
+        .in('cycle_start', startDates)
+      rows?.forEach((r: { cycle_start: string; name: string }) => {
+        names[r.cycle_start] = r.name
+      })
+    }
+    setAllCycleNames(names)
+    setFromCycle(1)
+    setToCycle(cycles.length)
+    setExcluded(new Set())
+    setExportLoading(false)
+  }
+
+  const rangeInView = allCycles.filter(c => c.cycleNumber >= fromCycle && c.cycleNumber <= toCycle)
+  const selected = rangeInView.filter(c => !excluded.has(c.cycleNumber))
+
+  function toggleExclude(num: number) {
+    setExcluded(prev => {
+      const next = new Set(prev)
+      next.has(num) ? next.delete(num) : next.add(num)
+      return next
+    })
+  }
+
+  function handlePrint() {
+    setCyclesToPrint(selected)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print()
+      })
+    })
   }
 
   if (loading) {
@@ -72,12 +105,11 @@ export default function Historico() {
         </div>
         {total > 0 && (
           <button
-            onClick={handleExport}
-            disabled={isExporting}
-            className="flex items-center gap-1.5 text-xs text-rose-600 border border-rose-200 rounded-xl px-3 py-2 hover:bg-rose-50 transition disabled:opacity-60"
+            onClick={openExport}
+            className="flex items-center gap-1.5 text-xs text-rose-600 border border-rose-200 rounded-xl px-3 py-2 hover:bg-rose-50 transition"
           >
             <Download size={14} />
-            {isExporting ? 'Exportando…' : 'Exportar CSV'}
+            Baixar PDF
           </button>
         )}
       </div>
@@ -142,6 +174,114 @@ export default function Historico() {
           })}
         </div>
       )}
+
+      {/* PDF export modal */}
+      {showExport && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center p-0">
+          <div className="bg-white w-full max-w-lg rounded-t-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">Baixar PDF</h2>
+                <p className="text-xs text-gray-500 mt-0.5">3 ciclos por página, formato WOOMB</p>
+              </div>
+              <button onClick={() => setShowExport(false)} className="text-gray-400 hover:text-gray-600 p-1">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+              {exportLoading ? (
+                <div className="flex items-center justify-center py-10">
+                  <div className="animate-spin w-7 h-7 border-4 border-rose-200 border-t-rose-500 rounded-full" />
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold text-gray-700">Intervalo de ciclos</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">De:</label>
+                        <select
+                          value={fromCycle}
+                          onChange={e => {
+                            const v = Number(e.target.value)
+                            setFromCycle(v)
+                            if (v > toCycle) setToCycle(v)
+                          }}
+                          className="w-full border border-gray-200 rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                        >
+                          {allCycles.map(c => (
+                            <option key={c.cycleNumber} value={c.cycleNumber}>Ciclo {c.cycleNumber}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Até:</label>
+                        <select
+                          value={toCycle}
+                          onChange={e => setToCycle(Number(e.target.value))}
+                          className="w-full border border-gray-200 rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                        >
+                          {allCycles.filter(c => c.cycleNumber >= fromCycle).map(c => (
+                            <option key={c.cycleNumber} value={c.cycleNumber}>Ciclo {c.cycleNumber}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-gray-700">
+                      Ciclos no intervalo{' '}
+                      <span className="font-normal text-gray-400">({selected.length} selecionado{selected.length !== 1 ? 's' : ''})</span>
+                    </p>
+                    <div className="space-y-1.5 max-h-52 overflow-y-auto">
+                      {rangeInView.map(c => {
+                        const name = c.startDate ? (allCycleNames[c.startDate] ?? '') : ''
+                        const displayName = name || `Ciclo ${c.cycleNumber}`
+                        const isExcluded = excluded.has(c.cycleNumber)
+                        return (
+                          <label key={c.cycleNumber} className="flex items-center gap-3 p-2 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={!isExcluded}
+                              onChange={() => toggleExclude(c.cycleNumber)}
+                              className="w-4 h-4 accent-rose-500"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className={cn('text-sm font-medium truncate', isExcluded ? 'text-gray-300' : 'text-gray-800')}>
+                                {displayName}
+                              </p>
+                              {c.startDate && (
+                                <p className={cn('text-xs', isExcluded ? 'text-gray-200' : 'text-gray-400')}>
+                                  Início: {c.startDate}
+                                </p>
+                              )}
+                            </div>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="px-5 py-4 border-t border-gray-100">
+              <button
+                onClick={handlePrint}
+                disabled={selected.length === 0 || exportLoading}
+                className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl text-sm transition"
+              >
+                <Printer size={16} />
+                Baixar PDF ({selected.length} ciclo{selected.length !== 1 ? 's' : ''})
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <CyclePrintView cycles={cyclesToPrint} cycleNames={allCycleNames} />
     </div>
   )
 }
