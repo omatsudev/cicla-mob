@@ -316,16 +316,6 @@ export default function Perfil() {
           </CardContent>
         </Card>
 
-        {/* Logout */}
-        <button
-          type="button"
-          onClick={async () => { await supabase.auth.signOut(); navigate('/login', { replace: true }) }}
-          className="w-full flex items-center justify-center gap-2 border border-gray-200 text-gray-500 py-3 rounded-xl text-sm hover:bg-gray-50 transition"
-        >
-          <LogOut size={16} />
-          Sair da conta
-        </button>
-
         {/* Partner linking */}
         {partner ? (
           <Card>
@@ -434,6 +424,16 @@ export default function Perfil() {
             </CardContent>
           </Card>
         )}
+
+        {/* Logout */}
+        <button
+          type="button"
+          onClick={async () => { await supabase.auth.signOut(); navigate('/login', { replace: true }) }}
+          className="w-full flex items-center justify-center gap-2 border border-gray-200 text-gray-500 py-3 rounded-xl text-sm hover:bg-gray-50 transition"
+        >
+          <LogOut size={16} />
+          Sair da conta
+        </button>
       </div>
     </div>
   )
