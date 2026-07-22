@@ -10,8 +10,7 @@ import { useProfile } from '@/lib/context/ProfileContext'
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 
 export default function Registrar() {
-  const { isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
-  const simplified = isMan && !isLinked
+  const { dataUserId, loading: profileLoading } = useProfile()
   const [searchParams, setSearchParams] = useSearchParams()
   const today = format(new Date(), 'yyyy-MM-dd')
   const targetDate = searchParams.get('date') ?? today
@@ -66,11 +65,9 @@ export default function Registrar() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{simplified ? 'Anotação do dia' : 'Observação diária'}</CardTitle>
+          <CardTitle>Observação diária</CardTitle>
           <CardDescription>
-            {simplified
-              ? 'Registre suas observações e se houve relação sexual hoje.'
-              : 'Anote a sensação mais próxima da fertilidade observada durante o dia.'}
+            Anote a sensação mais próxima da fertilidade observada durante o dia.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -78,7 +75,6 @@ export default function Registrar() {
             <DailyRecordForm
               defaultDate={targetDate}
               existingRecord={existingRecord}
-              simplified={simplified}
               userId={recordUserId}
             />
           )}
