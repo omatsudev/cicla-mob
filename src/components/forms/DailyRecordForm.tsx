@@ -13,7 +13,8 @@ import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
 interface Props {
   defaultDate: string
   existingRecord?: DailyRecord
-  isMan?: boolean
+  userId: string
+  simplified?: boolean
 }
 
 const SENSATION_OPTIONS: { value: Sensation; label: string; description: string }[] = [
@@ -30,7 +31,7 @@ const BLEEDING_OPTIONS: { value: BleedingIntensity; label: string }[] = [
   { value: 'intenso', label: 'Intenso' },
 ]
 
-export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
+export function DailyRecordForm({ defaultDate, existingRecord, userId, simplified }: Props) {
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -69,17 +70,10 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
     setSaving(true)
     setError('')
 
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session?.user) {
-      setError('Sessão expirada. Faça login novamente.')
-      setSaving(false)
-      return
-    }
-
     const repo = new SupabaseDailyRecordRepository(supabase)
     try {
       await repo.upsert({
-        userId: session.user.id,
+        userId,
         date: defaultDate,
         sensation,
         mucusAppearance: hasBleeding ? 'nenhum' : mucusAppearance,
@@ -130,7 +124,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Bleeding — women only */}
-        {!isMan && (
+        {!simplified && (
           <fieldset>
             <legend className="text-sm font-semibold text-gray-700 mb-2">Sangramento</legend>
             <div className="grid grid-cols-2 gap-2">
@@ -159,7 +153,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
         )}
 
         {/* Sensation — only when no bleeding, women only */}
-        {!isMan && !hasBleeding && (
+        {!simplified && !hasBleeding && (
           <fieldset>
             <legend className="text-sm font-semibold text-gray-700 mb-2">Sensação na vulva</legend>
             <div className="grid grid-cols-2 gap-2">
@@ -184,7 +178,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
         )}
 
         {/* Mucus — only when no bleeding, women only */}
-        {!isMan && !hasBleeding && (
+        {!simplified && !hasBleeding && (
           <>
             <fieldset>
               <legend className="text-sm font-semibold text-gray-700 mb-2">Aparência do muco</legend>
@@ -231,7 +225,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
         )}
 
         {/* MOB Rule — women only */}
-        {!isMan && (
+        {!simplified && (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Regra MOB aplicada</label>
             <div className="grid grid-cols-4 gap-2">
@@ -294,7 +288,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, isMan }: Props) {
           disabled={saving || saved}
           className="w-full bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition text-sm"
         >
-          {saved ? '✓ Salvo!' : saving ? 'Salvando...' : isMan ? 'Salvar anotação' : 'Salvar registro'}
+          {saved ? '✓ Salvo!' : saving ? 'Salvando...' : simplified ? 'Salvar anotação' : 'Salvar registro'}
         </button>
       </form>
     </>

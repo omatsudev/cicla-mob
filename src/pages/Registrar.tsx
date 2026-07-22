@@ -10,24 +10,29 @@ import { useProfile } from '@/lib/context/ProfileContext'
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 
 export default function Registrar() {
-  const { isMan } = useProfile()
+  const { isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
+  const simplified = isMan && !isLinked
   const [searchParams, setSearchParams] = useSearchParams()
   const today = format(new Date(), 'yyyy-MM-dd')
   const targetDate = searchParams.get('date') ?? today
 
   const [existingRecord, setExistingRecord] = useState<DailyRecord | undefined>(undefined)
+  const [recordUserId, setRecordUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (profileLoading) return
     setLoading(true)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session?.user) return
+      const uid = dataUserId ?? session.user.id
+      setRecordUserId(uid)
       const repository = new SupabaseDailyRecordRepository(supabase)
-      const record = await repository.findByDate(session.user.id, targetDate)
+      const record = await repository.findByDate(uid, targetDate)
       setExistingRecord(record ?? undefined)
       setLoading(false)
     })
-  }, [targetDate])
+  }, [targetDate, dataUserId, profileLoading])
 
   const dateLabel = isToday(parseISO(targetDate))
     ? 'Hoje'
@@ -61,19 +66,22 @@ export default function Registrar() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{isMan ? 'Anotação do dia' : 'Observação diária'}</CardTitle>
+          <CardTitle>{simplified ? 'Anotação do dia' : 'Observação diária'}</CardTitle>
           <CardDescription>
-            {isMan
+            {simplified
               ? 'Registre suas observações e se houve relação sexual hoje.'
               : 'Anote a sensação mais próxima da fertilidade observada durante o dia.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <DailyRecordForm
-            defaultDate={targetDate}
-            existingRecord={existingRecord}
-            isMan={isMan}
-          />
+          {recordUserId && (
+            <DailyRecordForm
+              defaultDate={targetDate}
+              existingRecord={existingRecord}
+              simplified={simplified}
+              userId={recordUserId}
+            />
+          )}
         </CardContent>
       </Card>
     </div>
