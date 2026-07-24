@@ -32,6 +32,16 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
   } as React.CSSProperties
 
+  if (status === 'menstruacao') {
+    return (
+      <div style={{ ...base, background: '#ef4444', border: '1px solid #dc2626' }}>
+        <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="3.6" fill="#000" />
+        </svg>
+      </div>
+    )
+  }
+
   if (status === 'mancha') {
     const n = (bleedingIntensity ? BLEEDING_DOT[bleedingIntensity] : undefined) ?? 3
     return (
@@ -58,7 +68,6 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   }
 
   const CFG: Partial<Record<CycleStatus, { bg: string; color: string; border: string; chars: string[] }>> = {
-    menstruacao:         { bg: '#ef4444', color: '#fff', border: '#dc2626', chars: ['●'] },
     pbi_seco:           { bg: '#22c55e', color: '#fff', border: '#16a34a', chars: ['|'] },
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
     mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },

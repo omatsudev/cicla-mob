@@ -2,9 +2,9 @@ import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
 
-const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice', 'pos_apice_1', 'pos_apice_2', 'pos_apice_3'])
+const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice'])
 const FERTILITY_SUFFIX: Partial<Record<CycleStatus, string>> = {
-  apice: 'X', pos_apice_1: '1', pos_apice_2: '2', pos_apice_3: '3',
+  apice: 'X',
 }
 
 // Dot positions (cx, cy) within a 20×20 viewBox
@@ -50,6 +50,16 @@ interface Props {
 }
 
 export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' }: Props) {
+  if (status === 'menstruacao') {
+    return (
+      <span className={`relative flex items-center justify-center ${size}`}>
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+          <circle cx="10" cy="10" r="5.5" fill="#000" />
+        </svg>
+      </span>
+    )
+  }
+
   if (status === 'mancha') {
     const count = (bleedingIntensity ? BLEEDING_DOT_COUNT[bleedingIntensity] : undefined) ?? 3
     return (
