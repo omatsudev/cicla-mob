@@ -276,6 +276,9 @@ export default function Historico() {
                 <Printer size={16} />
                 Baixar PDF ({selected.length} ciclo{selected.length !== 1 ? 's' : ''})
               </button>
+              <p className="text-xs text-gray-400 text-center mt-2">
+                Na janela de impressão, confira se a orientação está em "Paisagem"
+              </p>
             </div>
           </div>
         </div>

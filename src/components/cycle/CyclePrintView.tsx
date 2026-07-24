@@ -26,9 +26,9 @@ const POST_APICE = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apic
 
 function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity; sensation?: string }) {
   const base: React.CSSProperties = {
-    width: 11, height: 11, borderRadius: 2, flexShrink: 0,
+    width: 14, height: 14, borderRadius: 2, flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexDirection: 'column', fontSize: 5, fontWeight: 'bold', lineHeight: 1,
+    flexDirection: 'column', fontSize: 6.5, fontWeight: 'bold', lineHeight: 1,
     WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
   } as React.CSSProperties
 
@@ -36,7 +36,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     const n = (bleedingIntensity ? BLEEDING_DOT[bleedingIntensity] : undefined) ?? 3
     return (
       <div style={{ ...base, background: '#fca5a5', border: '1px solid #f87171' }}>
-        <svg width="9" height="9" viewBox="0 0 14 14" fill="none">
+        <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
           {DOT_POS[n].map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="1.8" fill="#b91c1c" />)}
         </svg>
       </div>
@@ -89,23 +89,24 @@ function cellBg(status: CycleStatus | null) {
 // ── Layout constants ────────────────────────────────────────────────
 // Page: 297×210mm, padding 6mm → table area: 285×198mm
 // Title strip: 13mm → table: 272mm
-// Label col: 21mm → day cols: 251mm / 35 ≈ 7.17mm each
+// Label col: 23mm → day cols: 249mm / 35 ≈ 7.11mm each
+// 2 cycles/page (was 3) → ~99mm per block, used to enlarge fonts for legibility
 const DARK = '#444'
 const MID  = '#aaa'
 const LT   = '#ddd'
 
 const TITLE_W  = 13   // mm (left vertical title strip)
-const LABEL_W  = 21   // mm (row label column inside table)
+const LABEL_W  = 23   // mm (row label column inside table)
 // Day col: auto flex
 
 // Row heights inside each cycle block (mm)
 // No separate cycle-name header row — name goes in the Dia do Ciclo label cell
-const H_DAY  = 9    // "Dia do Ciclo" row (includes cycle name in label)
-const H_SIMB = 13   // symbols
-const H_DATE = 6    // dates
-const H_MOB  = 6    // MOB rule
-const H_REL  = 4    // Relação
-// Sensações: flex:1 → 198/3 - (9+13+6+6+4) = 66-38 = 28mm per cycle
+const H_DAY  = 10   // "Dia do Ciclo" row (includes cycle name in label)
+const H_SIMB = 16   // symbols
+const H_DATE = 7    // dates
+const H_MOB  = 7    // MOB rule
+const H_REL  = 5    // Relação
+// Sensações: flex:1 → 198/2 - (10+16+7+7+5) = 99-45 = 54mm per cycle
 
 type Day = CycleCalendarData['days'][0]
 
@@ -122,7 +123,7 @@ function LabelCell({ children, height }: { children: React.ReactNode; height?: n
       height: height ? mm(height) : '100%',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       textAlign: 'center', padding: '1px 2px',
-      fontSize: 5.5, fontWeight: 'bold', lineHeight: 1.2,
+      fontSize: 7, fontWeight: 'bold', lineHeight: 1.2,
       border: `1px solid ${MID}`,
       background: '#f3f4f6',
       WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
@@ -147,7 +148,7 @@ function DayCell({
       overflow: 'hidden',
       borderRight: isLast ? 'none' : `0.5px solid ${LT}`,
       background: bg ?? '#fff',
-      fontSize: fontSize ?? 5.5,
+      fontSize: fontSize ?? 7,
       fontWeight: bold ? 'bold' : undefined,
       WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
     } as React.CSSProperties}>
@@ -205,15 +206,15 @@ function CycleBlock({
           background: '#e5e7eb',
           WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
         } as React.CSSProperties}>
-          <span style={{ fontSize: 6, fontWeight: 'bold', lineHeight: 1.2 }}>Dia do Ciclo</span>
+          <span style={{ fontSize: 7.5, fontWeight: 'bold', lineHeight: 1.2 }}>Dia do Ciclo</span>
           {cycleInfo && (
-            <span style={{ fontSize: 4.5, color: '#444', lineHeight: 1.3, marginTop: '0.5mm' }}>
+            <span style={{ fontSize: 6, color: '#444', lineHeight: 1.3, marginTop: '0.5mm' }}>
               {cycleInfo}
             </span>
           )}
         </div>
         {Array.from({ length: 35 }, (_, i) => (
-          <DayCell key={i} bg="#e5e7eb" bold fontSize={6} isLast={i === 34}>
+          <DayCell key={i} bg="#e5e7eb" bold fontSize={7.5} isLast={i === 34}>
             {String(i + 1).padStart(2, '0')}
           </DayCell>
         ))}
@@ -243,7 +244,7 @@ function CycleBlock({
           const label = target ? format(parseISO(target), 'dd/MM') : ''
           const status = day.record?.cycleStatus ?? null
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} fontSize={5.5}>
+            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} fontSize={7}>
               {label}
             </DayCell>
           )
@@ -262,7 +263,7 @@ function CycleBlock({
             <DayCell key={i} bg={cellBg(status)} isLast={i === 34}>
               {desc && (
                 <span style={{
-                  fontSize: 5,
+                  fontSize: 6.5,
                   writingMode: 'vertical-rl',
                   transform: 'rotate(180deg)',
                   lineHeight: 1.3,
@@ -284,7 +285,7 @@ function CycleBlock({
           const status = day.record?.cycleStatus ?? null
           const mob = day.record?.mobRule || (status ? MOB_AUTO[status] : '')
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} bold fontSize={6}>
+            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} bold fontSize={7.5}>
               {mob}
             </DayCell>
           )
@@ -295,7 +296,7 @@ function CycleBlock({
       <RowWrap height={H_REL} borderBottom={false}>
         <LabelCell height={H_REL}>Relação</LabelCell>
         {days.map((day, i) => (
-          <DayCell key={i} isLast={i === 34} bold fontSize={6}>
+          <DayCell key={i} isLast={i === 34} bold fontSize={7.5}>
             {day.record?.hadIntercourse && (
               <span style={{ color: '#e11d48', fontWeight: 'bold', WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as React.CSSProperties}>R</span>
             )}
@@ -317,7 +318,7 @@ interface Props {
 
 export function CyclePrintView({ cycles, cycleNames }: Props) {
   const pages: CycleCalendarData[][] = []
-  for (let i = 0; i < cycles.length; i += 3) pages.push(cycles.slice(i, i + 3))
+  for (let i = 0; i < cycles.length; i += 2) pages.push(cycles.slice(i, i + 2))
 
   return createPortal(
     <div id="cicla-print-root" style={{ display: 'none' }}>
@@ -332,7 +333,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
       {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => {
         const cols: (CycleCalendarData | null)[] = [
           ...pageCycles,
-          ...Array(3 - pageCycles.length).fill(null),
+          ...Array(2 - pageCycles.length).fill(null),
         ]
 
         return (
@@ -361,7 +362,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
               <span style={{
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
-                fontWeight: 'bold', fontSize: 10,
+                fontWeight: 'bold', fontSize: 12,
                 letterSpacing: '0.5px', whiteSpace: 'nowrap',
               }}>
                 GRÁFICO CICLO MENSTRUAL
@@ -369,7 +370,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
               <span style={{
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
-                fontSize: 5.5, color: '#555',
+                fontSize: 7, color: '#555',
                 lineHeight: 1.3,
                 textAlign: 'center',
               }}>
@@ -388,7 +389,7 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
                   key={ci}
                   cycle={cycle}
                   name={cycle ? getCycleName(cycle, cycleNames) : ''}
-                  isLast={ci === 2}
+                  isLast={ci === 1}
                 />
               ))}
             </div>
