@@ -22,7 +22,7 @@ const BLEEDING_DOT: Partial<Record<BleedingIntensity, 2 | 3 | 5>> = {
   leve: 2, moderado: 3, intenso: 5,
 }
 
-const POST_APICE = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apice_3', 'infertil_pos_apice'])
+const POST_APICE = new Set<CycleStatus>(['infertil_pos_apice'])
 
 function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity; sensation?: string }) {
   const base: React.CSSProperties = {
@@ -35,9 +35,9 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   if (status === 'mancha') {
     const n = (bleedingIntensity ? BLEEDING_DOT[bleedingIntensity] : undefined) ?? 3
     return (
-      <div style={{ ...base, background: '#fca5a5', border: '1px solid #f87171' }}>
+      <div style={{ ...base, background: '#ef4444', border: '1px solid #dc2626' }}>
         <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-          {DOT_POS[n].map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="1.8" fill="#b91c1c" />)}
+          {DOT_POS[n].map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="1.8" fill="#111827" />)}
         </svg>
       </div>
     )
@@ -64,9 +64,9 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     fertil:             { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     apice:              { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '✕'] },
-    pos_apice_1:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['1', '='] },
-    pos_apice_2:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['2', '='] },
-    pos_apice_3:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['3', '='] },
+    pos_apice_1:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '1'] },
+    pos_apice_2:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '2'] },
+    pos_apice_3:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '3'] },
     infertil_pos_apice: { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
   }
   const c = CFG[status]

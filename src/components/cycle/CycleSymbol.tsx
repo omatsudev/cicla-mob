@@ -2,7 +2,10 @@ import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
 
-const FETUS_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice'])
+const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice', 'pos_apice_1', 'pos_apice_2', 'pos_apice_3'])
+const FERTILITY_SUFFIX: Partial<Record<CycleStatus, string>> = {
+  apice: 'X', pos_apice_1: '1', pos_apice_2: '2', pos_apice_3: '3',
+}
 
 // Dot positions (cx, cy) within a 20×20 viewBox
 const DOT_POSITIONS: Record<2 | 3 | 5, [number, number][]> = {
@@ -27,25 +30,14 @@ function SpottingDotsSVG({ count }: { count: 2 | 3 | 5 }) {
   )
 }
 
-function FetusIconSVG() {
+function FertilityCircleSVG({ suffix }: { suffix?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      {/* Outer circle */}
-      <circle cx="10" cy="10" r="8.8" stroke="currentColor" strokeWidth="1.4" />
-      {/* Head */}
-      <circle cx="8" cy="7.5" r="2.3" stroke="currentColor" strokeWidth="1.1" fill="none" />
-      {/* Ear */}
-      <path d="M6.2 7 Q5.3 7.6 5.7 8.5" stroke="currentColor" strokeWidth="0.7" strokeLinecap="round" />
-      {/* Body / back curve */}
-      <path d="M10.2 9.6 C13 11.5 12.5 15.5 9.5 16.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" fill="none" />
-      {/* Buttocks */}
-      <path d="M9.5 16.5 C8 18 6.5 17.5 6.5 16" stroke="currentColor" strokeWidth="1" strokeLinecap="round" fill="none" />
-      {/* Lower leg / knee fold */}
-      <path d="M6.5 16 C6 14.5 7 13.5 8.5 14" stroke="currentColor" strokeWidth="1" strokeLinecap="round" fill="none" />
-      {/* Arm */}
-      <path d="M9.5 12.5 C8 13 7 14 7.5 15" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" fill="none" />
-      {/* Umbilical cord */}
-      <path d="M10.8 12.5 Q15 12 17.8 10.8" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" fill="none" />
+      <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+      {suffix && (
+        <text x="15.5" y="16" textAnchor="middle" dominantBaseline="middle"
+          fill="currentColor" fontSize="7.5" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
+      )}
     </svg>
   )
 }
@@ -67,26 +59,10 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
     )
   }
 
-  if (FETUS_STATUSES.has(status)) {
+  if (FERTILITY_STATUSES.has(status)) {
     return (
       <span className={`relative flex items-center justify-center ${size}`}>
-        {/* Fetus as faded watermark */}
-        <span className="absolute inset-0 opacity-20">
-          <FetusIconSVG />
-        </span>
-        {/* Prominent WOOMB symbol */}
-        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10 w-full h-full">
-          {status === 'apice' ? (
-            <>
-              <text x="10" y="8.5" textAnchor="middle" dominantBaseline="middle"
-                fill="currentColor" fontSize="7" fontWeight="600" fontFamily="Arial, sans-serif">O</text>
-              <text x="10" y="15" textAnchor="middle" dominantBaseline="middle"
-                fill="currentColor" fontSize="7" fontWeight="600" fontFamily="Arial, sans-serif">X</text>
-            </>
-          ) : (
-            <ellipse cx="10" cy="10" rx="4.8" ry="6.2" stroke="currentColor" strokeWidth="1.2" />
-          )}
-        </svg>
+        <FertilityCircleSVG suffix={FERTILITY_SUFFIX[status]} />
       </span>
     )
   }

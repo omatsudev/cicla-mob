@@ -24,7 +24,7 @@ const MOB_RULE: Record<CycleStatus, string> = {
   infertil_pos_apice: 'RA',
 }
 
-const POST_APICE_STATUSES = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apice_3', 'infertil_pos_apice'])
+const POST_APICE_STATUSES = new Set<CycleStatus>(['infertil_pos_apice'])
 
 function getPostApiceStyle(sensation: string) {
   if (sensation === 'seca') {

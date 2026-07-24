@@ -39,9 +39,9 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   mancha: {
     label: 'Mancha',
     description: 'Sangramento leve / spotting',
-    bgColor: 'bg-red-300',
-    textColor: 'text-red-900',
-    borderColor: 'border-red-400',
+    bgColor: 'bg-red-500',
+    textColor: 'text-black',
+    borderColor: 'border-red-600',
     fertilityLevel: 'possivel',
     symbol: '⁚',
   },
@@ -97,7 +97,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     textColor: 'text-gray-800',
     borderColor: 'border-gray-300',
     fertilityLevel: 'possivel',
-    symbol: '1=',
+    symbol: 'O1',
   },
   pos_apice_2: {
     label: '2° pós-Ápice',
@@ -106,7 +106,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     textColor: 'text-gray-800',
     borderColor: 'border-gray-300',
     fertilityLevel: 'possivel',
-    symbol: '2=',
+    symbol: 'O2',
   },
   pos_apice_3: {
     label: '3° pós-Ápice',
@@ -115,7 +115,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     textColor: 'text-gray-800',
     borderColor: 'border-gray-300',
     fertilityLevel: 'possivel',
-    symbol: '3=',
+    symbol: 'O3',
   },
   infertil_pos_apice: {
     label: 'Fase Lútea',

@@ -4,6 +4,7 @@ import { CycleSymbol } from './CycleSymbol'
 
 const LEGEND_ITEMS: CycleStatus[] = [
   CycleStatus.MENSTRUATION,
+  CycleStatus.SPOTTING,
   CycleStatus.DRY_BIP,
   CycleStatus.MUCUS_BIP,
   CycleStatus.PATTERN_CHANGE,
