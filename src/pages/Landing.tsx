@@ -89,7 +89,15 @@ const references = [
     name: "CENPLAFAM WOOMB Brasil",
     desc: "Centro Nacional de Planejamento Familiar: formação e acompanhamento oficial do Método Billings no Brasil.",
     url: "https://www.cenplafam.com.br/",
+    logo: "/logo-cenplafam-sudeste.png",
     highlight: true,
+  },
+  {
+    name: "Nuplafam Diocese de Petrópolis",
+    desc: "Núcleo de Planejamento Familiar Natural da Diocese de Petrópolis/RJ, vinculado ao CENPLAFAM WOOMB Brasil.",
+    url: "https://www.instagram.com/nuplafam.dioc.petropolis/",
+    logo: "/logo-nuplafam.png",
+    highlight: false,
   },
   {
     name: "WOOMB International",
@@ -100,19 +108,8 @@ const references = [
   {
     name: "Diocese de Petrópolis",
     desc: "Pastoral Familiar e grupos de apoio ao planejamento familiar natural na Diocese de Petrópolis/RJ.",
-    url: "https://www.diocesepetrópolis.org.br/",
-    highlight: false,
-  },
-  {
-    name: "Canção Nova",
-    desc: "Comunidade católica de evangelização, com conteúdos sobre família, amor conjugal e planejamento natural.",
-    url: "https://www.cancaonova.com/",
-    highlight: false,
-  },
-  {
-    name: "Santa Sé (Vaticano)",
-    desc: "Site oficial do Vaticano com os documentos do magistério, incluindo Humanae Vitae e Familiaris Consortio.",
-    url: "https://www.vatican.va/",
+    url: "https://diocesepetropolis.com.br/",
+    logo: "/logo-diocese-petropolis.png",
     highlight: false,
   },
 ];
@@ -324,17 +321,10 @@ export default function Landing() {
           >
             <div className="shrink-0">
               <img
-                src="/cenplafam-logo.png"
+                src={references[0].logo}
                 alt="Logo CENPLAFAM WOOMB Brasil"
                 className="w-24 h-24 object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                  (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                }}
               />
-              <div className="hidden w-24 h-24 rounded-full bg-gradient-to-br from-[#2e3a8c] to-[#c0447a] flex items-center justify-center text-white text-xs font-bold text-center leading-tight p-2">
-                CENPLAFAM<br />WOOMB<br />Brasil
-              </div>
             </div>
             <div>
               <p className="font-bold text-gray-900 text-lg mb-1">CENPLAFAM WOOMB Brasil</p>
@@ -371,6 +361,9 @@ export default function Landing() {
                 rel="noopener noreferrer"
                 className="bg-white border border-gray-100 rounded-xl p-4 hover:border-rose-200 hover:shadow-sm transition-all"
               >
+                {r.logo && (
+                  <img src={r.logo} alt={`Logo ${r.name}`} className="w-12 h-12 object-contain mb-2" />
+                )}
                 <p className="font-semibold text-gray-900 text-sm mb-1">{r.name}</p>
                 <p className="text-gray-400 text-xs leading-relaxed">{r.desc}</p>
               </a>
@@ -411,8 +404,6 @@ export default function Landing() {
             <div className="flex flex-wrap justify-center gap-4 text-xs">
               <a href="https://www.cenplafam.com.br/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CENPLAFAM</a>
               <a href="https://www.woomb.org/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">WOOMB International</a>
-              <a href="https://www.cancaonova.com/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">Canção Nova</a>
-              <a href="https://www.vatican.va/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">Vaticano</a>
             </div>
           </div>
           <p className="text-center text-xs">© {new Date().getFullYear()} Cicla MOB. Todos os direitos reservados.</p>
