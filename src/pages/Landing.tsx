@@ -19,6 +19,18 @@ const MOB_BY_STATUS: Record<CycleStatus, string> = {
   infertil_pos_apice: "RA",
 };
 
+const POST_APICE_STATUSES = new Set<CycleStatus>(["pos_apice_1", "pos_apice_2", "pos_apice_3", "infertil_pos_apice"]);
+
+// Whole-column tint per day, mirrors getColumnBg in CycleChartView.tsx
+function getColumnBg(status: CycleStatus, sensation: Sensation): string {
+  if (status === "menstruacao") return "bg-red-50";
+  if (status === "mancha") return "bg-red-100";
+  if (status === "pbi_seco") return "bg-green-50";
+  if (status === "pbi_muco") return "bg-yellow-50";
+  if (POST_APICE_STATUSES.has(status)) return sensation === "seca" ? "bg-green-50" : "bg-yellow-50";
+  return "";
+}
+
 // ── Mini WOOMB chart data — walks through every phase of the cycle, using the
 // same CycleSymbol component and status colors as the real app. ──
 const CHART_DAYS: {
@@ -219,8 +231,9 @@ export default function Landing() {
               {/* Day columns */}
               {CHART_DAYS.map((d) => {
                 const info = resolveCycleStatusDisplay(d.status, d.sensation);
+                const columnBg = getColumnBg(d.status, d.sensation);
                 return (
-                  <div key={d.day} className="w-8 shrink-0 border-r border-gray-100">
+                  <div key={d.day} className={`w-8 shrink-0 border-r border-gray-100 ${columnBg}`}>
                     <div className="h-5 flex items-center justify-center border-b border-gray-200 font-bold text-gray-600 text-[9px]">
                       {String(d.day).padStart(2, "0")}
                     </div>
