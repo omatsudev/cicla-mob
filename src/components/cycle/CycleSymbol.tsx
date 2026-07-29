@@ -1,8 +1,13 @@
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
+import type { Sensation } from '@/lib/domain/enums/Sensation'
 
 const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice'])
+
+const POST_APICE_DAY: Partial<Record<CycleStatus, string>> = {
+  pos_apice_1: '1', pos_apice_2: '2', pos_apice_3: '3',
+}
 
 // Dot positions (cx, cy) within a 20×20 viewBox
 const DOT_POSITIONS: Record<2 | 3 | 5, [number, number][]> = {
@@ -39,14 +44,26 @@ function FertilityCircleSVG({ suffix }: { suffix?: string }) {
   )
 }
 
+function CharWithDaySVG({ char, day }: { char: string; day: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <text x="7" y="10" textAnchor="middle" dominantBaseline="middle"
+        fill="currentColor" fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{char}</text>
+      <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
+        fill="currentColor" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{day}</text>
+    </svg>
+  )
+}
+
 interface Props {
   status: CycleStatus
   bleedingIntensity?: BleedingIntensity
+  sensation?: Sensation
   /** size class for the icon wrapper, e.g. "w-5 h-5" */
   size?: string
 }
 
-export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' }: Props) {
+export function CycleSymbol({ status, bleedingIntensity, sensation, size = 'w-full h-full' }: Props) {
   if (status === 'menstruacao') {
     return (
       <span className={`relative flex items-center justify-center ${size}`}>
@@ -70,6 +87,16 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
     return (
       <span className={`relative flex items-center justify-center ${size}`}>
         <FertilityCircleSVG suffix={status === 'apice' ? 'x' : undefined} />
+      </span>
+    )
+  }
+
+  const postApiceDay = POST_APICE_DAY[status]
+  if (postApiceDay) {
+    const char = sensation === 'seca' ? '|' : '='
+    return (
+      <span className={`relative flex items-center justify-center ${size}`}>
+        <CharWithDaySVG char={char} day={postApiceDay} />
       </span>
     )
   }

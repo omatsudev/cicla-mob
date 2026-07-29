@@ -289,7 +289,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                           info ? cn(info.bgColor, info.textColor, 'border', info.borderColor) : 'bg-gray-100 text-gray-300',
                         )}>
                           {status
-                            ? <CycleSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} />
+                            ? <CycleSymbol status={status} bleedingIntensity={day.record?.bleedingIntensity} sensation={day.record?.sensation} />
                             : <span>·</span>}
                         </div>
                       )}

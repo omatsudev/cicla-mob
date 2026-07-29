@@ -23,6 +23,9 @@ const BLEEDING_DOT: Partial<Record<BleedingIntensity, 2 | 3 | 5>> = {
 }
 
 const POST_APICE = new Set<CycleStatus>(['infertil_pos_apice'])
+const POST_APICE_DAY: Partial<Record<CycleStatus, string>> = {
+  pos_apice_1: '1', pos_apice_2: '2', pos_apice_3: '3',
+}
 
 function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bleedingIntensity?: BleedingIntensity; sensation?: string }) {
   const base: React.CSSProperties = {
@@ -65,7 +68,22 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     )
   }
 
-  // Pós-ápice: cor baseada na sensação (verde seca, amarelo úmida)
+  const postApiceDay = POST_APICE_DAY[status]
+  if (postApiceDay) {
+    const ch = sensation === 'seca' ? '|' : '='
+    return (
+      <div style={{ ...base, background: '#fff', border: '1px solid #999' }}>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+          <text x="7" y="10" textAnchor="middle" dominantBaseline="middle"
+            fill="#333" fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
+          <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
+            fill="#333" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
+        </svg>
+      </div>
+    )
+  }
+
+  // Fase lútea (4°+ dia pós-ápice): cor baseada na sensação (verde seca, amarelo úmida)
   if (POST_APICE.has(status) && sensation) {
     const isSeca = sensation === 'seca'
     return (
@@ -84,9 +102,6 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
     mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     fertil:             { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
-    pos_apice_1:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '1'] },
-    pos_apice_2:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '2'] },
-    pos_apice_3:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '3'] },
     infertil_pos_apice: { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
   }
   const c = CFG[status]
