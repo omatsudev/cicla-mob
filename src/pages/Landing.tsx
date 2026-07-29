@@ -25,7 +25,7 @@ const features = [
   {
     icon: Droplets,
     title: "Registro diário",
-    desc: "O casal registra as observações diárias do muco seguindo os critérios do Método Billings. Interface simples, pensada para o dia a dia de ambos.",
+    desc: "Registre as observações diárias seguindo os critérios do Método Billings. Interface simples, pensada para o seu dia a dia, sozinha ou em casal.",
     color: "bg-rose-100 text-rose-500",
   },
   {
@@ -36,8 +36,8 @@ const features = [
   },
   {
     icon: Users,
-    title: "Conta do casal",
-    desc: "Marido e esposa acessam o app, registram e acompanham o ciclo juntos em tempo real. Planejamento familiar de verdade, feito a dois.",
+    title: "Uso individual ou em casal",
+    desc: "Use sozinha para engravidar, evitar ou espaçar a gravidez, ou só para acompanhar sua saúde reprodutiva. Se quiser, convide seu parceiro(a) para acompanhar junto.",
     color: "bg-rose-100 text-rose-500",
   },
   {
@@ -61,9 +61,9 @@ const features = [
 ];
 
 const steps = [
-  { n: "01", title: "Casal cria a conta", desc: "A esposa se cadastra e convida o marido. Dois em um: uma conta compartilhada para o casal." },
-  { n: "02", title: "Registrem diariamente", desc: "Qualquer um do casal pode adicionar as observações do muco seguindo as instruções do método Billings." },
-  { n: "03", title: "Casal acompanha junto", desc: "O marido acompanha o gráfico, identificam o período fértil e tomam decisões juntos, em comunhão." },
+  { n: "01", title: "Crie sua conta", desc: "Cadastro rápido e gratuito, para maiores de 18 anos. Depois, se quiser, convide seu parceiro(a) para acompanhar junto." },
+  { n: "02", title: "Registre diariamente", desc: "Adicione as observações do muco seguindo as instruções do método Billings." },
+  { n: "03", title: "Acompanhe seu ciclo", desc: "Veja o gráfico, identifique o período fértil e tome decisões com base na sua saúde reprodutiva, sozinha ou em casal." },
 ];
 
 const testimonials = [
@@ -155,7 +155,7 @@ export default function Landing() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-4">
-            Acompanhe o ciclo da esposa com o gráfico WOOMB, o mesmo padrão ensinado pelo CENPLAFAM e pela Diocese de Petrópolis. Simples, fiel ao método e feito para o casal.
+            Acompanhe seu ciclo com o gráfico WOOMB, o mesmo padrão ensinado pelo CENPLAFAM e pela Diocese de Petrópolis. Para engravidar, evitar ou espaçar a gravidez, ou só para conhecer sua saúde reprodutiva, sozinha ou em casal.
           </p>
           <p className="text-sm text-gray-400 italic mb-8">
             "Cada pessoa humana, homem e mulher, tem uma dignidade intrínseca e inviolável." (<em>Humanae Vitae</em>)
@@ -232,7 +232,7 @@ export default function Landing() {
       <section id="features" className="py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Feito para casais que vivem o Billings</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Feito para quem vive o Billings</h2>
             <p className="text-gray-500 text-lg max-w-xl mx-auto">Fiel ao método WOOMB. Simples de usar. Para a família.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -253,8 +253,8 @@ export default function Landing() {
       <section id="how" className="py-20 px-4 sm:px-6 bg-gradient-to-br from-rose-50 to-pink-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Como funciona para o casal</h2>
-            <p className="text-gray-500 text-lg">Três passos para começar a usar junto.</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Como funciona</h2>
+            <p className="text-gray-500 text-lg">Três passos para começar a usar, sozinha ou em casal.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((s) => (
@@ -308,7 +308,7 @@ export default function Landing() {
       {/* Testimonials */}
       <section id="testimonials" className="py-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-14">O que os casais dizem</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-14">O que dizem quem usa</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
               <div key={t.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -351,7 +351,7 @@ export default function Landing() {
       {/* CTA */}
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-r from-rose-600 to-pink-500">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Comece a usar com seu casal hoje</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Comece a usar hoje</h2>
           <p className="text-rose-100 text-lg mb-8">R$ 9,90/mês por casal ou individual. Privado e fiel ao Método Billings.</p>
           <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-white text-rose-600 font-bold px-8 py-4 rounded-full hover:bg-rose-50 transition-colors text-lg shadow-lg">
             Criar conta <ArrowRight className="w-5 h-5" />
@@ -379,6 +379,7 @@ export default function Landing() {
           </div>
           <p className="text-center text-xs">© {new Date().getFullYear()} Somos Billings. Todos os direitos reservados.</p>
           <p className="text-center text-xs mt-1 text-gray-600">Desenvolvido com respeito à vida e à família, em harmonia com os ensinamentos da Igreja Católica.</p>
+          <p className="text-center text-xs mt-1 text-gray-600">Serviço destinado a pessoas com 18 anos ou mais.</p>
         </div>
       </footer>
     </div>

@@ -65,7 +65,14 @@ function fertilePeriodMessages(
   isPeak: boolean,
 ): string {
   const wantsBaby = objective === CoupleObjective.GET_PREGNANT
+  const wantsHealthTracking = objective === CoupleObjective.TRACK_HEALTH
+
   if (userType === UserType.WOMAN) {
+    if (wantsHealthTracking) {
+      return isPeak
+        ? 'Você está no seu pico de fertilidade hoje.'
+        : 'Você está no seu período fértil.'
+    }
     if (isPeak) {
       return wantsBaby
         ? 'Este é o seu pico de fertilidade, o melhor momento para tentar engravidar.'
@@ -76,6 +83,11 @@ function fertilePeriodMessages(
       : 'Você está em período fértil. Evite relações sexuais se quiser evitar gravidez.'
   }
   // MAN
+  if (wantsHealthTracking) {
+    return isPeak
+      ? 'Sua parceira está no pico de fertilidade hoje.'
+      : 'Sua parceira está em período fértil.'
+  }
   if (isPeak) {
     return wantsBaby
       ? 'Sua parceira está no pico de fertilidade. Este é o melhor momento para tentar engravidar.'

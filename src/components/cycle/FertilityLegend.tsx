@@ -19,12 +19,12 @@ const COLUMN_1: LegendEntry[] = [
 ]
 
 const COLUMN_2: LegendEntry[] = [
-  { status: CycleStatus.POST_PEAK_1, sensation: 'umida' },
-  { status: CycleStatus.POST_PEAK_2, sensation: 'umida' },
-  { status: CycleStatus.POST_PEAK_3, sensation: 'umida' },
   { status: CycleStatus.POST_PEAK_1, sensation: 'seca' },
   { status: CycleStatus.POST_PEAK_2, sensation: 'seca' },
   { status: CycleStatus.POST_PEAK_3, sensation: 'seca' },
+  { status: CycleStatus.POST_PEAK_1, sensation: 'umida' },
+  { status: CycleStatus.POST_PEAK_2, sensation: 'umida' },
+  { status: CycleStatus.POST_PEAK_3, sensation: 'umida' },
 ]
 
 function LegendRow({ entry }: { entry: LegendEntry }) {

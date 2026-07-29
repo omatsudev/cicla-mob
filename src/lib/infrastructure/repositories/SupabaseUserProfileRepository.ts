@@ -8,6 +8,7 @@ function mapRow(row: Record<string, unknown>): UserProfile {
     name: (row.name as string) ?? '',
     userType: (row.user_type as UserProfile['userType']) ?? 'woman',
     coupleObjective: (row.couple_objective as UserProfile['coupleObjective']) ?? null,
+    birthDate: (row.birth_date as string) ?? null,
     notificationsEnabled: Boolean(row.notifications_enabled),
     notificationHour: (row.notification_hour as number) ?? 8,
     createdAt: row.created_at as string,
@@ -35,6 +36,7 @@ export class SupabaseUserProfileRepository implements IUserProfileRepository {
         ...(input.name !== undefined && { name: input.name }),
         ...(input.userType !== undefined && { user_type: input.userType }),
         ...(input.coupleObjective !== undefined && { couple_objective: input.coupleObjective }),
+        ...(input.birthDate !== undefined && { birth_date: input.birthDate }),
         ...(input.notificationsEnabled !== undefined && { notifications_enabled: input.notificationsEnabled }),
         ...(input.notificationHour !== undefined && { notification_hour: input.notificationHour }),
       })

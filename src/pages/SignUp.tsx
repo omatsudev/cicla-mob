@@ -4,17 +4,24 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
+import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
+import { isAdult, MIN_AGE } from '@/lib/utils/age'
 
 const cadastroSchema = z
   .object({
     name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
     email: z.string().email('E-mail inválido'),
+    birthDate: z.string().min(1, 'Informe sua data de nascimento'),
     password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'As senhas não coincidem',
     path: ['confirmPassword'],
+  })
+  .refine((data) => !data.birthDate || isAdult(data.birthDate), {
+    message: `É preciso ter ${MIN_AGE} anos ou mais para criar uma conta`,
+    path: ['birthDate'],
   })
 
 type CadastroFormData = z.infer<typeof cadastroSchema>
@@ -34,7 +41,7 @@ export default function SignUp() {
     setIsLoading(true)
     setServerError('')
 
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: { data: { name: data.name } },
@@ -48,6 +55,15 @@ export default function SignUp() {
       )
       setIsLoading(false)
       return
+    }
+
+    if (signUpData.user) {
+      const profileRepo = new SupabaseUserProfileRepository(supabase)
+      await profileRepo.upsert({
+        userId: signUpData.user.id,
+        name: data.name,
+        birthDate: data.birthDate,
+      })
     }
 
     navigate('/calendar')
@@ -68,6 +84,7 @@ export default function SignUp() {
           {[
             { id: 'name', label: 'Nome', type: 'text', placeholder: 'Seu nome', autocomplete: 'name' },
             { id: 'email', label: 'E-mail', type: 'email', placeholder: 'seu@email.com', autocomplete: 'email' },
+            { id: 'birthDate', label: 'Data de nascimento', type: 'date', placeholder: '', autocomplete: 'bday' },
             { id: 'password', label: 'Senha', type: 'password', placeholder: '••••••••', autocomplete: 'new-password' },
             { id: 'confirmPassword', label: 'Confirmar senha', type: 'password', placeholder: '••••••••', autocomplete: 'new-password' },
           ].map(({ id, label, type, placeholder, autocomplete }) => (
@@ -90,6 +107,10 @@ export default function SignUp() {
               )}
             </div>
           ))}
+
+          <p className="text-xs text-gray-400">
+            Serviço destinado a pessoas com {MIN_AGE} anos ou mais.
+          </p>
 
           {serverError && (
             <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-3">{serverError}</p>

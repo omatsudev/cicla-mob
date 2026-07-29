@@ -6,6 +6,7 @@ export interface UserProfile {
   readonly name: string
   readonly userType: UserType
   readonly coupleObjective: CoupleObjective | null
+  readonly birthDate: string | null
   readonly notificationsEnabled: boolean
   readonly notificationHour: number
   readonly createdAt: string
@@ -17,6 +18,7 @@ export interface UpdateUserProfileInput {
   name?: string
   userType?: UserType
   coupleObjective?: CoupleObjective | null
+  birthDate?: string | null
   notificationsEnabled?: boolean
   notificationHour?: number
 }

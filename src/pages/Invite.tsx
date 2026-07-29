@@ -4,11 +4,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
+import { isAdult, MIN_AGE } from '@/lib/utils/age'
 
 const schema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   email: z.string().email('E-mail inválido'),
+  birthDate: z.string().min(1, 'Informe sua data de nascimento'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+}).refine((data) => !data.birthDate || isAdult(data.birthDate), {
+  message: `É preciso ter ${MIN_AGE} anos ou mais para criar uma conta`,
+  path: ['birthDate'],
 })
 type FormData = z.infer<typeof schema>
 
@@ -100,6 +105,7 @@ export default function Invite() {
       id: userId,
       name: formData.name,
       user_type: 'man',
+      birth_date: formData.birthDate,
     })
 
     // Criar vínculo: inviter = mulher, novo user = homem
@@ -181,6 +187,17 @@ export default function Invite() {
           </div>
 
           <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Data de nascimento</label>
+            <input
+              {...register('birthDate')}
+              type="date"
+              autoComplete="bday"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+            />
+            {errors.birthDate && <p className="text-xs text-red-500 mt-1">{errors.birthDate.message}</p>}
+          </div>
+
+          <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">Senha</label>
             <input
               {...register('password')}
@@ -190,6 +207,10 @@ export default function Invite() {
             />
             {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
           </div>
+
+          <p className="text-xs text-gray-400">
+            Serviço destinado a pessoas com {MIN_AGE} anos ou mais.
+          </p>
 
           {serverError && <p className="text-sm text-red-600">{serverError}</p>}
 

@@ -11,6 +11,7 @@ import type { UserType } from '@/lib/domain/enums/UserType'
 import type { CoupleObjective } from '@/lib/domain/enums/CoupleObjective'
 import { USER_TYPE_LABELS } from '@/lib/domain/enums/UserType'
 import { COUPLE_OBJECTIVE_LABELS } from '@/lib/domain/enums/CoupleObjective'
+import { isAdult, MIN_AGE } from '@/lib/utils/age'
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -27,6 +28,7 @@ export default function Profile() {
   const [requestSent, setRequestSent] = useState(false)
   const [requestError, setRequestError] = useState('')
   const [pendingSent, setPendingSent] = useState<{ id: string; target_email: string }[]>([])
+  const [birthDateError, setBirthDateError] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -57,6 +59,16 @@ export default function Profile() {
   async function handleSave(e: React.FormEvent<HTMLFormElement>, formId: string) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget) // captura antes de qualquer await
+
+    if (formId === 'profile') {
+      const birthDate = fd.get('birthDate') as string
+      if (birthDate && !isAdult(birthDate)) {
+        setBirthDateError(`É preciso ter ${MIN_AGE} anos ou mais para usar o Somos Billings.`)
+        return
+      }
+      setBirthDateError('')
+    }
+
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.user) return
     const repo = new SupabaseUserProfileRepository(supabase)
@@ -65,6 +77,7 @@ export default function Profile() {
       name: fd.get('name') as string,
       userType: fd.get('userType') as UserType,
       coupleObjective: (fd.get('coupleObjective') as CoupleObjective) || null,
+      ...(formId === 'profile' && { birthDate: (fd.get('birthDate') as string) || null }),
       notificationsEnabled: fd.get('notificationsEnabled') === 'true',
       notificationHour: parseInt(fd.get('notificationHour') as string, 10) || 8,
     })
@@ -152,7 +165,7 @@ export default function Profile() {
       <div>
         <h1 className="text-xl font-bold text-gray-900">Meu Perfil</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Configure suas preferências e vincule seu parceiro.
+          Configure suas preferências. Vincular um parceiro é opcional.
         </p>
       </div>
 
@@ -202,6 +215,19 @@ export default function Profile() {
                 </div>
               </div>
 
+              <div>
+                <label htmlFor="birthDate" className="block text-xs font-medium text-gray-500 mb-1">Data de nascimento</label>
+                <input
+                  id="birthDate"
+                  name="birthDate"
+                  type="date"
+                  autoComplete="bday"
+                  defaultValue={profile?.birthDate ?? ''}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                />
+                {birthDateError && <p className="text-xs text-red-500 mt-1">{birthDateError}</p>}
+              </div>
+
               <input type="hidden" name="notificationsEnabled" value={profile?.notificationsEnabled ? 'true' : 'false'} />
               <input type="hidden" name="notificationHour" value={profile?.notificationHour ?? 8} />
 
@@ -215,19 +241,19 @@ export default function Profile() {
           </CardContent>
         </Card>
 
-        {/* Couple objective */}
+        {/* Objective */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Heart size={18} className="text-rose-500" />
-              Objetivo do casal
+              Meu objetivo
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={(e) => handleSave(e, 'goal')} className="space-y-3">
-              <div className="grid grid-cols-2 gap-2">
-                {(['get_pregnant', 'avoid_pregnancy'] as const).map((obj) => (
-                  <label key={obj} className="cursor-pointer">
+              <div className="space-y-2">
+                {(['get_pregnant', 'avoid_pregnancy', 'track_health'] as const).map((obj) => (
+                  <label key={obj} className="cursor-pointer block">
                     <input
                       type="radio"
                       name="coupleObjective"
@@ -346,11 +372,14 @@ export default function Profile() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Link2 size={18} className="text-rose-500" />
-                Vincular parceiro(a)
+                Vincular parceiro(a) (opcional)
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <p className="text-xs text-gray-500">
+                  Você pode usar o app sozinha, sem vincular ninguém. O vínculo só serve para que outra pessoa acompanhe seu ciclo junto com você.
+                </p>
 
                 {/* Solicitar por e-mail */}
                 <div className="space-y-2">
