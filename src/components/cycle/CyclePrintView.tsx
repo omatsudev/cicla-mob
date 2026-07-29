@@ -53,6 +53,18 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     )
   }
 
+  if (status === 'apice') {
+    return (
+      <div style={{ ...base, background: '#fff', border: '1px solid #999' }}>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="#333" strokeWidth="1.5" />
+          <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
+            fill="#333" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">x</text>
+        </svg>
+      </div>
+    )
+  }
+
   // Pós-ápice: cor baseada na sensação (verde seca, amarelo úmida)
   if (POST_APICE.has(status) && sensation) {
     const isSeca = sensation === 'seca'
@@ -72,7 +84,6 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
     mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     fertil:             { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
-    apice:              { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', 'x'] },
     pos_apice_1:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '1'] },
     pos_apice_2:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '2'] },
     pos_apice_3:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '3'] },

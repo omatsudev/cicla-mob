@@ -2,7 +2,7 @@ import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import type { BleedingIntensity } from '@/lib/domain/enums/BleedingIntensity'
 
-const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil'])
+const FERTILITY_STATUSES = new Set<CycleStatus>(['mudanca', 'fertil', 'apice'])
 
 // Dot positions (cx, cy) within a 20×20 viewBox
 const DOT_POSITIONS: Record<2 | 3 | 5, [number, number][]> = {
@@ -27,10 +27,14 @@ function SpottingDotsSVG({ count }: { count: 2 | 3 | 5 }) {
   )
 }
 
-function FertilityCircleSVG() {
+function FertilityCircleSVG({ suffix }: { suffix?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <circle cx="10" cy="10" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+      {suffix && (
+        <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
+          fill="currentColor" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
+      )}
     </svg>
   )
 }
@@ -65,7 +69,7 @@ export function CycleSymbol({ status, bleedingIntensity, size = 'w-full h-full' 
   if (FERTILITY_STATUSES.has(status)) {
     return (
       <span className={`relative flex items-center justify-center ${size}`}>
-        <FertilityCircleSVG />
+        <FertilityCircleSVG suffix={status === 'apice' ? 'x' : undefined} />
       </span>
     )
   }
