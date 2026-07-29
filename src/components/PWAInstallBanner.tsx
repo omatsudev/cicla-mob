@@ -44,7 +44,7 @@ export function PWAInstallBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900">Adicionar à tela inicial</p>
-          <p className="text-xs text-gray-500 mt-0.5">Acesse o Cicla MOB como um app</p>
+          <p className="text-xs text-gray-500 mt-0.5">Acesse o Somos Billings como um app</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button

@@ -12,7 +12,7 @@ export function Header({ userName, unreadNotifications = 0 }: HeaderProps) {
       <div className="flex items-center justify-between px-4 h-14 max-w-lg mx-auto">
         <div className="flex items-center gap-2">
           <span className="text-xl">🌸</span>
-          <span className="font-bold text-rose-700 text-sm">Cicla MOB</span>
+          <span className="font-bold text-rose-700 text-sm">Somos Billings</span>
         </div>
 
         <div className="flex items-center gap-2">

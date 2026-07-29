@@ -148,7 +148,7 @@ export default function Dashboard() {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-800">Solicitação de vínculo</p>
             <p className="text-xs text-gray-500 mt-0.5">
-              <strong>{req.requesterName}</strong> quer se vincular como seu parceiro(a) no Cicla MOB.
+              <strong>{req.requesterName}</strong> quer se vincular como seu parceiro(a) no Somos Billings.
             </p>
             <div className="flex gap-2 mt-3">
               <button

@@ -154,7 +154,7 @@ export default function Invite() {
           <p className="text-4xl">🌸</p>
           <h1 className="text-xl font-bold text-gray-900">Você foi convidado!</h1>
           <p className="text-sm text-gray-500">
-            <strong>{invite.inviterName}</strong> te convidou para acompanhar o ciclo no Cicla MOB.
+            <strong>{invite.inviterName}</strong> te convidou para acompanhar o ciclo no Somos Billings.
           </p>
         </div>
 

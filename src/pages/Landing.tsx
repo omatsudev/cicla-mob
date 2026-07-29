@@ -117,7 +117,7 @@ export default function Landing() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-500 to-pink-400 flex items-center justify-center">
               <Heart className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-lg">Cicla MOB</span>
+            <span className="font-bold text-gray-900 text-lg">Somos Billings</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-gray-600 hover:text-rose-500 transition-colors">Funcionalidades</a>
@@ -270,36 +270,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="py-20 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-14">O que os casais dizem</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Heart key={i} className="w-4 h-4 fill-rose-400 text-rose-400" />
-                  ))}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">"{t.text}"</p>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-gray-400 text-xs">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* References / CENPLAFAM */}
       <section id="referencias" className="py-20 px-4 sm:px-6 bg-gradient-to-br from-rose-50 to-pink-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Fundamentado e reconhecido</h2>
             <p className="text-gray-500 text-lg max-w-xl mx-auto">
-              O Cicla MOB é desenvolvido em harmonia com as organizações que ensinam e promovem o Método Billings no Brasil e no mundo.
+              O Somos Billings é desenvolvido em harmonia com as organizações que ensinam e promovem o Método Billings no Brasil e no mundo.
             </p>
           </div>
 
@@ -323,8 +300,51 @@ export default function Landing() {
           </div>
 
           <p className="mt-8 text-center text-xs text-gray-400">
-            O Cicla MOB não é afiliado oficialmente ao CENPLAFAM ou à Diocese de Petrópolis. Faz referência a essas organizações por seguir fielmente os critérios do Método de Ovulação Billings® (WOOMB).
+            O Somos Billings não é afiliado oficialmente ao CENPLAFAM ou à Diocese de Petrópolis. Faz referência a essas organizações por seguir fielmente os critérios do Método de Ovulação Billings® (WOOMB).
           </p>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="py-20 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-14">O que os casais dizem</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <div key={t.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Heart key={i} className="w-4 h-4 fill-rose-400 text-rose-400" />
+                  ))}
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">"{t.text}"</p>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
+                  <p className="text-gray-400 text-xs">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Find an instructor */}
+      <section className="py-20 px-4 sm:px-6 bg-gradient-to-br from-rose-50 to-pink-50">
+        <div className="max-w-3xl mx-auto">
+          <a
+            href="https://www.instagram.com/cenplafamsudeste/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-rose-200 rounded-2xl p-5 hover:shadow-md hover:border-rose-300 transition-all"
+          >
+            <div>
+              <p className="font-semibold text-gray-900 text-sm">Ainda não é usuária do Método de Ovulação Billings®?</p>
+              <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
+                Antes de usar o app, é preciso ser treinada por um instrutor credenciado. Encontre o instrutor mais próximo de você pelo Instagram do CENPLAFAM Sudeste.
+              </p>
+            </div>
+            <span className="shrink-0 text-xs text-rose-600 font-semibold whitespace-nowrap">Encontrar instrutor →</span>
+          </a>
         </div>
       </section>
 
@@ -351,13 +371,13 @@ export default function Landing() {
               <div className="w-7 h-7 rounded-full bg-gradient-to-br from-rose-500 to-pink-400 flex items-center justify-center">
                 <Heart className="w-3 h-3 text-white" />
               </div>
-              <span className="font-bold text-white">Cicla MOB</span>
+              <span className="font-bold text-white">Somos Billings</span>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-xs">
               <a href="https://www.instagram.com/cenplafamsudeste/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CENPLAFAM Sudeste</a>
             </div>
           </div>
-          <p className="text-center text-xs">© {new Date().getFullYear()} Cicla MOB. Todos os direitos reservados.</p>
+          <p className="text-center text-xs">© {new Date().getFullYear()} Somos Billings. Todos os direitos reservados.</p>
           <p className="text-center text-xs mt-1 text-gray-600">Desenvolvido com respeito à vida e à família, em harmonia com os ensinamentos da Igreja Católica.</p>
         </div>
       </footer>

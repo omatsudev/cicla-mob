@@ -57,7 +57,7 @@ export default function SignUp() {
     <div className="w-full max-w-sm space-y-6">
       <div className="text-center space-y-2">
         <div className="text-5xl">🌸</div>
-        <h1 className="text-2xl font-bold text-rose-700">Cicla MOB</h1>
+        <h1 className="text-2xl font-bold text-rose-700">Somos Billings</h1>
         <p className="text-sm text-gray-500">Crie sua conta gratuitamente</p>
       </div>
 

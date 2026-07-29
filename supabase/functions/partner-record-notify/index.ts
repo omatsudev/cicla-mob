@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
   await webpush.sendNotification(
     sub.subscription,
     JSON.stringify({
-      title: 'Cicla MOB 🌸',
+      title: 'Somos Billings 🌸',
       body: `${womanName} registrou as observações de hoje.`,
       url: DASHBOARD_PATH,
     })
