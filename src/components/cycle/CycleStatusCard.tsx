@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/cn'
-import { CYCLE_STATUS_DISPLAY, FERTILITY_LEVEL_INFO } from '@/lib/domain/enums/CycleStatus'
+import { CYCLE_STATUS_DISPLAY, FERTILITY_LEVEL_INFO, resolveCycleStatusDisplay } from '@/lib/domain/enums/CycleStatus'
 import type { CurrentStatusSummary } from '@/lib/domain/services/CycleStatusPresenter'
 
 interface CycleStatusCardProps {
@@ -41,8 +41,8 @@ export function CycleStatusCard({ summary, showRegisterPrompt, isMan }: CycleSta
     )
   }
 
-  const displayInfo = CYCLE_STATUS_DISPLAY[status]
-  const fertilityInfo = FERTILITY_LEVEL_INFO[displayInfo.fertilityLevel]
+  const displayInfo = resolveCycleStatusDisplay(status, summary.latestRecord?.sensation)
+  const fertilityInfo = FERTILITY_LEVEL_INFO[CYCLE_STATUS_DISPLAY[status].fertilityLevel]
 
   return (
     <div
