@@ -31,7 +31,7 @@ const features = [
   {
     icon: Calendar,
     title: "Gráfico WOOMB",
-    desc: "Visualize o ciclo completo no gráfico padrão WOOMB: símbolos, sensações, regras MOB — exatamente como o método foi concebido.",
+    desc: "Visualize o ciclo completo no gráfico padrão WOOMB: símbolos, sensações, regras MOB, exatamente como o método foi concebido.",
     color: "bg-pink-100 text-pink-500",
   },
   {
@@ -61,7 +61,7 @@ const features = [
 ];
 
 const steps = [
-  { n: "01", title: "Casal cria a conta", desc: "A esposa se cadastra e convida o marido. Dois em um — uma conta compartilhada para o casal." },
+  { n: "01", title: "Casal cria a conta", desc: "A esposa se cadastra e convida o marido. Dois em um: uma conta compartilhada para o casal." },
   { n: "02", title: "Registrem diariamente", desc: "Qualquer um do casal pode adicionar as observações do muco seguindo as instruções do método Billings." },
   { n: "03", title: "Casal acompanha junto", desc: "O marido acompanha o gráfico, identificam o período fértil e tomam decisões juntos, em comunhão." },
 ];
@@ -69,12 +69,12 @@ const steps = [
 const testimonials = [
   {
     name: "Ana e Carlos",
-    role: "Paróquia São Pedro — Petrópolis/RJ",
+    role: "Paróquia São Pedro, Petrópolis/RJ",
     text: "Usávamos caderno de papel. Com o app, o gráfico fica sempre com a gente e meu marido consegue acompanhar tudo. Facilitou muito a nossa comunicação como casal.",
   },
   {
     name: "Fernanda e Rodrigo",
-    role: "Grupo Familiar — Diocese de Petrópolis",
+    role: "Grupo Familiar, Diocese de Petrópolis",
     text: "Fomos formados pelo CENPLAFAM e o app segue exatamente o que aprendemos. Os símbolos são os mesmos do material impresso. Recomendamos para todos os casais da nossa comunidade.",
   },
   {
@@ -87,7 +87,7 @@ const testimonials = [
 const references = [
   {
     name: "CENPLAFAM WOOMB Brasil",
-    desc: "Centro Nacional de Planejamento Familiar — formação e acompanhamento oficial do Método Billings no Brasil.",
+    desc: "Centro Nacional de Planejamento Familiar: formação e acompanhamento oficial do Método Billings no Brasil.",
     url: "https://www.cenplafam.com.br/",
     highlight: true,
   },
@@ -105,12 +105,12 @@ const references = [
   },
   {
     name: "Canção Nova",
-    desc: "Comunidade católica de evangelização — conteúdos sobre família, amor conjugal e planejamento natural.",
+    desc: "Comunidade católica de evangelização, com conteúdos sobre família, amor conjugal e planejamento natural.",
     url: "https://www.cancaonova.com/",
     highlight: false,
   },
   {
-    name: "Santa Sé — Vaticano",
+    name: "Santa Sé (Vaticano)",
     desc: "Site oficial do Vaticano com os documentos do magistério, incluindo Humanae Vitae e Familiaris Consortio.",
     url: "https://www.vatican.va/",
     highlight: false,
@@ -158,7 +158,7 @@ export default function Landing() {
       <section className="pt-32 pb-20 px-4 sm:px-6 bg-gradient-to-br from-rose-50 via-pink-50 to-white">
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-1 rounded-full mb-6">
-            <Heart className="w-3 h-3" /> Método de Ovulação Billings® — WOOMB
+            <Heart className="w-3 h-3" /> Método de Ovulação Billings® (WOOMB)
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
             Planejamento familiar<br />
@@ -167,10 +167,10 @@ export default function Landing() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-4">
-            Acompanhe o ciclo da esposa com o gráfico WOOMB — o mesmo padrão ensinado pelo CENPLAFAM e pela Diocese de Petrópolis. Simples, fiel ao método e feito para o casal.
+            Acompanhe o ciclo da esposa com o gráfico WOOMB, o mesmo padrão ensinado pelo CENPLAFAM e pela Diocese de Petrópolis. Simples, fiel ao método e feito para o casal.
           </p>
           <p className="text-sm text-gray-400 italic mb-8">
-            "Cada pessoa humana, homem e mulher, tem uma dignidade intrínseca e inviolável." — <em>Humanae Vitae</em>
+            "Cada pessoa humana, homem e mulher, tem uma dignidade intrínseca e inviolável." (<em>Humanae Vitae</em>)
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold px-8 py-4 rounded-full transition-colors text-lg shadow-lg shadow-rose-200">
@@ -187,8 +187,8 @@ export default function Landing() {
         <div className="max-w-sm mx-auto mt-16 bg-white rounded-3xl shadow-2xl shadow-rose-100 border border-rose-100 overflow-hidden">
           <div className="bg-gradient-to-r from-rose-600 to-pink-500 px-5 py-4">
             <p className="text-white/70 text-xs mb-0.5">Ana e Carlos · Ciclo 3</p>
-            <p className="text-white font-bold text-base">Gráfico WOOMB — Março/Abril</p>
-            <p className="text-rose-100 text-xs">Úmida — Infértil</p>
+            <p className="text-white font-bold text-base">Gráfico WOOMB (Março/Abril)</p>
+            <p className="text-rose-100 text-xs">Úmida (Infértil)</p>
           </div>
           <div className="px-3 py-3 overflow-x-auto">
             {/* Header rows */}
@@ -339,7 +339,7 @@ export default function Landing() {
             <div>
               <p className="font-bold text-gray-900 text-lg mb-1">CENPLAFAM WOOMB Brasil</p>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Centro Nacional de Planejamento Familiar — organização oficial do Método Billings no Brasil. Responsável pela formação de instrutores e pelo acompanhamento de casais em todo o país, incluindo a Diocese de Petrópolis.
+                Centro Nacional de Planejamento Familiar: organização oficial do Método Billings no Brasil. Responsável pela formação de instrutores e pelo acompanhamento de casais em todo o país, incluindo a Diocese de Petrópolis.
               </p>
               <span className="mt-2 inline-block text-xs text-rose-600 font-medium">www.cenplafam.com.br →</span>
             </div>

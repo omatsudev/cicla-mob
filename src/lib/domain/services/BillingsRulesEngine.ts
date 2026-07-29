@@ -181,7 +181,7 @@ function classifyDay(
     if (daysDiff === 1) return { status: CycleStatus.POST_PEAK_1, ruleApplied: 'Regra do Ápice: 1° dia pós-ápice' }
     if (daysDiff === 2) return { status: CycleStatus.POST_PEAK_2, ruleApplied: 'Regra do Ápice: 2° dia pós-ápice' }
     if (daysDiff === 3) return { status: CycleStatus.POST_PEAK_3, ruleApplied: 'Regra do Ápice: 3° dia pós-ápice' }
-    return { status: CycleStatus.INFERTILE_POST_PEAK, ruleApplied: 'Regra do Ápice: 4°+ dia pós-ápice — infértil' }
+    return { status: CycleStatus.INFERTILE_POST_PEAK, ruleApplied: 'Regra do Ápice: 4°+ dia pós-ápice, infértil' }
   }
 
   if (isSlippery(record)) {
@@ -199,9 +199,9 @@ function classifyDay(
 
   const bipStatus = assessBipStatus(record, sinceLastMenstruation)
   const ruleMap: Record<CycleStatus, string> = {
-    [CycleStatus.DRY_BIP]: 'Regra 2: PBI seco — infértil (noites alternadas disponíveis)',
-    [CycleStatus.MUCUS_BIP]: 'PBI muco: padrão sem mudança por 2+ dias — infértil',
-    [CycleStatus.PATTERN_CHANGE]: 'Ponto de mudança: padrão alterado — possivelmente fértil',
+    [CycleStatus.DRY_BIP]: 'Regra 2: PBI seco, infértil (noites alternadas disponíveis)',
+    [CycleStatus.MUCUS_BIP]: 'PBI muco: padrão sem mudança por 2+ dias, infértil',
+    [CycleStatus.PATTERN_CHANGE]: 'Ponto de mudança: padrão alterado, possivelmente fértil',
     [CycleStatus.MENSTRUATION]: '',
     [CycleStatus.SPOTTING]: '',
     [CycleStatus.FERTILE]: '',

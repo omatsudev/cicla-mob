@@ -47,7 +47,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   pbi_seco: {
     label: 'Seca',
-    description: 'Padrão Básico de Infertilidade — seca',
+    description: 'Padrão Básico de Infertilidade seco',
     bgColor: 'bg-green-500',
     textColor: 'text-white',
     borderColor: 'border-green-600',
@@ -56,7 +56,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   pbi_muco: {
     label: 'Úmida',
-    description: 'Padrão Básico de Infertilidade — muco sem mudança',
+    description: 'Padrão Básico de Infertilidade com muco sem mudança',
     bgColor: 'bg-yellow-300',
     textColor: 'text-gray-900',
     borderColor: 'border-yellow-400',
@@ -65,7 +65,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   mudanca: {
     label: 'Mudança de Padrão',
-    description: 'Ponto de mudança — possivelmente fértil',
+    description: 'Ponto de mudança, possivelmente fértil',
     bgColor: 'bg-white',
     textColor: 'text-gray-800',
     borderColor: 'border-gray-300',
@@ -74,7 +74,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   fertil: {
     label: 'Fértil',
-    description: 'Período fértil — muco presente',
+    description: 'Período fértil com muco presente',
     bgColor: 'bg-white',
     textColor: 'text-gray-800',
     borderColor: 'border-gray-300',
@@ -83,7 +83,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   apice: {
     label: 'Ápice',
-    description: 'Pico de fertilidade — último dia escorregadio',
+    description: 'Pico de fertilidade, último dia escorregadio',
     bgColor: 'bg-white',
     textColor: 'text-gray-800',
     borderColor: 'border-gray-400',
@@ -119,7 +119,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
   },
   infertil_pos_apice: {
     label: 'Úmida',
-    description: '4°+ dia após o Ápice — infértil',
+    description: '4°+ dia após o Ápice, infértil',
     bgColor: 'bg-yellow-300',
     textColor: 'text-gray-900',
     borderColor: 'border-yellow-400',

@@ -26,19 +26,19 @@ const STATUS_MESSAGES: Record<CycleStatus, { title: string; message: string; rec
       'Regra 3: Trate como dia potencialmente fértil. Aguarde 3 dias secos consecutivos (PBI) antes de retomar a Regra 2.',
   },
   pbi_seco: {
-    title: 'Infértil — Seca',
+    title: 'Infértil (Seca)',
     message: 'Você está no Padrão Básico de Infertilidade: vulva seca, nada se vê.',
     recommendation:
       'Regra 2: Noites alternadas estão disponíveis para relações sexuais enquanto esse padrão seco se mantiver.',
   },
   pbi_muco: {
-    title: 'Infértil — Úmida',
+    title: 'Infértil (Úmida)',
     message: 'Você está no Padrão Básico de Infertilidade: muco opaco sem mudança.',
     recommendation:
       'O padrão não mudou. Noites alternadas disponíveis enquanto o muco permanecer igual dia após dia.',
   },
   mudanca: {
-    title: 'Atenção — Mudança de Padrão',
+    title: 'Atenção: Mudança de Padrão',
     message: 'Foi detectada uma mudança no padrão habitual.',
     recommendation:
       'Há uma possível mudança de padrão. Trate este dia como potencialmente fértil e registre cuidadosamente a sensação e aparência.',
@@ -50,31 +50,31 @@ const STATUS_MESSAGES: Record<CycleStatus, { title: string; message: string; rec
       'O muco fértil permite a sobrevivência dos espermatozoides por até 5 dias. Registre o dia mais fértil observado.',
   },
   apice: {
-    title: '⭐ Ápice — Pico de Fertilidade',
+    title: '⭐ Ápice: Pico de Fertilidade',
     message: 'Este foi o dia do Ápice: último dia com sensação escorregadia.',
     recommendation:
       'O Ápice é o dia de maior fertilidade. Contagem retroativa: os 3 dias seguintes ainda são possivelmente férteis.',
   },
   pos_apice_1: {
     title: '1° Dia Pós-Ápice',
-    message: 'Primeiro dia após o Ápice — ainda possivelmente fértil.',
+    message: 'Primeiro dia após o Ápice, ainda possivelmente fértil.',
     recommendation:
       'A ovulação ocorreu ou está iminente. Continue evitando relações sexuais. Faltam 2 dias para a fase infértil.',
   },
   pos_apice_2: {
     title: '2° Dia Pós-Ápice',
-    message: 'Segundo dia após o Ápice — ainda possivelmente fértil.',
+    message: 'Segundo dia após o Ápice, ainda possivelmente fértil.',
     recommendation:
       'A cérvix está se fechando gradualmente. Falta 1 dia para a fase infértil da fase lútea.',
   },
   pos_apice_3: {
     title: '3° Dia Pós-Ápice',
-    message: 'Terceiro dia após o Ápice — último dia possivelmente fértil.',
+    message: 'Terceiro dia após o Ápice, último dia possivelmente fértil.',
     recommendation:
-      'A partir de amanhã (4° dia pós-Ápice) você entrará na fase lútea infértil — relações disponíveis a qualquer hora!',
+      'A partir de amanhã (4° dia pós-Ápice) você entrará na fase lútea infértil. Relações disponíveis a qualquer hora!',
   },
   infertil_pos_apice: {
-    title: 'Úmida — Infértil',
+    title: 'Úmida (Infértil)',
     message: 'Você está na fase lútea pós-ovulatória. Esta fase é infértil.',
     recommendation:
       'Regra do Ápice: A partir do 4° dia após o Ápice até a próxima menstruação, relações sexuais estão disponíveis a qualquer hora e dia.',

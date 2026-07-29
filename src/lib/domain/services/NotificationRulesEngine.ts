@@ -68,7 +68,7 @@ function fertilePeriodMessages(
   if (userType === UserType.WOMAN) {
     if (isPeak) {
       return wantsBaby
-        ? 'Este é o seu pico de fertilidade — o melhor momento para tentar engravidar.'
+        ? 'Este é o seu pico de fertilidade, o melhor momento para tentar engravidar.'
         : 'Você está no pico da fertilidade. Evite relações sexuais para prevenir gravidez.'
     }
     return wantsBaby

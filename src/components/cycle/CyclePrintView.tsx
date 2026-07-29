@@ -227,7 +227,7 @@ function CycleBlock({
   const startLabel = cycle?.startDate
     ? format(parseISO(cycle.startDate), "dd/MM/yy", { locale: ptBR })
     : ''
-  const cycleInfo = cycle ? [name, startLabel].filter(Boolean).join(' — ') : ''
+  const cycleInfo = cycle ? [name, startLabel].filter(Boolean).join(' · ') : ''
 
   return (
     <div style={{
