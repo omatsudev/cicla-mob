@@ -36,6 +36,16 @@ function getPostApiceStyle(sensation: string) {
   return { bg: 'bg-yellow-300', text: 'text-gray-800', border: 'border-yellow-400', symbol: '=' }
 }
 
+/** Whole-column tint behind every row, matching the symbol's color (white stays reserved for Ápice/Fértil/Mudança). */
+function getColumnBg(status: CycleStatus | null, sensation?: string): string {
+  if (status === 'menstruacao') return 'bg-red-50'
+  if (status === 'mancha')      return 'bg-red-100'
+  if (status === 'pbi_seco')    return 'bg-green-50'
+  if (status === 'pbi_muco')    return 'bg-yellow-50'
+  if (status && POST_APICE_STATUSES.has(status)) return sensation === 'seca' ? 'bg-green-50' : 'bg-yellow-50'
+  return ''
+}
+
 // Row heights (must match between label col and day cols)
 const ROW = {
   diaCiclo: 'h-6',
@@ -243,6 +253,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
 
                 const isPostApice = status ? POST_APICE_STATUSES.has(status) : false
                 const postApiceStyle = isPostApice && day.record ? getPostApiceStyle(day.record.sensation) : null
+                const columnBg = getColumnBg(status, day.record?.sensation)
 
                 return (
                   <div
@@ -254,8 +265,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     className={cn(
                       'flex flex-col shrink-0 border-r border-gray-200 transition cursor-pointer select-none',
                       COL_W,
-                      isSel   && 'bg-blue-50',
-                      isNext  && !isSel && 'bg-rose-50',
+                      isSel ? 'bg-blue-50' : isNext ? 'bg-rose-50' : columnBg,
                       day.isToday && 'outline outline-1 outline-rose-400',
                     )}
                     style={{ touchAction: 'pan-x' }}
