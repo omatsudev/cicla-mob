@@ -39,7 +39,7 @@ function FertilityCircleSVG({ suffix }: { suffix?: string }) {
       <circle cx={cx} cy={cy} r="6" stroke="currentColor" strokeWidth="1.5" />
       {suffix && (
         <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-          fill="currentColor" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
+          fill="currentColor" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
       )}
     </svg>
   )
@@ -51,7 +51,7 @@ function CharWithDaySVG({ char, day }: { char: string; day: string }) {
       <text x="7" y="10" textAnchor="middle" dominantBaseline="middle"
         fill="currentColor" fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{char}</text>
       <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-        fill="currentColor" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{day}</text>
+        fill="currentColor" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{day}</text>
     </svg>
   )
 }

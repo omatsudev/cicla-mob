@@ -73,7 +73,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
         <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
           <circle cx="8" cy="8" r="6" stroke="#333" strokeWidth="1.5" />
           <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-            fill="#333" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">x</text>
+            fill="#333" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">x</text>
         </svg>
       </div>
     )
@@ -95,7 +95,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
             fill={textColor} fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
           {postApiceDay && (
             <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-              fill={textColor} fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
+              fill={textColor} fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
           )}
         </svg>
       </div>
