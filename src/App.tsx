@@ -14,7 +14,6 @@ import Invite from '@/pages/Invite'
 import Dashboard from '@/pages/Dashboard'
 import RecordEntry from '@/pages/RecordEntry'
 import Calendar from '@/pages/Calendar'
-import History from '@/pages/History'
 import Notifications from '@/pages/Notifications'
 import Profile from '@/pages/Profile'
 
@@ -95,7 +94,6 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/record" element={<RecordEntry />} />
           <Route path="/calendar" element={<Calendar />} />
-          <Route path="/history" element={<History />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
@@ -106,7 +104,9 @@ export default function App() {
         <Route path="/cadastro" element={<LegacyRedirect to="/signup" />} />
         <Route path="/registrar" element={<LegacyRedirect to="/record" />} />
         <Route path="/calendario" element={<LegacyRedirect to="/calendar" />} />
-        <Route path="/historico" element={<LegacyRedirect to="/history" />} />
+        {/* Histórico foi descontinuado como página própria; a lista de registros agora vive dentro de Ciclos */}
+        <Route path="/historico" element={<LegacyRedirect to="/calendar" />} />
+        <Route path="/history" element={<LegacyRedirect to="/calendar" />} />
         <Route path="/notificacoes" element={<LegacyRedirect to="/notifications" />} />
         <Route path="/perfil" element={<LegacyRedirect to="/profile" />} />
 

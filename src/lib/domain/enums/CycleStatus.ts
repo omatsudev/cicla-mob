@@ -37,7 +37,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     symbol: '●',
   },
   mancha: {
-    label: 'Mancha',
+    label: 'Pouca Menstruação',
     description: 'Sangramento leve / spotting',
     bgColor: 'bg-red-500',
     textColor: 'text-black',
@@ -146,14 +146,30 @@ export interface ResolvedCycleStatusDisplay {
 const LUTEAL_DRY: ResolvedCycleStatusDisplay = { label: 'Seca', symbol: '|', bgColor: 'bg-green-500', textColor: 'text-white', borderColor: 'border-green-600' }
 const LUTEAL_WET: ResolvedCycleStatusDisplay = { label: 'Úmida', symbol: '=', bgColor: 'bg-yellow-300', textColor: 'text-gray-800', borderColor: 'border-yellow-400' }
 
+const POST_PEAK_DAY: Partial<Record<CycleStatus, number>> = {
+  pos_apice_1: 1, pos_apice_2: 2, pos_apice_3: 3,
+}
+
 /**
- * A fase lútea (4°+ dia pós-ápice) não é sempre "úmida", a sensação varia dia a dia.
- * Para um registro específico, isso resolve o rótulo/cor para a sensação real
- * daquele dia, em vez do rótulo genérico da categoria (usado só na legenda).
+ * A fase lútea (4°+ dia pós-ápice) e os 3 dias pós-ápice não são sempre "úmidos",
+ * a sensação varia dia a dia. Para um registro específico, isso resolve o
+ * rótulo/cor para a sensação real daquele dia, em vez do rótulo genérico da
+ * categoria (usado só na legenda, que mostra as duas variações lado a lado).
  */
 export function resolveCycleStatusDisplay(status: CycleStatus, sensation?: string): ResolvedCycleStatusDisplay {
   if (status === 'infertil_pos_apice') {
     return sensation === 'seca' ? LUTEAL_DRY : LUTEAL_WET
+  }
+  const day = POST_PEAK_DAY[status]
+  if (day) {
+    const isDry = sensation === 'seca'
+    return {
+      label: `Ápice + ${day} (${isDry ? 'Seca' : 'Úmida'})`,
+      symbol: isDry ? '|' : '=',
+      bgColor: isDry ? 'bg-green-500' : 'bg-yellow-300',
+      textColor: isDry ? 'text-white' : 'text-gray-800',
+      borderColor: isDry ? 'border-green-600' : 'border-yellow-400',
+    }
   }
   const info = CYCLE_STATUS_DISPLAY[status]
   return { label: info.label, symbol: info.symbol, bgColor: info.bgColor, textColor: info.textColor, borderColor: info.borderColor }

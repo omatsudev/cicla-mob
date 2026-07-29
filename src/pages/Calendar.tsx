@@ -1,17 +1,26 @@
 import { useState, useEffect, useRef } from 'react'
+import { format, parseISO } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { Download, X, Printer } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
 import { getCycleCalendar } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 import { getAllCycles } from '@/lib/application/use-cases/GetAllCyclesUseCase'
+import { getRecordHistory } from '@/lib/application/use-cases/GetRecordHistoryUseCase'
 import { CycleChartView } from '@/components/cycle/CycleChartView'
 import { FertilityLegend } from '@/components/cycle/FertilityLegend'
 import { CyclePrintView } from '@/components/cycle/CyclePrintView'
 import { exportCyclePdf } from '@/lib/utils/exportCyclePdf'
+import { CycleStatusBadge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
+import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
+import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
 import { cn } from '@/lib/utils/cn'
+
+type ViewMode = 'grafico' | 'lista'
 
 export default function Calendar() {
   const { dataUserId, isMan, loading: profileLoading } = useProfile()
@@ -19,6 +28,11 @@ export default function Calendar() {
   const [calendarData, setCalendarData] = useState<CycleCalendarData | null>(null)
   const [cycleName, setCycleName] = useState('')
   const [loading, setLoading] = useState(true)
+
+  const [viewMode, setViewMode] = useState<ViewMode>('grafico')
+  const [records, setRecords] = useState<InterpretedRecord[]>([])
+  const [recordsLoaded, setRecordsLoaded] = useState(false)
+  const [recordsLoading, setRecordsLoading] = useState(false)
 
   // PDF export state
   const [showExport, setShowExport] = useState(false)
@@ -52,6 +66,17 @@ export default function Calendar() {
       setLoading(false)
     })
   }, [dataUserId, profileLoading, cycleIndex])
+
+  useEffect(() => {
+    if (viewMode !== 'lista' || recordsLoaded || !dataUserId) return
+    setRecordsLoading(true)
+    const repository = new SupabaseDailyRecordRepository(supabase)
+    getRecordHistory(dataUserId, repository).then(result => {
+      setRecords(result.records)
+      setRecordsLoaded(true)
+      setRecordsLoading(false)
+    })
+  }, [viewMode, dataUserId, recordsLoaded])
 
   async function handleNameSave(name: string) {
     if (!dataUserId || !calendarData?.startDate) return
@@ -142,7 +167,7 @@ export default function Calendar() {
         <div>
           <h1 className="text-xl font-bold text-gray-900">Ciclos</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Dias numerados a partir do 1° dia da menstruação.
+            {viewMode === 'grafico' ? 'Dias numerados a partir do 1° dia da menstruação.' : 'Todos os registros, do mais recente ao mais antigo.'}
           </p>
         </div>
         {calendarData.totalCycles > 0 && (
@@ -156,23 +181,111 @@ export default function Calendar() {
         )}
       </div>
 
-      <Card>
-        <CardContent className="pt-5">
-          <CycleChartView
-            data={calendarData}
-            isMan={isMan}
-            cycleName={cycleName}
-            onNavigate={setCycleIndex}
-            onNameSave={!isMan ? handleNameSave : undefined}
-          />
-        </CardContent>
-      </Card>
+      <div className="flex gap-2 bg-gray-100 rounded-xl p-1 w-fit">
+        <button
+          onClick={() => setViewMode('grafico')}
+          className={cn(
+            'px-4 py-1.5 rounded-lg text-sm font-semibold transition',
+            viewMode === 'grafico' ? 'bg-white text-rose-600 shadow-sm' : 'text-gray-500 hover:text-gray-700',
+          )}
+        >
+          Gráfico
+        </button>
+        <button
+          onClick={() => setViewMode('lista')}
+          className={cn(
+            'px-4 py-1.5 rounded-lg text-sm font-semibold transition',
+            viewMode === 'lista' ? 'bg-white text-rose-600 shadow-sm' : 'text-gray-500 hover:text-gray-700',
+          )}
+        >
+          Lista
+        </button>
+      </div>
 
-      <Card>
-        <CardContent className="pt-5">
-          <FertilityLegend />
-        </CardContent>
-      </Card>
+      {viewMode === 'grafico' ? (
+        <>
+          <Card>
+            <CardContent className="pt-5">
+              <CycleChartView
+                data={calendarData}
+                isMan={isMan}
+                cycleName={cycleName}
+                onNavigate={setCycleIndex}
+                onNameSave={!isMan ? handleNameSave : undefined}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-5">
+              <FertilityLegend />
+            </CardContent>
+          </Card>
+        </>
+      ) : recordsLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin w-8 h-8 border-4 border-rose-200 border-t-rose-600 rounded-full" />
+        </div>
+      ) : records.length === 0 ? (
+        <Card>
+          <CardContent className="pt-8 pb-8 text-center">
+            <p className="text-4xl mb-3">📋</p>
+            <p className="text-gray-500 text-sm">Nenhum registro ainda.</p>
+            <a
+              href="/record"
+              className="inline-block mt-4 text-rose-600 text-sm font-medium hover:underline"
+            >
+              Fazer primeiro registro →
+            </a>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-2">
+          {records.map((record) => {
+            const dateFormatted = format(parseISO(record.date), "EEEE, d 'de' MMMM", { locale: ptBR })
+            return (
+              <Card key={record.id}>
+                <CardContent className="pt-4 pb-4">
+                  <div className="space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-xs text-gray-400 capitalize">{dateFormatted}</p>
+                        <p className="text-xs text-gray-400">Dia {record.cycleDay} do ciclo</p>
+                      </div>
+                      <CycleStatusBadge status={record.cycleStatus} sensation={record.sensation} />
+                    </div>
+
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                      <span>
+                        <span className="font-medium">Sensação:</span>{' '}
+                        {SENSATION_LABELS[record.sensation]}
+                      </span>
+                      {record.mucusAppearance !== 'nenhum' && (
+                        <span>
+                          <span className="font-medium">Muco:</span>{' '}
+                          {MUCUS_APPEARANCE_LABELS[record.mucusAppearance]}
+                        </span>
+                      )}
+                      {record.bleedingIntensity !== 'nenhum' && (
+                        <span>
+                          <span className="font-medium">Sangramento:</span>{' '}
+                          {record.bleedingIntensity}
+                        </span>
+                      )}
+                    </div>
+
+                    {record.notes && (
+                      <p className="text-xs text-gray-400 italic border-t border-gray-50 pt-2">
+                        {record.notes}
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      )}
 
       {/* PDF export modal */}
       {showExport && (

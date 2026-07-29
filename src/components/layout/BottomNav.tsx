@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { Home, PlusCircle, Calendar, History, User } from 'lucide-react'
+import { Home, PlusCircle, Calendar, User } from 'lucide-react'
 import { useProfile } from '@/lib/context/ProfileContext'
 
 const allLinks = [
   { to: '/dashboard', label: 'Início', icon: Home, exact: true, manOnly: false },
   { to: '/record', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: false },
   { to: '/calendar', label: 'Ciclos', icon: Calendar, exact: false, manOnly: false },
-  { to: '/history', label: 'Histórico', icon: History, exact: false, manOnly: false },
   { to: '/profile', label: 'Perfil', icon: User, exact: false, manOnly: false },
 ]
 
