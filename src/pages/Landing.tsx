@@ -4,21 +4,46 @@ import {
   ArrowRight, Check, Menu, X, Droplets, BookOpen, Users, ShieldCheck
 } from "lucide-react";
 import { useState } from "react";
+import { CycleSymbol } from "@/components/cycle/CycleSymbol";
+import { resolveCycleStatusDisplay } from "@/lib/domain/enums/CycleStatus";
+import type { CycleStatus } from "@/lib/domain/enums/CycleStatus";
+import { SENSATION_LABELS } from "@/lib/domain/enums/Sensation";
+import type { Sensation } from "@/lib/domain/enums/Sensation";
+import type { BleedingIntensity } from "@/lib/domain/enums/BleedingIntensity";
 
-// ── Mini WOOMB chart data (matches the internal CycleChartView logic) ──
-const CHART_DAYS = [
-  { day:  1, label: "25/3", symbol: "●", bg: "bg-red-500",    text: "text-white",     rule: "R1", sens: "Menstruação" },
-  { day:  2, label: "26/3", symbol: "●", bg: "bg-red-500",    text: "text-white",     rule: "R1", sens: "Menstruação" },
-  { day:  3, label: "27/3", symbol: "●", bg: "bg-red-500",    text: "text-white",     rule: "R1", sens: "Menstruação" },
-  { day:  6, label: "30/3", symbol: "|", bg: "bg-green-500",  text: "text-white",     rule: "R2", sens: "Seca" },
-  { day:  7, label: "31/3", symbol: "|", bg: "bg-green-500",  text: "text-white",     rule: "R2", sens: "Seca" },
-  { day: 10, label: "03/4", symbol: "O", bg: "bg-white",      text: "text-gray-700",  rule: "",   sens: "Úmida" },
-  { day: 13, label: "06/4", symbol: "O", bg: "bg-white",      text: "text-gray-700",  rule: "",   sens: "Molhada" },
-  { day: 14, label: "07/4", symbol: "OX",bg: "bg-white",      text: "text-gray-700",  rule: "A",  sens: "Escorregadia" },
-  { day: 15, label: "08/4", symbol: "1=",bg: "bg-white",      text: "text-gray-700",  rule: "1",  sens: "Úmida" },
-  { day: 18, label: "11/4", symbol: "=", bg: "bg-yellow-300", text: "text-gray-800",  rule: "RA", sens: "Seca" },
-  { day: 19, label: "12/4", symbol: "=", bg: "bg-yellow-300", text: "text-gray-800",  rule: "RA", sens: "Seca" },
-  { day: 20, label: "13/4", symbol: "=", bg: "bg-yellow-300", text: "text-gray-800",  rule: "RA", sens: "Seca" },
+// MOB rule code shown per status (mirrors CycleChartView/CyclePrintView, kept local since this is just marketing copy)
+const MOB_BY_STATUS: Record<CycleStatus, string> = {
+  menstruacao: "R1", mancha: "R3", pbi_seco: "R2", pbi_muco: "R2",
+  mudanca: "", fertil: "", apice: "A",
+  pos_apice_1: "1", pos_apice_2: "2", pos_apice_3: "3",
+  infertil_pos_apice: "RA",
+};
+
+// ── Mini WOOMB chart data — walks through every phase of the cycle, using the
+// same CycleSymbol component and status colors as the real app. ──
+const CHART_DAYS: {
+  day: number
+  label: string
+  status: CycleStatus
+  sensation: Sensation
+  bleedingIntensity?: BleedingIntensity
+}[] = [
+  { day: 1,  label: "25/3", status: "menstruacao",         sensation: "menstruacao", bleedingIntensity: "intenso" },
+  { day: 2,  label: "26/3", status: "menstruacao",         sensation: "menstruacao", bleedingIntensity: "intenso" },
+  { day: 3,  label: "27/3", status: "menstruacao",         sensation: "menstruacao", bleedingIntensity: "intenso" },
+  { day: 4,  label: "28/3", status: "mancha",              sensation: "mancha",      bleedingIntensity: "leve" },
+  { day: 5,  label: "29/3", status: "pbi_seco",            sensation: "seca" },
+  { day: 6,  label: "30/3", status: "pbi_seco",            sensation: "seca" },
+  { day: 7,  label: "31/3", status: "mudanca",             sensation: "umida" },
+  { day: 8,  label: "01/4", status: "fertil",              sensation: "molhada" },
+  { day: 9,  label: "02/4", status: "fertil",              sensation: "escorregadia" },
+  { day: 10, label: "03/4", status: "apice",               sensation: "escorregadia" },
+  { day: 11, label: "04/4", status: "pos_apice_1",         sensation: "umida" },
+  { day: 12, label: "05/4", status: "pos_apice_2",         sensation: "seca" },
+  { day: 13, label: "06/4", status: "pos_apice_3",         sensation: "umida" },
+  { day: 14, label: "07/4", status: "infertil_pos_apice",  sensation: "seca" },
+  { day: 15, label: "08/4", status: "infertil_pos_apice",  sensation: "umida" },
+  { day: 16, label: "09/4", status: "pbi_muco",            sensation: "umida" },
 ];
 
 const features = [
@@ -192,37 +217,42 @@ export default function Landing() {
                 <div className="h-5 flex items-center pl-1 font-semibold text-gray-500">Regra</div>
               </div>
               {/* Day columns */}
-              {CHART_DAYS.map((d) => (
-                <div key={d.day} className="w-8 shrink-0 border-r border-gray-100">
-                  <div className="h-5 flex items-center justify-center border-b border-gray-200 font-bold text-gray-600 text-[9px]">
-                    {String(d.day).padStart(2, "0")}
-                  </div>
-                  <div className="h-8 flex items-center justify-center border-b border-gray-200 p-0.5">
-                    <div className={`w-full h-full rounded flex items-center justify-center text-[8px] font-bold border ${d.bg} ${d.text} border-gray-300`}>
-                      {d.symbol}
+              {CHART_DAYS.map((d) => {
+                const info = resolveCycleStatusDisplay(d.status, d.sensation);
+                return (
+                  <div key={d.day} className="w-8 shrink-0 border-r border-gray-100">
+                    <div className="h-5 flex items-center justify-center border-b border-gray-200 font-bold text-gray-600 text-[9px]">
+                      {String(d.day).padStart(2, "0")}
+                    </div>
+                    <div className="h-8 flex items-center justify-center border-b border-gray-200 p-0.5">
+                      <div className={`w-full h-full rounded flex items-center justify-center border ${info.bgColor} ${info.textColor} ${info.borderColor}`}>
+                        <CycleSymbol status={d.status} sensation={d.sensation} bleedingIntensity={d.bleedingIntensity} size="w-5 h-5" />
+                      </div>
+                    </div>
+                    <div className="h-4 flex items-center justify-center border-b border-gray-200 text-[7px] text-gray-500">
+                      {d.label}
+                    </div>
+                    <div className="h-16 flex items-center justify-center border-b border-gray-200 overflow-hidden">
+                      <span className="text-[7px] text-gray-600" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
+                        {SENSATION_LABELS[d.sensation]}
+                      </span>
+                    </div>
+                    <div className="h-5 flex items-center justify-center text-[8px] font-bold text-gray-600">
+                      {MOB_BY_STATUS[d.status]}
                     </div>
                   </div>
-                  <div className="h-4 flex items-center justify-center border-b border-gray-200 text-[7px] text-gray-500">
-                    {d.label}
-                  </div>
-                  <div className="h-16 flex items-center justify-center border-b border-gray-200 overflow-hidden">
-                    <span className="text-[7px] text-gray-600" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-                      {d.sens}
-                    </span>
-                  </div>
-                  <div className="h-5 flex items-center justify-center text-[8px] font-bold text-gray-600">
-                    {d.rule}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <div className="px-4 pb-3">
             <div className="flex flex-wrap gap-2 text-[9px]">
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500 inline-block" /> Menstruação</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500 inline-block" /> Pouca Menstruação</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500 inline-block" /> Seca</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded border border-gray-300 inline-block" /> Fértil/Ápice</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-300 inline-block" /> Úmida</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded border border-gray-300 inline-block" /> Fértil</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded border border-gray-400 inline-block" /> Ápice</span>
             </div>
           </div>
         </div>
