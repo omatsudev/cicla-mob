@@ -1,5 +1,5 @@
 -- =============================================================================
--- Cicla MOB — Seed de dados de amostragem
+-- Somos Billings — Seed de dados de amostragem
 -- Execute no SQL Editor do Supabase após rodar a migration 002_notifications.sql
 -- =============================================================================
 

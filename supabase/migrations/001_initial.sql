@@ -1,5 +1,5 @@
 -- =============================================================================
--- Cicla MOB — Database Schema
+-- Somos Billings — Database Schema
 -- Prefixo "mob_" evita conflito com outras apps no mesmo projeto Supabase.
 -- =============================================================================
 
