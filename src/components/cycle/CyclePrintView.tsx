@@ -72,7 +72,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
     mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     fertil:             { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
-    apice:              { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '✕'] },
+    apice:              { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', 'x'] },
     pos_apice_1:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '1'] },
     pos_apice_2:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '2'] },
     pos_apice_3:        { bg: '#fff',    color: '#333', border: '#999',    chars: ['O', '3'] },

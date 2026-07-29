@@ -88,7 +88,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     textColor: 'text-gray-800',
     borderColor: 'border-gray-400',
     fertilityLevel: 'fertil',
-    symbol: 'OX',
+    symbol: 'Ox',
   },
   pos_apice_1: {
     label: '1° pós-Ápice',
