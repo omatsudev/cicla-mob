@@ -310,7 +310,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     <div className={cn('flex items-center justify-center gap-px border-b border-gray-200 overflow-hidden', ROW.sensacao)}>
                       {sensacaoText && (
                         <span
-                          className="text-[9px] text-gray-700 leading-tight"
+                          className="text-[11px] text-gray-700 leading-tight"
                           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                         >
                           {sensacaoText}
@@ -318,7 +318,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                       )}
                       {day.record?.notes && (
                         <span
-                          className="text-[8px] text-gray-400 leading-tight"
+                          className="text-[10px] text-gray-400 leading-tight"
                           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                         >
                           {day.record.notes}

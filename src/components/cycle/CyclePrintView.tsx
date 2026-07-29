@@ -303,7 +303,7 @@ function CycleBlock({
             <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34}>
               {desc && (
                 <span style={{
-                  fontSize: 6.5,
+                  fontSize: 8,
                   writingMode: 'vertical-rl',
                   transform: 'rotate(180deg)',
                   lineHeight: 1.3,
