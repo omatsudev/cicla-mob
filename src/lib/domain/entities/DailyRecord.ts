@@ -15,6 +15,7 @@ export interface DailyRecord {
   readonly notes: string
   readonly mobRule: string
   readonly hadIntercourse: boolean
+  readonly isNewCycle: boolean
   readonly createdAt: string
   readonly updatedAt: string
 }
@@ -35,4 +36,5 @@ export interface CreateDailyRecordInput {
   notes: string
   mobRule: string
   hadIntercourse: boolean
+  isNewCycle: boolean
 }

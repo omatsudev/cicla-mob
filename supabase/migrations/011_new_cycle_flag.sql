@@ -1,0 +1,2 @@
+ALTER TABLE mob_daily_records
+  ADD COLUMN IF NOT EXISTS is_new_cycle BOOLEAN NOT NULL DEFAULT FALSE;

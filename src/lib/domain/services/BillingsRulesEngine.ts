@@ -232,9 +232,12 @@ export function interpretCycle(records: DailyRecord[]): InterpretedRecord[] {
     const history = sorted.slice(0, index)
     const { status, ruleApplied } = classifyDay(record, history, peakDates, sorted)
 
-    if (isMenstruation(record)) {
+    if (record.isNewCycle || cycleDay === 0) {
+      cycleDay = 1
+      if (isMenstruation(record)) lastMenstruationDate = record.date
+    } else if (isMenstruation(record)) {
       const isNewCycle = !lastMenstruationDate || history.some((r) => !isMenstruation(r) && r.date > lastMenstruationDate!)
-      if (isNewCycle || cycleDay === 0) {
+      if (isNewCycle) {
         cycleDay = 1
         lastMenstruationDate = record.date
       } else {

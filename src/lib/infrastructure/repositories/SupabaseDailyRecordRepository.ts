@@ -13,6 +13,7 @@ type DbRow = {
   notes: string
   mob_rule: string
   had_intercourse: boolean
+  is_new_cycle: boolean
   created_at: string
   updated_at: string
 }
@@ -29,6 +30,7 @@ function toEntity(row: DbRow): DailyRecord {
     notes: row.notes ?? '',
     mobRule: row.mob_rule ?? '',
     hadIntercourse: row.had_intercourse ?? false,
+    isNewCycle: row.is_new_cycle ?? false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -79,6 +81,7 @@ export class SupabaseDailyRecordRepository implements IDailyRecordRepository {
           notes: input.notes,
           mob_rule: input.mobRule,
           had_intercourse: input.hadIntercourse,
+          is_new_cycle: input.isNewCycle,
         },
         { onConflict: 'user_id,date' },
       )

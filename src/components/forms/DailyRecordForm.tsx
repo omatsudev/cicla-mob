@@ -43,23 +43,17 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
   const [notes, setNotes] = useState(existingRecord?.notes ?? '')
   const [mobRule, setMobRule] = useState(existingRecord?.mobRule ?? '')
   const [hadIntercourse, setHadIntercourse] = useState(existingRecord?.hadIntercourse ?? false)
-  const [pendingBleeding, setPendingBleeding] = useState<BleedingIntensity | null>(null)
+  const [isNewCycle, setIsNewCycle] = useState(existingRecord?.isNewCycle ?? false)
 
   function handleBleedingSelect(value: BleedingIntensity) {
+    setBleeding(value)
     if (value === 'nenhum') {
-      setBleeding('nenhum')
       if (sensation === 'menstruacao' || sensation === 'mancha') setSensation('seca')
-      return
+    } else if (value === 'leve') {
+      setSensation('mancha')
+    } else {
+      setSensation('menstruacao')
     }
-    setPendingBleeding(value)
-  }
-
-  function confirmMenstruation(isMenstruation: boolean) {
-    if (pendingBleeding) {
-      setBleeding(pendingBleeding)
-      setSensation(isMenstruation ? 'menstruacao' : 'mancha')
-    }
-    setPendingBleeding(null)
   }
 
   const hasBleeding = sensation === 'menstruacao' || sensation === 'mancha'
@@ -81,6 +75,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
         notes,
         mobRule,
         hadIntercourse,
+        isNewCycle,
       })
       setSaved(true)
       setTimeout(() => navigate('/calendario'), 1000)
@@ -91,37 +86,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
   }
 
   return (
-    <>
-      {/* Menstruation confirmation dialog */}
-      {pendingBleeding && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl">
-            <div className="text-center space-y-1">
-              <p className="text-2xl">🩸</p>
-              <h3 className="text-base font-semibold text-gray-900">Este sangramento é menstruação?</h3>
-              <p className="text-sm text-gray-500">Isso define se um novo ciclo começa hoje.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => confirmMenstruation(false)}
-                className="border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl text-sm hover:bg-gray-50 transition"
-              >
-                Não (mancha)
-              </button>
-              <button
-                type="button"
-                onClick={() => confirmMenstruation(true)}
-                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl text-sm transition"
-              >
-                Sim, menstruação
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
         {/* Bleeding */}
         <fieldset>
           <legend className="text-sm font-semibold text-gray-700 mb-2">Sangramento</legend>
@@ -148,6 +113,23 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
             ))}
           </div>
         </fieldset>
+
+        {/* New cycle */}
+        {hasBleeding && (
+          <div className="flex items-center justify-between p-3 border border-gray-200 rounded-xl">
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Início de um novo ciclo?</p>
+              <p className="text-xs text-gray-400 mt-0.5">Marque se este sangramento inicia um novo ciclo</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsNewCycle(v => !v)}
+              className={`w-12 h-6 rounded-full transition-colors ${isNewCycle ? 'bg-rose-500' : 'bg-gray-200'} relative`}
+            >
+              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isNewCycle ? 'translate-x-6' : 'translate-x-0.5'}`} />
+            </button>
+          </div>
+        )}
 
         {/* Sensation — only when no bleeding */}
         {!hasBleeding && (
@@ -285,7 +267,6 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
         >
           {saved ? '✓ Salvo!' : saving ? 'Salvando...' : 'Salvar registro'}
         </button>
-      </form>
-    </>
+    </form>
   )
 }
