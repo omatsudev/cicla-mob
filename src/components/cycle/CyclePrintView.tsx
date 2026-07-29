@@ -57,6 +57,16 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     )
   }
 
+  if (status === 'mudanca' || status === 'fertil') {
+    return (
+      <div style={{ ...base, background: '#fff', border: '1px solid #999' }}>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="6" stroke="#333" strokeWidth="1.5" />
+        </svg>
+      </div>
+    )
+  }
+
   if (status === 'apice') {
     return (
       <div style={{ ...base, background: '#fff', border: '1px solid #999' }}>
@@ -101,8 +111,6 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   const CFG: Partial<Record<CycleStatus, { bg: string; color: string; border: string; chars: string[] }>> = {
     pbi_seco:           { bg: '#22c55e', color: '#fff', border: '#16a34a', chars: ['|'] },
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
-    mudanca:            { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
-    fertil:             { bg: '#fff',    color: '#333', border: '#999',    chars: ['O'] },
     infertil_pos_apice: { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
   }
   const c = CFG[status]
