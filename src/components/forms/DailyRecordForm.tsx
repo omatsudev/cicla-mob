@@ -134,7 +134,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
         {/* Sensation — only when no bleeding */}
         {!hasBleeding && (
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">Sensação na vulva</legend>
+            <legend className="text-sm font-semibold text-gray-700 mb-2">Sensação</legend>
             <div className="grid grid-cols-2 gap-2">
               {SENSATION_OPTIONS.map(opt => (
                 <label key={opt.value} className="cursor-pointer">
