@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
@@ -9,14 +9,14 @@ import { useProfile } from '@/lib/context/ProfileContext'
 
 import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
-import Cadastro from '@/pages/Cadastro'
-import Convite from '@/pages/Convite'
+import SignUp from '@/pages/SignUp'
+import Invite from '@/pages/Invite'
 import Dashboard from '@/pages/Dashboard'
-import Registrar from '@/pages/Registrar'
-import Calendario from '@/pages/Calendario'
-import Historico from '@/pages/Historico'
-import Notificacoes from '@/pages/Notificacoes'
-import Perfil from '@/pages/Perfil'
+import RecordEntry from '@/pages/RecordEntry'
+import Calendar from '@/pages/Calendar'
+import History from '@/pages/History'
+import Notifications from '@/pages/Notifications'
+import Profile from '@/pages/Profile'
 
 function ManGuard({ children }: { children: React.ReactNode }) {
   const { isMan, loading } = useProfile()
@@ -62,20 +62,26 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return user ? <>{children}</> : null
 }
 
+/** Redirects an old (Portuguese) route to its new path, preserving query string and hash — keeps existing bookmarks/shared links/push-notification links working. */
+function LegacyRedirect({ to }: { to: string }) {
+  const location = useLocation()
+  return <Navigate to={`${to}${location.search}${location.hash}`} replace />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Landing pública */}
+        {/* Public landing page */}
         <Route path="/" element={<Landing />} />
 
         {/* Public routes */}
-        <Route path="/convite" element={<Convite />} />
+        <Route path="/invite" element={<Invite />} />
 
         {/* Auth routes */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
-          <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/signup" element={<SignUp />} />
         </Route>
 
         {/* Protected dashboard routes */}
@@ -87,12 +93,22 @@ export default function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/registrar" element={<Registrar />} />
-          <Route path="/calendario" element={<Calendario />} />
-          <Route path="/historico" element={<Historico />} />
-          <Route path="/notificacoes" element={<Notificacoes />} />
-          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/record" element={<RecordEntry />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
+
+        {/* Legacy Portuguese routes — kept as redirects so old bookmarks, shared invite
+            links and already-sent push notifications keep working */}
+        <Route path="/convite" element={<LegacyRedirect to="/invite" />} />
+        <Route path="/cadastro" element={<LegacyRedirect to="/signup" />} />
+        <Route path="/registrar" element={<LegacyRedirect to="/record" />} />
+        <Route path="/calendario" element={<LegacyRedirect to="/calendar" />} />
+        <Route path="/historico" element={<LegacyRedirect to="/history" />} />
+        <Route path="/notificacoes" element={<LegacyRedirect to="/notifications" />} />
+        <Route path="/perfil" element={<LegacyRedirect to="/profile" />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

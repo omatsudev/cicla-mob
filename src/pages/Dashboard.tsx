@@ -125,7 +125,7 @@ export default function Dashboard() {
           Peça para sua esposa adicionar o seu e-mail no perfil dela em{' '}
           <strong>Perfil → Vincular parceiro(a)</strong>.
         </p>
-        <a href="/perfil" className="text-sm text-rose-600 font-medium hover:underline">
+        <a href="/profile" className="text-sm text-rose-600 font-medium hover:underline">
           Ir para o perfil
         </a>
       </div>
@@ -182,7 +182,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <CardTitle>Registro de hoje</CardTitle>
               {!isMan && (
-                <Link to="/registrar" className="text-xs text-rose-600 font-medium hover:underline">
+                <Link to="/record" className="text-xs text-rose-600 font-medium hover:underline">
                   Editar
                 </Link>
               )}

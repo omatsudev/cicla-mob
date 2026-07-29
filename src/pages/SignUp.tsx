@@ -19,7 +19,7 @@ const cadastroSchema = z
 
 type CadastroFormData = z.infer<typeof cadastroSchema>
 
-export default function Cadastro() {
+export default function SignUp() {
   const navigate = useNavigate()
   const [serverError, setServerError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -50,7 +50,7 @@ export default function Cadastro() {
       return
     }
 
-    navigate('/calendario')
+    navigate('/calendar')
   }
 
   return (

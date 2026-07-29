@@ -20,7 +20,7 @@ const TYPE_ICONS: Record<string, string> = {
   daily_reminder: '📝',
 }
 
-export default function Notificacoes() {
+export default function Notifications() {
   const [notifications, setNotifications] = useState<AppNotification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)

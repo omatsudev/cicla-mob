@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useProfile } from '@/lib/context/ProfileContext'
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 
-export default function Registrar() {
+export default function RecordEntry() {
   const { dataUserId, loading: profileLoading } = useProfile()
   const [searchParams, setSearchParams] = useSearchParams()
   const today = format(new Date(), 'yyyy-MM-dd')

@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils/cn'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 
-export default function Historico() {
+export default function History() {
   const { dataUserId, loading: profileLoading } = useProfile()
   const [records, setRecords] = useState<InterpretedRecord[]>([])
   const [total, setTotal] = useState(0)
@@ -128,7 +128,7 @@ export default function Historico() {
             <p className="text-4xl mb-3">📋</p>
             <p className="text-gray-500 text-sm">Nenhum registro ainda.</p>
             <a
-              href="/registrar"
+              href="/record"
               className="inline-block mt-4 text-rose-600 text-sm font-medium hover:underline"
             >
               Fazer primeiro registro →

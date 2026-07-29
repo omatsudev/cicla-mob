@@ -136,7 +136,7 @@ export default function Landing() {
             <a href="#how" className="text-sm text-gray-600 hover:text-rose-500 transition-colors">Como funciona</a>
             <a href="#referencias" className="text-sm text-gray-600 hover:text-rose-500 transition-colors">Referências</a>
             <Link to="/login" className="text-sm font-medium text-rose-500 hover:text-rose-600">Entrar</Link>
-            <Link to="/cadastro" className="bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors">
+            <Link to="/signup" className="bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors">
               Começar
             </Link>
           </div>
@@ -149,7 +149,7 @@ export default function Landing() {
             <a href="#features" className="text-sm text-gray-600">Funcionalidades</a>
             <a href="#how" className="text-sm text-gray-600">Como funciona</a>
             <a href="#referencias" className="text-sm text-gray-600">Referências</a>
-            <Link to="/cadastro" className="bg-rose-500 text-white text-sm font-medium px-4 py-2 rounded-full text-center">Começar</Link>
+            <Link to="/signup" className="bg-rose-500 text-white text-sm font-medium px-4 py-2 rounded-full text-center">Começar</Link>
           </div>
         )}
       </nav>
@@ -173,7 +173,7 @@ export default function Landing() {
             "Cada pessoa humana, homem e mulher, tem uma dignidade intrínseca e inviolável." — <em>Humanae Vitae</em>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/cadastro" className="inline-flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold px-8 py-4 rounded-full transition-colors text-lg shadow-lg shadow-rose-200">
+            <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-semibold px-8 py-4 rounded-full transition-colors text-lg shadow-lg shadow-rose-200">
               Começar agora <ArrowRight className="w-5 h-5" />
             </Link>
             <a href="#features" className="inline-flex items-center justify-center gap-2 bg-white border border-rose-200 text-rose-600 font-semibold px-8 py-4 rounded-full hover:bg-rose-50 transition-colors text-lg">
@@ -372,7 +372,7 @@ export default function Landing() {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Comece a usar com seu casal hoje</h2>
           <p className="text-rose-100 text-lg mb-8">R$ 9,90/mês por casal ou individual. Privado e fiel ao Método Billings.</p>
-          <Link to="/cadastro" className="inline-flex items-center justify-center gap-2 bg-white text-rose-600 font-bold px-8 py-4 rounded-full hover:bg-rose-50 transition-colors text-lg shadow-lg">
+          <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-white text-rose-600 font-bold px-8 py-4 rounded-full hover:bg-rose-50 transition-colors text-lg shadow-lg">
             Criar conta <ArrowRight className="w-5 h-5" />
           </Link>
           <ul className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-rose-100">

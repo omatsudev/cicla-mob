@@ -19,7 +19,7 @@ interface InviteInfo {
   valid: boolean
 }
 
-export default function Convite() {
+export default function Invite() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const token = searchParams.get('token')

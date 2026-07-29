@@ -14,7 +14,7 @@ export function Header({ userName }: HeaderProps) {
           {userName ? `Olá, ${userName.split(' ')[0]}` : 'Cicla MOB'}
         </span>
         <button
-          onClick={() => navigate('/notificacoes')}
+          onClick={() => navigate('/notifications')}
           className="p-2 rounded-full hover:bg-gray-50 transition"
           aria-label="Notificações"
         >

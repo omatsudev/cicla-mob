@@ -13,7 +13,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 import { cn } from '@/lib/utils/cn'
 
-export default function Calendario() {
+export default function Calendar() {
   const { dataUserId, isMan, loading: profileLoading } = useProfile()
   const [cycleIndex, setCycleIndex] = useState(0)
   const [calendarData, setCalendarData] = useState<CycleCalendarData | null>(null)

@@ -82,13 +82,13 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   // Pós-ápice (dias 1/2/3 e fase lútea 4°+): cor baseada na sensação (verde seca, amarelo úmida)
   const postApiceDay = POST_APICE_DAY[status]
   if (postApiceDay || POST_APICE.has(status)) {
-    const isSeca = sensation === 'seca'
-    const ch = isSeca ? '|' : '='
-    const textColor = isSeca ? '#fff' : '#333'
+    const isDry = sensation === 'seca'
+    const ch = isDry ? '|' : '='
+    const textColor = isDry ? '#fff' : '#333'
     return (
       <div style={{ ...base,
-        background: isSeca ? '#22c55e' : '#fde047',
-        border: `1px solid ${isSeca ? '#16a34a' : '#ca8a04'}`,
+        background: isDry ? '#22c55e' : '#fde047',
+        border: `1px solid ${isDry ? '#16a34a' : '#ca8a04'}`,
       }}>
         <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
           <text x={postApiceDay ? 7 : 10} y="10" textAnchor="middle" dominantBaseline="middle"
@@ -296,9 +296,9 @@ function CycleBlock({
         <LabelCell>Descrições das<br />Sensações e do<br />Fluxo</LabelCell>
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
-          const sensacao = day.record ? SENSATION_LABELS[day.record.sensation] : ''
+          const sensationLabel = day.record ? SENSATION_LABELS[day.record.sensation] : ''
           const notes = day.record?.notes ?? ''
-          const desc = [sensacao, notes].filter(Boolean).join(' / ')
+          const desc = [sensationLabel, notes].filter(Boolean).join(' / ')
           return (
             <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34}>
               {desc && (

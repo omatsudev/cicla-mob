@@ -78,7 +78,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
         isNewCycle,
       })
       setSaved(true)
-      setTimeout(() => navigate('/calendario'), 1000)
+      setTimeout(() => navigate('/calendar'), 1000)
     } catch {
       setError('Erro ao salvar. Tente novamente.')
     }

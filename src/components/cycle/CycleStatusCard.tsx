@@ -32,7 +32,7 @@ export function CycleStatusCard({ summary, showRegisterPrompt, isMan }: CycleSta
           <p className="text-sm text-gray-500">{recommendation}</p>
         </div>
         <Link
-          to="/registrar"
+          to="/record"
           className="block w-full text-center bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl py-3 text-sm transition"
         >
           Fazer primeiro registro
@@ -87,7 +87,7 @@ export function CycleStatusCard({ summary, showRegisterPrompt, isMan }: CycleSta
 
       {showRegisterPrompt && !isMan && (
         <Link
-          to="/registrar"
+          to="/record"
           className={cn(
             'block text-center font-semibold rounded-xl py-3 text-sm transition border-2',
             'bg-white/90 hover:bg-white text-gray-900',

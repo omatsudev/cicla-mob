@@ -12,7 +12,7 @@ import type { CoupleObjective } from '@/lib/domain/enums/CoupleObjective'
 import { USER_TYPE_LABELS } from '@/lib/domain/enums/UserType'
 import { COUPLE_OBJECTIVE_LABELS } from '@/lib/domain/enums/CoupleObjective'
 
-export default function Perfil() {
+export default function Profile() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [profile, setProfile] = useState<UserProfile | null>(null)
@@ -85,7 +85,7 @@ export default function Perfil() {
       .select('token')
       .single()
     if (data?.token) {
-      setInviteLink(`${window.location.origin}/convite?token=${data.token}`)
+      setInviteLink(`${window.location.origin}/invite?token=${data.token}`)
     }
     setInviteLoading(false)
   }
@@ -166,7 +166,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={(e) => handleSave(e, 'dados')} className="space-y-4">
+            <form onSubmit={(e) => handleSave(e, 'profile')} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">E-mail</label>
                 <p className="text-sm text-gray-700">{email}</p>
@@ -209,7 +209,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                {savedForm === 'dados' ? '✓ Salvo!' : 'Salvar dados'}
+                {savedForm === 'profile' ? '✓ Salvo!' : 'Salvar dados'}
               </button>
             </form>
           </CardContent>
@@ -224,7 +224,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={(e) => handleSave(e, 'objetivo')} className="space-y-3">
+            <form onSubmit={(e) => handleSave(e, 'goal')} className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 {(['get_pregnant', 'avoid_pregnancy'] as const).map((obj) => (
                   <label key={obj} className="cursor-pointer">
@@ -251,7 +251,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                {savedForm === 'objetivo' ? '✓ Salvo!' : 'Salvar objetivo'}
+                {savedForm === 'goal' ? '✓ Salvo!' : 'Salvar objetivo'}
               </button>
             </form>
           </CardContent>
@@ -266,7 +266,7 @@ export default function Perfil() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={(e) => handleSave(e, 'preferencias')} className="space-y-4">
+            <form onSubmit={(e) => handleSave(e, 'preferences')} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-800">Ativar notificações</p>
@@ -314,7 +314,7 @@ export default function Perfil() {
                 type="submit"
                 className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition text-sm"
               >
-                {savedForm === 'preferencias' ? '✓ Salvo!' : 'Salvar preferências'}
+                {savedForm === 'preferences' ? '✓ Salvo!' : 'Salvar preferências'}
               </button>
             </form>
           </CardContent>

@@ -24,7 +24,7 @@ export function CycleCalendar({ data, year, month }: CycleCalendarProps) {
     const date = new Date(year, month - 1 + direction, 1)
     const y = date.getFullYear()
     const m = date.getMonth() + 1
-    navigate(`/calendario?year=${y}&month=${m}`)
+    navigate(`/calendar?year=${y}&month=${m}`)
   }
 
   const selectedRecord = selectedDate
@@ -129,7 +129,7 @@ export function CycleCalendar({ data, year, month }: CycleCalendarProps) {
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-400">Sem registro para este dia.</p>
               <a
-                href={`/registrar?date=${selectedDate}`}
+                href={`/record?date=${selectedDate}`}
                 className="text-xs text-rose-600 font-medium hover:underline"
               >
                 Registrar

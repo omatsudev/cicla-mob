@@ -48,12 +48,12 @@ function getColumnBg(status: CycleStatus | null, sensation?: string): string {
 
 // Row heights (must match between label col and day cols)
 const ROW = {
-  diaCiclo: 'h-6',
-  simbolo:  'h-9',
-  diaMes:   'h-5',
-  sensacao: 'h-24',
-  regra:    'h-6',
-  relacao:  'h-5',
+  cycleDay: 'h-6',
+  symbol:  'h-9',
+  dayOfMonth:   'h-5',
+  sensation: 'h-24',
+  rule:    'h-6',
+  intercourse:  'h-5',
 }
 
 const LABEL_W = 'w-[68px] min-w-[68px]'
@@ -215,15 +215,15 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
 
               {/* ── Sticky label column ── */}
               <div className={cn('sticky left-0 z-20 bg-white border-r-2 border-gray-300 flex flex-col shrink-0', LABEL_W)}>
-                <Cell cls={cn(ROW.diaCiclo, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia ciclo</Cell>
-                <Cell cls={cn(ROW.simbolo,  'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Símbolo</Cell>
-                <Cell cls={cn(ROW.diaMes,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia mês</Cell>
-                <Cell cls={cn(ROW.sensacao, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500 items-start pt-1')}>
+                <Cell cls={cn(ROW.cycleDay, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia ciclo</Cell>
+                <Cell cls={cn(ROW.symbol,  'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Símbolo</Cell>
+                <Cell cls={cn(ROW.dayOfMonth,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia mês</Cell>
+                <Cell cls={cn(ROW.sensation, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500 items-start pt-1')}>
                   <span>Descrição das</span>
                   <span>sensações</span>
                 </Cell>
-                <Cell cls={cn(ROW.regra,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
-                <Cell cls={cn(ROW.relacao, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Relação</Cell>
+                <Cell cls={cn(ROW.rule,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
+                <Cell cls={cn(ROW.intercourse, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Relação</Cell>
               </div>
 
               {/* ── Day columns ── */}
@@ -245,7 +245,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                   ? format(parseISO(targetDate), 'dd/MM')
                   : ''
 
-                const sensacaoText = day.record
+                const sensationText = day.record
                   ? SENSATION_LABELS[day.record.sensation]
                   : ''
 
@@ -271,15 +271,15 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     style={{ touchAction: 'pan-x' }}
                   >
                     {/* Row 1: Dia do ciclo */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.diaCiclo)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[10px] font-bold text-gray-600', ROW.cycleDay)}>
                       {String(day.cycleDay).padStart(2, '0')}
                     </div>
 
                     {/* Row 2: Symbol */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 p-0.5', ROW.simbolo)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 p-0.5', ROW.symbol)}>
                       {isMarkable ? (
                         <Link
-                          to={`/registrar?date=${targetDate}`}
+                          to={`/record?date=${targetDate}`}
                           onClick={e => e.stopPropagation()}
                           className={cn(
                             'w-full h-full rounded flex items-center justify-center text-white transition',
@@ -312,18 +312,18 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     </div>
 
                     {/* Row 3: Dia do mês */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] text-gray-500', ROW.diaMes)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] text-gray-500', ROW.dayOfMonth)}>
                       {dateLabel}
                     </div>
 
                     {/* Row 4: Sensação + anotação (vertical) */}
-                    <div className={cn('flex items-center justify-center gap-px border-b border-gray-200 overflow-hidden', ROW.sensacao)}>
-                      {sensacaoText && (
+                    <div className={cn('flex items-center justify-center gap-px border-b border-gray-200 overflow-hidden', ROW.sensation)}>
+                      {sensationText && (
                         <span
                           className="text-[11px] text-gray-700 leading-tight"
                           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                         >
-                          {sensacaoText}
+                          {sensationText}
                         </span>
                       )}
                       {day.record?.notes && (
@@ -337,12 +337,12 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     </div>
 
                     {/* Row 5: Regra MOB */}
-                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] font-bold text-gray-600', ROW.regra)}>
+                    <div className={cn('flex items-center justify-center border-b border-gray-200 text-[9px] font-bold text-gray-600', ROW.rule)}>
                       {mobRule}
                     </div>
 
                     {/* Row 6: Relação */}
-                    <div className={cn('flex items-center justify-center text-[9px] font-bold text-rose-500', ROW.relacao)}>
+                    <div className={cn('flex items-center justify-center text-[9px] font-bold text-rose-500', ROW.intercourse)}>
                       {day.record?.hadIntercourse ? 'R' : ''}
                     </div>
                   </div>
@@ -388,7 +388,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                     <p className="text-xs text-gray-500 italic border-t border-gray-50 pt-2">{selectedDayData.record.notes}</p>
                   )}
                   {!isMan && (
-                    <Link to={`/registrar?date=${selectedDayData.date}`} className="block text-xs text-rose-600 font-medium hover:underline text-right">
+                    <Link to={`/record?date=${selectedDayData.date}`} className="block text-xs text-rose-600 font-medium hover:underline text-right">
                       Editar registro
                     </Link>
                   )}
@@ -397,7 +397,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-400">Sem registro para este dia.</p>
                   {!isMan && selectedDayData.date && (
-                    <Link to={`/registrar?date=${selectedDayData.date}`} className="text-xs text-rose-600 font-medium hover:underline">
+                    <Link to={`/record?date=${selectedDayData.date}`} className="text-xs text-rose-600 font-medium hover:underline">
                       Registrar
                     </Link>
                   )}

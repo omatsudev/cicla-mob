@@ -4,10 +4,10 @@ import { useProfile } from '@/lib/context/ProfileContext'
 
 const allLinks = [
   { to: '/dashboard', label: 'Início', icon: Home, exact: true, manOnly: false },
-  { to: '/registrar', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: false },
-  { to: '/calendario', label: 'Ciclos', icon: Calendar, exact: false, manOnly: false },
-  { to: '/historico', label: 'Histórico', icon: History, exact: false, manOnly: false },
-  { to: '/perfil', label: 'Perfil', icon: User, exact: false, manOnly: false },
+  { to: '/record', label: 'Registrar', icon: PlusCircle, exact: false, manOnly: false, womanOnly: false },
+  { to: '/calendar', label: 'Ciclos', icon: Calendar, exact: false, manOnly: false },
+  { to: '/history', label: 'Histórico', icon: History, exact: false, manOnly: false },
+  { to: '/profile', label: 'Perfil', icon: User, exact: false, manOnly: false },
 ]
 
 export function BottomNav() {
