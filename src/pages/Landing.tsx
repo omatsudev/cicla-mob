@@ -161,9 +161,9 @@ export default function Landing() {
             <Heart className="w-3 h-3" /> Método de Ovulação Billings® — WOOMB
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            Planejamento familiar natural<br />
+            Planejamento familiar<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-600 to-pink-500">
-              pelo Método Billings
+              pelo Método de Ovulação Billings®
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-4">
