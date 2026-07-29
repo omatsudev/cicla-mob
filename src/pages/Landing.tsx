@@ -86,31 +86,22 @@ const testimonials = [
 
 const references = [
   {
-    name: "CENPLAFAM WOOMB Brasil",
-    desc: "Centro Nacional de Planejamento Familiar: formação e acompanhamento oficial do Método Billings no Brasil.",
-    url: "https://www.cenplafam.com.br/",
+    name: "CENPLAFAM Sudeste",
+    desc: "Centro Nacional de Planejamento Familiar - Regional Sudeste: formação e acompanhamento do Método Billings.",
+    url: "https://www.instagram.com/cenplafamsudeste/",
     logo: "/logo-cenplafam-sudeste.png",
-    highlight: true,
   },
   {
     name: "Nuplafam Diocese de Petrópolis",
-    desc: "Núcleo de Planejamento Familiar Natural da Diocese de Petrópolis/RJ, vinculado ao CENPLAFAM WOOMB Brasil.",
+    desc: "Núcleo de Planejamento Familiar Natural da Diocese de Petrópolis/RJ, vinculado ao CENPLAFAM Sudeste.",
     url: "https://www.instagram.com/nuplafam.dioc.petropolis/",
     logo: "/logo-nuplafam.png",
-    highlight: false,
-  },
-  {
-    name: "WOOMB International",
-    desc: "Organização mundial responsável pelo desenvolvimento e difusão do Método de Ovulação Billings®.",
-    url: "https://www.woomb.org/",
-    highlight: false,
   },
   {
     name: "Diocese de Petrópolis",
     desc: "Pastoral Familiar e grupos de apoio ao planejamento familiar natural na Diocese de Petrópolis/RJ.",
     url: "https://diocesepetropolis.com.br/",
     logo: "/logo-diocese-petropolis.png",
-    highlight: false,
   },
 ];
 
@@ -312,48 +303,9 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* CENPLAFAM destaque */}
-          <a
-            href="https://www.cenplafam.com.br/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-col sm:flex-row items-center gap-6 bg-white border-2 border-rose-200 rounded-2xl p-6 mb-6 shadow-sm hover:shadow-md transition-all"
-          >
-            <div className="shrink-0">
-              <img
-                src={references[0].logo}
-                alt="Logo CENPLAFAM WOOMB Brasil"
-                className="w-24 h-24 object-contain"
-              />
-            </div>
-            <div>
-              <p className="font-bold text-gray-900 text-lg mb-1">CENPLAFAM WOOMB Brasil</p>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Centro Nacional de Planejamento Familiar: organização oficial do Método Billings no Brasil. Responsável pela formação de instrutores e pelo acompanhamento de casais em todo o país, incluindo a Diocese de Petrópolis.
-              </p>
-              <span className="mt-2 inline-block text-xs text-rose-600 font-medium">www.cenplafam.com.br →</span>
-            </div>
-          </a>
-
-          {/* Find an instructor CTA */}
-          <a
-            href="https://www.cenplafam.com.br/blank-2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-rose-200 rounded-2xl p-5 mb-6 hover:shadow-md hover:border-rose-300 transition-all"
-          >
-            <div>
-              <p className="font-semibold text-gray-900 text-sm">Ainda não é usuária do Método de Ovulação Billings®?</p>
-              <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
-                Antes de usar o app, é preciso ser treinada por um instrutor credenciado. Encontre o instrutor mais próximo de você pelo site do CENPLAFAM.
-              </p>
-            </div>
-            <span className="shrink-0 text-xs text-rose-600 font-semibold whitespace-nowrap">Encontrar instrutor →</span>
-          </a>
-
-          {/* Other references */}
+          {/* References */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {references.slice(1).map((r) => (
+            {references.map((r) => (
               <a
                 key={r.name}
                 href={r.url}
@@ -402,8 +354,7 @@ export default function Landing() {
               <span className="font-bold text-white">Cicla MOB</span>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-xs">
-              <a href="https://www.cenplafam.com.br/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CENPLAFAM</a>
-              <a href="https://www.woomb.org/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">WOOMB International</a>
+              <a href="https://www.instagram.com/cenplafamsudeste/" target="_blank" rel="noopener noreferrer" className="hover:text-rose-400 transition-colors">CENPLAFAM Sudeste</a>
             </div>
           </div>
           <p className="text-center text-xs">© {new Date().getFullYear()} Cicla MOB. Todos os direitos reservados.</p>
