@@ -102,6 +102,10 @@ export function CycleSymbol({ status, bleedingIntensity, sensation, size = 'w-fu
     )
   }
 
+  if (status === 'infertil_pos_apice') {
+    return <span className="block leading-none">{sensation === 'seca' ? '|' : '='}</span>
+  }
+
   const { symbol } = CYCLE_STATUS_DISPLAY[status]
   return (
     <>

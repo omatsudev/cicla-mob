@@ -1,4 +1,4 @@
-import { CycleStatus, CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { CycleStatus, CYCLE_STATUS_DISPLAY, resolveCycleStatusDisplay } from '@/lib/domain/enums/CycleStatus'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
 import type { DailyRecord } from '@/lib/domain/entities/DailyRecord'
 import { interpretCycle } from '@/lib/domain/services/BillingsRulesEngine'
@@ -74,7 +74,7 @@ const STATUS_MESSAGES: Record<CycleStatus, { title: string; message: string; rec
       'A partir de amanhã (4° dia pós-Ápice) você entrará na fase lútea infértil. Relações disponíveis a qualquer hora!',
   },
   infertil_pos_apice: {
-    title: 'Úmida (Infértil)',
+    title: '', // resolvido dinamicamente em buildCurrentStatusSummary, conforme a sensação do dia
     message: 'Você está na fase lútea pós-ovulatória. Esta fase é infértil.',
     recommendation:
       'Regra do Ápice: A partir do 4° dia após o Ápice até a próxima menstruação, relações sexuais estão disponíveis a qualquer hora e dia.',
@@ -97,11 +97,14 @@ export function buildCurrentStatusSummary(records: DailyRecord[]): CurrentStatus
   const interpreted = interpretCycle(records)
   const latest = interpreted[interpreted.length - 1]
   const messages = STATUS_MESSAGES[latest.cycleStatus]
+  const title = latest.cycleStatus === 'infertil_pos_apice'
+    ? `${resolveCycleStatusDisplay(latest.cycleStatus, latest.sensation).label} (Infértil)`
+    : messages.title
 
   return {
     status: latest.cycleStatus,
     latestRecord: latest,
-    title: messages.title,
+    title,
     message: messages.message,
     recommendation: messages.recommendation,
     cycleDay: latest.cycleDay,

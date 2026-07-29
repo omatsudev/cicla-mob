@@ -191,7 +191,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <CycleStatusBadge status={todayRecord.cycleStatus} />
+                <CycleStatusBadge status={todayRecord.cycleStatus} sensation={todayRecord.sensation} />
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/cn'
 import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
 import { CycleSymbol } from './CycleSymbol'
+import { CycleStatusBadge } from '@/components/ui/badge'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import type { CycleCalendarData } from '@/lib/application/use-cases/GetCycleCalendarUseCase'
 
@@ -370,14 +371,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
 
               {selectedDayData.record ? (
                 <div className="space-y-2">
-                  {(() => {
-                    const info = CYCLE_STATUS_DISPLAY[selectedDayData.record.cycleStatus]
-                    return (
-                      <span className={cn('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border', info.bgColor, info.textColor, info.borderColor)}>
-                        {info.symbol} {info.label}
-                      </span>
-                    )
-                  })()}
+                  <CycleStatusBadge status={selectedDayData.record.cycleStatus} sensation={selectedDayData.record.sensation} />
                   <div className="flex items-center gap-3 text-xs text-gray-500">
                     <span>Regra: <strong>{selectedDayData.record.mobRule || (selectedDayData.record.cycleStatus ? MOB_RULE[selectedDayData.record.cycleStatus] : '—') || '—'}</strong></span>
                     {selectedDayData.record.hadIntercourse && (

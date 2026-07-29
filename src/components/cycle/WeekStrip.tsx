@@ -1,7 +1,7 @@
 import { format, parseISO, eachDayOfInterval, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils/cn'
-import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { resolveCycleStatusDisplay } from '@/lib/domain/enums/CycleStatus'
 import type { InterpretedRecord } from '@/lib/domain/entities/DailyRecord'
 import { CycleSymbol } from './CycleSymbol'
 
@@ -27,7 +27,7 @@ export function WeekStrip({ recentDays, today }: WeekStripProps) {
           const dateStr = format(day, 'yyyy-MM-dd')
           const record = recordByDate.get(dateStr)
           const isToday = dateStr === today
-          const displayInfo = record ? CYCLE_STATUS_DISPLAY[record.cycleStatus] : null
+          const displayInfo = record ? resolveCycleStatusDisplay(record.cycleStatus, record.sensation) : null
 
           return (
             <div key={dateStr} className="flex flex-col items-center gap-1 flex-1">
@@ -45,7 +45,7 @@ export function WeekStrip({ recentDays, today }: WeekStripProps) {
                 title={displayInfo?.label}
               >
                 {record
-                  ? <CycleSymbol status={record.cycleStatus} bleedingIntensity={record.bleedingIntensity} />
+                  ? <CycleSymbol status={record.cycleStatus} bleedingIntensity={record.bleedingIntensity} sensation={record.sensation} />
                   : <span>?</span>}
               </div>
               <span className="text-[10px] text-gray-500">{format(day, 'd')}</span>

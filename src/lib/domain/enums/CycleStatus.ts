@@ -134,3 +134,27 @@ export const FERTILITY_LEVEL_INFO: Record<FertilityLevel, { label: string; bgCol
   fertil: { label: 'Fértil', bgColor: 'bg-rose-100', textColor: 'text-rose-800' },
   menstruacao: { label: 'Menstruação', bgColor: 'bg-red-100', textColor: 'text-red-800' },
 }
+
+export interface ResolvedCycleStatusDisplay {
+  label: string
+  symbol: string
+  bgColor: string
+  textColor: string
+  borderColor: string
+}
+
+const LUTEAL_DRY: ResolvedCycleStatusDisplay = { label: 'Seca', symbol: '|', bgColor: 'bg-green-500', textColor: 'text-white', borderColor: 'border-green-600' }
+const LUTEAL_WET: ResolvedCycleStatusDisplay = { label: 'Úmida', symbol: '=', bgColor: 'bg-yellow-300', textColor: 'text-gray-800', borderColor: 'border-yellow-400' }
+
+/**
+ * A fase lútea (4°+ dia pós-ápice) não é sempre "úmida", a sensação varia dia a dia.
+ * Para um registro específico, isso resolve o rótulo/cor para a sensação real
+ * daquele dia, em vez do rótulo genérico da categoria (usado só na legenda).
+ */
+export function resolveCycleStatusDisplay(status: CycleStatus, sensation?: string): ResolvedCycleStatusDisplay {
+  if (status === 'infertil_pos_apice') {
+    return sensation === 'seca' ? LUTEAL_DRY : LUTEAL_WET
+  }
+  const info = CYCLE_STATUS_DISPLAY[status]
+  return { label: info.label, symbol: info.symbol, bgColor: info.bgColor, textColor: info.textColor, borderColor: info.borderColor }
+}

@@ -148,7 +148,7 @@ export default function History() {
                         <p className="text-xs text-gray-400 capitalize">{dateFormatted}</p>
                         <p className="text-xs text-gray-400">Dia {record.cycleDay} do ciclo</p>
                       </div>
-                      <CycleStatusBadge status={record.cycleStatus} />
+                      <CycleStatusBadge status={record.cycleStatus} sensation={record.sensation} />
                     </div>
 
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">

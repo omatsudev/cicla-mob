@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils/cn'
 import type { CycleStatus } from '@/lib/domain/enums/CycleStatus'
-import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { resolveCycleStatusDisplay } from '@/lib/domain/enums/CycleStatus'
 
 type Variant = 'default' | 'success' | 'warning' | 'danger' | 'info'
 
@@ -31,18 +31,17 @@ function Badge({ className, variant = 'default', ...props }: BadgeProps) {
 
 interface CycleStatusBadgeProps {
   status: CycleStatus
+  sensation?: string
   className?: string
 }
 
-function CycleStatusBadge({ status, className }: CycleStatusBadgeProps) {
-  const info = CYCLE_STATUS_DISPLAY[status]
+function CycleStatusBadge({ status, sensation, className }: CycleStatusBadgeProps) {
+  const info = resolveCycleStatusDisplay(status, sensation)
   return (
     <span
       className={cn(
         'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold border',
-        info.bgColor,
-        info.textColor,
-        info.borderColor,
+        info.bgColor, info.textColor, info.borderColor,
         className,
       )}
     >

@@ -3,9 +3,8 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { cn } from '@/lib/utils/cn'
 import { CycleDayCell } from '@/components/cycle/CycleDayCell'
-import { CYCLE_STATUS_DISPLAY } from '@/lib/domain/enums/CycleStatus'
+import { CycleStatusBadge } from '@/components/ui/badge'
 import type { MonthlyCalendarData } from '@/lib/application/use-cases/GetMonthlyCalendarUseCase'
 
 const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -98,17 +97,7 @@ export function CycleCalendar({ data, year, month }: CycleCalendarProps) {
           {selectedRecord ? (
             <div className="space-y-2">
               <div className="flex flex-wrap gap-2">
-                <span
-                  className={cn(
-                    'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold border',
-                    CYCLE_STATUS_DISPLAY[selectedRecord.cycleStatus].bgColor,
-                    CYCLE_STATUS_DISPLAY[selectedRecord.cycleStatus].textColor,
-                    CYCLE_STATUS_DISPLAY[selectedRecord.cycleStatus].borderColor,
-                  )}
-                >
-                  {CYCLE_STATUS_DISPLAY[selectedRecord.cycleStatus].symbol}{' '}
-                  {CYCLE_STATUS_DISPLAY[selectedRecord.cycleStatus].label}
-                </span>
+                <CycleStatusBadge status={selectedRecord.cycleStatus} sensation={selectedRecord.sensation} />
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
                 <div>
