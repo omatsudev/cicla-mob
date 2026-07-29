@@ -49,7 +49,7 @@ const features = [
   {
     icon: BookOpen,
     title: "Baseado no Billings",
-    desc: "Fundamentado no Método de Ovulação Billings (WOOMB), método natural de planejamento familiar reconhecido pela Igreja Católica e pela OMS.",
+    desc: "Fundamentado no Método de Ovulação Billings® (WOOMB), método natural de planejamento familiar reconhecido pela Igreja Católica e pela OMS.",
     color: "bg-rose-100 text-rose-500",
   },
   {
@@ -93,7 +93,7 @@ const references = [
   },
   {
     name: "WOOMB International",
-    desc: "Organização mundial responsável pelo desenvolvimento e difusão do Método de Ovulação Billings.",
+    desc: "Organização mundial responsável pelo desenvolvimento e difusão do Método de Ovulação Billings®.",
     url: "https://www.woomb.org/",
     highlight: false,
   },
@@ -158,7 +158,7 @@ export default function Landing() {
       <section className="pt-32 pb-20 px-4 sm:px-6 bg-gradient-to-br from-rose-50 via-pink-50 to-white">
         <div className="max-w-6xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-1 rounded-full mb-6">
-            <Heart className="w-3 h-3" /> Método de Ovulação Billings — WOOMB
+            <Heart className="w-3 h-3" /> Método de Ovulação Billings® — WOOMB
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
             Planejamento familiar natural<br />
@@ -362,7 +362,7 @@ export default function Landing() {
           </div>
 
           <p className="mt-8 text-center text-xs text-gray-400">
-            O Cicla MOB não é afiliado oficialmente ao CENPLAFAM ou à Diocese de Petrópolis. Faz referência a essas organizações por seguir fielmente os critérios do Método de Ovulação Billings (WOOMB).
+            O Cicla MOB não é afiliado oficialmente ao CENPLAFAM ou à Diocese de Petrópolis. Faz referência a essas organizações por seguir fielmente os critérios do Método de Ovulação Billings® (WOOMB).
           </p>
         </div>
       </section>

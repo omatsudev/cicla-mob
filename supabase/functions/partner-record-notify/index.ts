@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import webpush from 'npm:web-push@3'
+import { DASHBOARD_PATH } from '../_shared/routes.ts'
 
 const VAPID_PUBLIC_KEY = Deno.env.get('VAPID_PUBLIC_KEY')!
 const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')!
@@ -60,7 +61,7 @@ Deno.serve(async (req) => {
     JSON.stringify({
       title: 'Cicla MOB 🌸',
       body: `${womanName} registrou as observações de hoje.`,
-      url: '/dashboard',
+      url: DASHBOARD_PATH,
     })
   )
 

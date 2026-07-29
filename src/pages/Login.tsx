@@ -48,7 +48,7 @@ export default function Login() {
       <div className="text-center space-y-2">
         <div className="text-5xl">🌸</div>
         <h1 className="text-2xl font-bold text-rose-700">Cicla MOB</h1>
-        <p className="text-sm text-gray-500">Método de Ovulação Billings</p>
+        <p className="text-sm text-gray-500">Método de Ovulação Billings®</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6 space-y-5">
