@@ -83,7 +83,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     )
   }
 
-  // Fase lútea (4°+ dia pós-ápice): cor baseada na sensação (verde seca, amarelo úmida)
+  // 4°+ dia pós-ápice (úmida/infértil): cor baseada na sensação (verde seca, amarelo úmida)
   if (POST_APICE.has(status) && sensation) {
     const isSeca = sensation === 'seca'
     return (

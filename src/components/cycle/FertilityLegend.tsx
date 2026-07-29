@@ -11,7 +11,6 @@ const LEGEND_ITEMS: CycleStatus[] = [
   CycleStatus.FERTILE,
   CycleStatus.PEAK,
   CycleStatus.POST_PEAK_1,
-  CycleStatus.INFERTILE_POST_PEAK,
 ]
 
 export function FertilityLegend() {

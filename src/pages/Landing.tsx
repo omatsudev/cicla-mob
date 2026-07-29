@@ -188,7 +188,7 @@ export default function Landing() {
           <div className="bg-gradient-to-r from-rose-600 to-pink-500 px-5 py-4">
             <p className="text-white/70 text-xs mb-0.5">Ana e Carlos · Ciclo 3</p>
             <p className="text-white font-bold text-base">Gráfico WOOMB — Março/Abril</p>
-            <p className="text-rose-100 text-xs">Fase lútea — Infértil</p>
+            <p className="text-rose-100 text-xs">Úmida — Infértil</p>
           </div>
           <div className="px-3 py-3 overflow-x-auto">
             {/* Header rows */}
@@ -232,9 +232,9 @@ export default function Landing() {
           <div className="px-4 pb-3">
             <div className="flex flex-wrap gap-2 text-[9px]">
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500 inline-block" /> Menstruação</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500 inline-block" /> PBI Seco</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500 inline-block" /> Seca</span>
               <span className="flex items-center gap-1"><span className="w-3 h-3 rounded border border-gray-300 inline-block" /> Fértil/Ápice</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-300 inline-block" /> Fase lútea</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-300 inline-block" /> Úmida</span>
             </div>
           </div>
         </div>

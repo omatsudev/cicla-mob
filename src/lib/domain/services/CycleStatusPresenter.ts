@@ -26,13 +26,13 @@ const STATUS_MESSAGES: Record<CycleStatus, { title: string; message: string; rec
       'Regra 3: Trate como dia potencialmente fértil. Aguarde 3 dias secos consecutivos (PBI) antes de retomar a Regra 2.',
   },
   pbi_seco: {
-    title: 'Infértil — PBI Seco',
+    title: 'Infértil — Seca',
     message: 'Você está no Padrão Básico de Infertilidade: vulva seca, nada se vê.',
     recommendation:
       'Regra 2: Noites alternadas estão disponíveis para relações sexuais enquanto esse padrão seco se mantiver.',
   },
   pbi_muco: {
-    title: 'Infértil — PBI Muco',
+    title: 'Infértil — Úmida',
     message: 'Você está no Padrão Básico de Infertilidade: muco opaco sem mudança.',
     recommendation:
       'O padrão não mudou. Noites alternadas disponíveis enquanto o muco permanecer igual dia após dia.',
@@ -74,7 +74,7 @@ const STATUS_MESSAGES: Record<CycleStatus, { title: string; message: string; rec
       'A partir de amanhã (4° dia pós-Ápice) você entrará na fase lútea infértil — relações disponíveis a qualquer hora!',
   },
   infertil_pos_apice: {
-    title: 'Fase Lútea — Infértil',
+    title: 'Úmida — Infértil',
     message: 'Você está na fase lútea pós-ovulatória. Esta fase é infértil.',
     recommendation:
       'Regra do Ápice: A partir do 4° dia após o Ápice até a próxima menstruação, relações sexuais estão disponíveis a qualquer hora e dia.',

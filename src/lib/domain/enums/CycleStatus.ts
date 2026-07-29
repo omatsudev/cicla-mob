@@ -46,7 +46,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     symbol: '⁚',
   },
   pbi_seco: {
-    label: 'PBI Seco',
+    label: 'Seca',
     description: 'Padrão Básico de Infertilidade — seca',
     bgColor: 'bg-green-500',
     textColor: 'text-white',
@@ -55,7 +55,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     symbol: '|',
   },
   pbi_muco: {
-    label: 'PBI Muco',
+    label: 'Úmida',
     description: 'Padrão Básico de Infertilidade — muco sem mudança',
     bgColor: 'bg-yellow-300',
     textColor: 'text-gray-900',
@@ -118,7 +118,7 @@ export const CYCLE_STATUS_DISPLAY: Record<CycleStatus, CycleStatusDisplayInfo> =
     symbol: 'O3',
   },
   infertil_pos_apice: {
-    label: 'Fase Lútea',
+    label: 'Úmida',
     description: '4°+ dia após o Ápice — infértil',
     bgColor: 'bg-yellow-300',
     textColor: 'text-gray-900',
