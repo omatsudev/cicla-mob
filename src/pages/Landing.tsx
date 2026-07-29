@@ -180,7 +180,7 @@ export default function Landing() {
               Saiba mais
             </a>
           </div>
-          <p className="mt-4 text-sm text-gray-400">Preço bem acessível para o casal · Privado · Baseado no método WOOMB</p>
+          <p className="mt-4 text-sm text-gray-400">R$ 9,90/mês por casal ou individual · Privado · Baseado no método WOOMB</p>
         </div>
 
         {/* Mini WOOMB chart mockup */}
@@ -387,12 +387,12 @@ export default function Landing() {
       <section className="py-20 px-4 sm:px-6 bg-gradient-to-r from-rose-600 to-pink-500">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Comece a usar com seu casal hoje</h2>
-          <p className="text-rose-100 text-lg mb-8">Preço bem acessível para o casal. Privado e fiel ao Método Billings.</p>
+          <p className="text-rose-100 text-lg mb-8">R$ 9,90/mês por casal ou individual. Privado e fiel ao Método Billings.</p>
           <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-white text-rose-600 font-bold px-8 py-4 rounded-full hover:bg-rose-50 transition-colors text-lg shadow-lg">
             Criar conta <ArrowRight className="w-5 h-5" />
           </Link>
           <ul className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-rose-100">
-            {["Preço bem acessível para o casal", "Privacidade garantida", "Gráfico WOOMB fiel ao método"].map((i) => (
+            {["R$ 9,90/mês por casal ou individual", "Privacidade garantida", "Gráfico WOOMB fiel ao método"].map((i) => (
               <li key={i} className="flex items-center gap-2"><Check className="w-4 h-4" />{i}</li>
             ))}
           </ul>
