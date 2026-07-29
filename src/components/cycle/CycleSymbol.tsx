@@ -33,9 +33,10 @@ function SpottingDotsSVG({ count }: { count: 2 | 3 | 5 }) {
 }
 
 function FertilityCircleSVG({ suffix }: { suffix?: string }) {
+  const [cx, cy] = suffix ? [8, 8] : [10, 10]
   return (
     <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx={cx} cy={cy} r="6" stroke="currentColor" strokeWidth="1.5" />
       {suffix && (
         <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
           fill="currentColor" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
