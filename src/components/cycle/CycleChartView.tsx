@@ -24,7 +24,10 @@ const MOB_RULE: Record<CycleStatus, string> = {
   infertil_pos_apice: 'RA',
 }
 
-const POST_APICE_STATUSES = new Set<CycleStatus>(['infertil_pos_apice'])
+const POST_APICE_STATUSES = new Set<CycleStatus>(['pos_apice_1', 'pos_apice_2', 'pos_apice_3', 'infertil_pos_apice'])
+const POST_APICE_DAY: Partial<Record<CycleStatus, string>> = {
+  pos_apice_1: '1', pos_apice_2: '2', pos_apice_3: '3',
+}
 
 function getPostApiceStyle(sensation: string) {
   if (sensation === 'seca') {
@@ -278,10 +281,13 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                         </Link>
                       ) : postApiceStyle ? (
                         <div className={cn(
-                          'w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none border',
+                          'relative w-full h-full rounded flex flex-col items-center justify-center text-[11px] font-bold leading-none border',
                           postApiceStyle.bg, postApiceStyle.text, postApiceStyle.border,
                         )}>
                           <span>{postApiceStyle.symbol}</span>
+                          {status && POST_APICE_DAY[status] && (
+                            <span className="absolute bottom-0 right-0.5 text-[7px] leading-none">{POST_APICE_DAY[status]}</span>
+                          )}
                         </div>
                       ) : (
                         <div className={cn(

@@ -79,31 +79,25 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
     )
   }
 
+  // Pós-ápice (dias 1/2/3 e fase lútea 4°+): cor baseada na sensação (verde seca, amarelo úmida)
   const postApiceDay = POST_APICE_DAY[status]
-  if (postApiceDay) {
-    const ch = sensation === 'seca' ? '|' : '='
-    return (
-      <div style={{ ...base, background: '#fff', border: '1px solid #999' }}>
-        <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
-          <text x="7" y="10" textAnchor="middle" dominantBaseline="middle"
-            fill="#333" fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
-          <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-            fill="#333" fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
-        </svg>
-      </div>
-    )
-  }
-
-  // 4°+ dia pós-ápice (úmida/infértil): cor baseada na sensação (verde seca, amarelo úmida)
-  if (POST_APICE.has(status) && sensation) {
+  if (postApiceDay || POST_APICE.has(status)) {
     const isSeca = sensation === 'seca'
+    const ch = isSeca ? '|' : '='
+    const textColor = isSeca ? '#fff' : '#333'
     return (
       <div style={{ ...base,
         background: isSeca ? '#22c55e' : '#fde047',
-        color:      isSeca ? '#fff'    : '#333',
         border: `1px solid ${isSeca ? '#16a34a' : '#ca8a04'}`,
       }}>
-        <span style={{ lineHeight: 1 }}>{isSeca ? '|' : '='}</span>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+          <text x={postApiceDay ? 7 : 10} y="10" textAnchor="middle" dominantBaseline="middle"
+            fill={textColor} fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
+          {postApiceDay && (
+            <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
+              fill={textColor} fontSize="7" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
+          )}
+        </svg>
       </div>
     )
   }
@@ -111,7 +105,6 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   const CFG: Partial<Record<CycleStatus, { bg: string; color: string; border: string; chars: string[] }>> = {
     pbi_seco:           { bg: '#22c55e', color: '#fff', border: '#16a34a', chars: ['|'] },
     pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
-    infertil_pos_apice: { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
   }
   const c = CFG[status]
   if (!c) return null
@@ -122,11 +115,14 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
   )
 }
 
-function cellBg(status: CycleStatus | null) {
+function cellBg(status: CycleStatus | null, sensation?: string) {
   if (status === 'menstruacao') return '#fee2e2'
   if (status === 'mancha')      return '#fecaca'
   if (status === 'pbi_seco')   return '#dcfce7'
-  if (status === 'pbi_muco' || status === 'infertil_pos_apice') return '#fefce8'
+  if (status === 'pbi_muco')   return '#fefce8'
+  if (POST_APICE_DAY[status as CycleStatus] || POST_APICE.has(status as CycleStatus)) {
+    return sensation === 'seca' ? '#dcfce7' : '#fefce8'
+  }
   return '#fff'
 }
 
@@ -270,7 +266,7 @@ function CycleBlock({
         {days.map((day, i) => {
           const status = day.record?.cycleStatus ?? null
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34}>
+            <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34}>
               {status && <Sym status={status} bleedingIntensity={day.record?.bleedingIntensity} sensation={day.record?.sensation} />}
             </DayCell>
           )
@@ -288,7 +284,7 @@ function CycleBlock({
           const label = target ? format(parseISO(target), 'dd/MM') : ''
           const status = day.record?.cycleStatus ?? null
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} fontSize={7}>
+            <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34} fontSize={7}>
               {label}
             </DayCell>
           )
@@ -304,7 +300,7 @@ function CycleBlock({
           const notes = day.record?.notes ?? ''
           const desc = [sensacao, notes].filter(Boolean).join(' / ')
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34}>
+            <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34}>
               {desc && (
                 <span style={{
                   fontSize: 6.5,
@@ -329,7 +325,7 @@ function CycleBlock({
           const status = day.record?.cycleStatus ?? null
           const mob = day.record?.mobRule || (status ? MOB_AUTO[status] : '')
           return (
-            <DayCell key={i} bg={cellBg(status)} isLast={i === 34} bold fontSize={7.5}>
+            <DayCell key={i} bg={cellBg(status, day.record?.sensation)} isLast={i === 34} bold fontSize={7.5}>
               {mob}
             </DayCell>
           )
