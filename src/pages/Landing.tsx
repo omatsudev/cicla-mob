@@ -345,6 +345,22 @@ export default function Landing() {
             </div>
           </a>
 
+          {/* Find an instructor CTA */}
+          <a
+            href="https://www.cenplafam.com.br/blank-2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white border border-rose-200 rounded-2xl p-5 mb-6 hover:shadow-md hover:border-rose-300 transition-all"
+          >
+            <div>
+              <p className="font-semibold text-gray-900 text-sm">Ainda não é usuária do Método de Ovulação Billings®?</p>
+              <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
+                Antes de usar o app, é preciso ser treinada por um instrutor credenciado. Encontre o instrutor mais próximo de você pelo site do CENPLAFAM.
+              </p>
+            </div>
+            <span className="shrink-0 text-xs text-rose-600 font-semibold whitespace-nowrap">Encontrar instrutor →</span>
+          </a>
+
           {/* Other references */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {references.slice(1).map((r) => (
