@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import { createPortal } from 'react-dom'
 import { format, parseISO, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -351,20 +352,15 @@ interface Props {
   cycleNames: Record<string, string>
 }
 
-export function CyclePrintView({ cycles, cycleNames }: Props) {
+/** Class applied to each A4-landscape page div, used by exportCyclePdf to locate pages for capture. */
+export const CICLA_PRINT_PAGE_CLASS = 'cicla-print-page'
+
+export const CyclePrintView = forwardRef<HTMLDivElement, Props>(function CyclePrintView({ cycles, cycleNames }, ref) {
   const pages: CycleCalendarData[][] = []
   for (let i = 0; i < cycles.length; i += 2) pages.push(cycles.slice(i, i + 2))
 
   return createPortal(
-    <div id="cicla-print-root" style={{ display: 'none' }}>
-      <style>{`
-        @media print {
-          @page { size: A4 landscape; margin: 0; }
-          body > *:not(#cicla-print-root) { display: none !important; }
-          #cicla-print-root { display: block !important; }
-        }
-      `}</style>
-
+    <div ref={ref} id="cicla-print-root" style={{ position: 'fixed', top: 0, left: '-99999px', zIndex: -1 }}>
       {cycles.length === 0 ? null : pages.map((pageCycles, pageIdx) => {
         const cols: (CycleCalendarData | null)[] = [
           ...pageCycles,
@@ -374,14 +370,13 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
         return (
           <div
             key={pageIdx}
+            className={CICLA_PRINT_PAGE_CLASS}
             style={{
               width: '297mm', height: '210mm', padding: '6mm',
               boxSizing: 'border-box',
-              pageBreakAfter: pageIdx < pages.length - 1 ? 'always' : 'auto',
-              breakAfter:     pageIdx < pages.length - 1 ? 'page'   : 'auto',
-              pageBreakInside: 'avoid', breakInside: 'avoid',
               overflow: 'hidden',
               display: 'flex', gap: 0,
+              background: '#fff',
               fontFamily: 'Arial, Helvetica, sans-serif',
             } as React.CSSProperties}
           >
@@ -434,4 +429,4 @@ export function CyclePrintView({ cycles, cycleNames }: Props) {
     </div>,
     document.body
   )
-}
+})

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Download, X, Printer } from 'lucide-react'
@@ -8,6 +8,7 @@ import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories
 import { getRecordHistory } from '@/lib/application/use-cases/GetRecordHistoryUseCase'
 import { getAllCycles } from '@/lib/application/use-cases/GetAllCyclesUseCase'
 import { CyclePrintView } from '@/components/cycle/CyclePrintView'
+import { exportCyclePdf } from '@/lib/utils/exportCyclePdf'
 import { CycleStatusBadge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
@@ -29,7 +30,9 @@ export default function Historico() {
   const [toCycle, setToCycle] = useState(1)
   const [excluded, setExcluded] = useState<Set<number>>(new Set())
   const [exportLoading, setExportLoading] = useState(false)
+  const [generatingPdf, setGeneratingPdf] = useState(false)
   const [cyclesToPrint, setCyclesToPrint] = useState<CycleCalendarData[]>([])
+  const printRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (profileLoading || !dataUserId) return
@@ -81,9 +84,14 @@ export default function Historico() {
 
   function handlePrint() {
     setCyclesToPrint(selected)
+    setGeneratingPdf(true)
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.print()
+      requestAnimationFrame(async () => {
+        if (printRef.current) {
+          await exportCyclePdf(printRef.current, 'grafico-ciclo-menstrual.pdf')
+        }
+        setGeneratingPdf(false)
+        setShowExport(false)
       })
     })
   }
@@ -182,7 +190,7 @@ export default function Historico() {
             <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
               <div>
                 <h2 className="text-base font-semibold text-gray-900">Baixar PDF</h2>
-                <p className="text-xs text-gray-500 mt-0.5">3 ciclos por página, formato WOOMB</p>
+                <p className="text-xs text-gray-500 mt-0.5">2 ciclos por página, formato WOOMB</p>
               </div>
               <button onClick={() => setShowExport(false)} className="text-gray-400 hover:text-gray-600 p-1">
                 <X size={18} />
@@ -270,21 +278,21 @@ export default function Historico() {
             <div className="px-5 py-4 border-t border-gray-100">
               <button
                 onClick={handlePrint}
-                disabled={selected.length === 0 || exportLoading}
+                disabled={selected.length === 0 || exportLoading || generatingPdf}
                 className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl text-sm transition"
               >
                 <Printer size={16} />
-                Baixar PDF ({selected.length} ciclo{selected.length !== 1 ? 's' : ''})
+                {generatingPdf ? 'Gerando PDF...' : `Baixar PDF (${selected.length} ciclo${selected.length !== 1 ? 's' : ''})`}
               </button>
               <p className="text-xs text-gray-400 text-center mt-2">
-                Na janela de impressão, confira se a orientação está em "Paisagem"
+                Sempre em paisagem, igual em qualquer dispositivo
               </p>
             </div>
           </div>
         </div>
       )}
 
-      <CyclePrintView cycles={cyclesToPrint} cycleNames={allCycleNames} />
+      <CyclePrintView ref={printRef} cycles={cyclesToPrint} cycleNames={allCycleNames} />
     </div>
   )
 }
