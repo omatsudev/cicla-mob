@@ -39,7 +39,7 @@ function FertilityCircleSVG({ suffix }: { suffix?: string }) {
       <circle cx={cx} cy={cy} r="6" stroke="currentColor" strokeWidth="1.5" />
       {suffix && (
         <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-          fill="currentColor" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
+          fill="currentColor" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif">{suffix}</text>
       )}
     </svg>
   )
@@ -49,9 +49,18 @@ function CharWithDaySVG({ char, day }: { char: string; day: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
       <text x="7" y="10" textAnchor="middle" dominantBaseline="middle"
-        fill="currentColor" fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{char}</text>
+        fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Arial, sans-serif">{char}</text>
       <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-        fill="currentColor" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{day}</text>
+        fill="currentColor" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif">{day}</text>
+    </svg>
+  )
+}
+
+function CharSVG({ char }: { char: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+      <text x="10" y="11" textAnchor="middle" dominantBaseline="middle"
+        fill="currentColor" fontSize="15" fontWeight="700" fontFamily="Arial, sans-serif">{char}</text>
     </svg>
   )
 }
@@ -103,7 +112,19 @@ export function CycleSymbol({ status, bleedingIntensity, sensation, size = 'w-fu
   }
 
   if (status === 'infertil_pos_apice') {
-    return <span className="block leading-none">{sensation === 'seca' ? '|' : '='}</span>
+    return (
+      <span className={`relative flex items-center justify-center ${size}`}>
+        <CharSVG char={sensation === 'seca' ? '|' : '='} />
+      </span>
+    )
+  }
+
+  if (status === 'pbi_seco' || status === 'pbi_muco') {
+    return (
+      <span className={`relative flex items-center justify-center ${size}`}>
+        <CharSVG char={CYCLE_STATUS_DISPLAY[status].symbol} />
+      </span>
+    )
   }
 
   const { symbol } = CYCLE_STATUS_DISPLAY[status]

@@ -155,7 +155,7 @@ export default function Landing() {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-4">
-            Acompanhe seu ciclo com o gráfico WOOMB, o mesmo padrão ensinado pelo CENPLAFAM e pela Diocese de Petrópolis. Para engravidar, evitar ou espaçar a gravidez, ou só para conhecer sua saúde reprodutiva, sozinha ou em casal.
+            Acompanhe seu ciclo com o gráfico WOOMB, o mesmo padrão ensinado pelo CENPLAFAM. Para engravidar, evitar ou espaçar a gravidez, ou só para conhecer sua saúde reprodutiva, sozinha ou em casal.
           </p>
           <p className="text-sm text-gray-400 italic mb-8">
             "Cada pessoa humana, homem e mulher, tem uma dignidade intrínseca e inviolável." (<em>Humanae Vitae</em>)

@@ -73,7 +73,7 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
         <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
           <circle cx="8" cy="8" r="6" stroke="#333" strokeWidth="1.5" />
           <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-            fill="#333" fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">x</text>
+            fill="#333" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif">x</text>
         </svg>
       </div>
     )
@@ -92,25 +92,28 @@ function Sym({ status, bleedingIntensity, sensation }: { status: CycleStatus; bl
       }}>
         <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
           <text x={postApiceDay ? 7 : 10} y="10" textAnchor="middle" dominantBaseline="middle"
-            fill={textColor} fontSize="13" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
+            fill={textColor} fontSize="15" fontWeight="700" fontFamily="Arial, sans-serif">{ch}</text>
           {postApiceDay && (
             <text x="15.5" y="16.5" textAnchor="middle" dominantBaseline="middle"
-              fill={textColor} fontSize="9.5" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
+              fill={textColor} fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif">{postApiceDay}</text>
           )}
         </svg>
       </div>
     )
   }
 
-  const CFG: Partial<Record<CycleStatus, { bg: string; color: string; border: string; chars: string[] }>> = {
-    pbi_seco:           { bg: '#22c55e', color: '#fff', border: '#16a34a', chars: ['|'] },
-    pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', chars: ['='] },
+  const CFG: Partial<Record<CycleStatus, { bg: string; color: string; border: string; char: string }>> = {
+    pbi_seco:           { bg: '#22c55e', color: '#fff', border: '#16a34a', char: '|' },
+    pbi_muco:           { bg: '#fde047', color: '#333', border: '#ca8a04', char: '=' },
   }
   const c = CFG[status]
   if (!c) return null
   return (
-    <div style={{ ...base, background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>
-      {c.chars.map((ch, i) => <span key={i} style={{ lineHeight: 1 }}>{ch}</span>)}
+    <div style={{ ...base, background: c.bg, border: `1px solid ${c.border}` }}>
+      <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+        <text x="10" y="11" textAnchor="middle" dominantBaseline="middle"
+          fill={c.color} fontSize="15" fontWeight="700" fontFamily="Arial, sans-serif">{c.char}</text>
+      </svg>
     </div>
   )
 }
