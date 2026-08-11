@@ -103,11 +103,6 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
                 />
                 <div className="border-2 border-gray-200 peer-checked:border-red-400 peer-checked:bg-red-50 rounded-xl px-3 py-2.5 text-center transition">
                   <p className="text-sm font-medium text-gray-700 peer-checked:text-red-700">{opt.label}</p>
-                  {bleeding === opt.value && opt.value !== 'nenhum' && (
-                    <p className="text-xs text-red-500 mt-0.5">
-                      {sensation === 'menstruacao' ? '● Menstruação' : '⁚ Mancha'}
-                    </p>
-                  )}
                 </div>
               </label>
             ))}
