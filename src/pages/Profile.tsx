@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
 import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { registerPush, unregisterPush } from '@/lib/pushNotifications'
+import { registerPush, unregisterPush, pushFailureMessage } from '@/lib/pushNotifications'
 import type { UserProfile } from '@/lib/domain/entities/UserProfile'
 import type { UserType } from '@/lib/domain/enums/UserType'
 import type { CoupleObjective } from '@/lib/domain/enums/CoupleObjective'
@@ -29,6 +29,7 @@ export default function Profile() {
   const [requestError, setRequestError] = useState('')
   const [pendingSent, setPendingSent] = useState<{ id: string; target_email: string }[]>([])
   const [birthDateError, setBirthDateError] = useState('')
+  const [pushError, setPushError] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -304,19 +305,29 @@ export default function Profile() {
                     name="notificationsEnabledToggle"
                     defaultChecked={profile?.notificationsEnabled ?? false}
                     onChange={async (e) => {
-                      const hidden = e.currentTarget.closest('form')?.querySelector<HTMLInputElement>('input[name="notificationsEnabled"]')
-                      if (hidden) hidden.value = e.currentTarget.checked ? 'true' : 'false'
-                      if (e.currentTarget.checked) {
-                        await registerPush()
+                      const checkbox = e.currentTarget
+                      const hidden = checkbox.closest('form')?.querySelector<HTMLInputElement>('input[name="notificationsEnabled"]')
+                      setPushError('')
+
+                      if (checkbox.checked) {
+                        const result = await registerPush()
+                        if (!result.ok) {
+                          checkbox.checked = false
+                          setPushError(pushFailureMessage(result.reason))
+                          return
+                        }
                       } else {
                         await unregisterPush()
                       }
+
+                      if (hidden) hidden.value = checkbox.checked ? 'true' : 'false'
                     }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-checked:bg-rose-500 rounded-full transition peer-focus:ring-2 peer-focus:ring-rose-300 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition peer-checked:after:translate-x-5" />
                 </label>
               </div>
+              {pushError && <p className="text-xs text-red-500">{pushError}</p>}
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Horário preferido</label>

@@ -9,6 +9,7 @@ import { CycleStatusCard } from '@/components/cycle/CycleStatusCard'
 import { FertilityLegend } from '@/components/cycle/FertilityLegend'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CycleStatusBadge } from '@/components/ui/badge'
+import { NotificationPrompt } from '@/components/NotificationPrompt'
 import { SENSATION_LABELS } from '@/lib/domain/enums/Sensation'
 import { MUCUS_APPEARANCE_LABELS } from '@/lib/domain/enums/MucusAppearance'
 import type { CurrentStatusSummary } from '@/lib/domain/services/CycleStatusPresenter'
@@ -28,7 +29,7 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
-  const { isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
+  const { profile, isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([])
@@ -108,6 +109,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5">
+
+      {profile && (
+        <NotificationPrompt userId={profile.id} notificationsEnabled={profile.notificationsEnabled} />
+      )}
 
       {/* Solicitações de vínculo pendentes */}
       {coupleRequests.map(req => (
