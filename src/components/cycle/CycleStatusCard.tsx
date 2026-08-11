@@ -7,13 +7,14 @@ interface CycleStatusCardProps {
   summary: CurrentStatusSummary
   showRegisterPrompt?: boolean
   isMan?: boolean
+  isLinked?: boolean
 }
 
-export function CycleStatusCard({ summary, showRegisterPrompt, isMan }: CycleStatusCardProps) {
+export function CycleStatusCard({ summary, showRegisterPrompt, isMan, isLinked }: CycleStatusCardProps) {
   const { status, title, message, recommendation, cycleDay } = summary
 
   if (!status) {
-    if (isMan) {
+    if (isMan && isLinked) {
       return (
         <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100 p-6 text-center space-y-2">
           <div className="text-5xl">🌸</div>

@@ -116,22 +116,6 @@ export default function Dashboard() {
     )
   }
 
-  if (isMan && !isLinked) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 px-4">
-        <p className="text-4xl">👤</p>
-        <h2 className="text-lg font-semibold text-gray-800">Conta não vinculada</h2>
-        <p className="text-sm text-gray-500 max-w-xs">
-          Peça para sua esposa adicionar o seu e-mail no perfil dela em{' '}
-          <strong>Perfil → Vincular parceiro(a)</strong>.
-        </p>
-        <a href="/profile" className="text-sm text-rose-600 font-medium hover:underline">
-          Ir para o perfil
-        </a>
-      </div>
-    )
-  }
-
   if (!data) return null
 
   const { statusSummary, todayRecord, recentDays, today } = data
@@ -174,6 +158,7 @@ export default function Dashboard() {
         summary={statusSummary}
         showRegisterPrompt={!todayRecord}
         isMan={isMan}
+        isLinked={isLinked}
       />
 
       {todayRecord && (

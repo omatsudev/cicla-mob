@@ -47,7 +47,8 @@ export default function Calendar() {
   const printRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (profileLoading || !dataUserId) return
+    if (profileLoading) return
+    if (!dataUserId) { setLoading(false); return }
     setLoading(true)
     const repository = new SupabaseDailyRecordRepository(supabase)
     getCycleCalendar(dataUserId, cycleIndex, repository).then(async data => {

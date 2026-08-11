@@ -43,11 +43,11 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       const isMan = profile?.userType === 'man'
       const isLinked = !!coupleLink
 
-      let dataUserId: string | null = userId
+      // Sem vínculo, cada pessoa acompanha os próprios registros (homem ou mulher).
+      // Só troca para os dados da parceira quando o vínculo existir.
+      let dataUserId: string = userId
       if (isMan && coupleLink) {
         dataUserId = coupleLink.womanId
-      } else if (isMan && !coupleLink) {
-        dataUserId = null
       }
 
       setValue({ profile, dataUserId, isMan, isLinked, loading: false })
