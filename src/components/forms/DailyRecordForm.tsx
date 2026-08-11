@@ -115,7 +115,7 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
             <div>
               <p className="text-sm font-semibold text-gray-700">Este sangramento é menstruação?</p>
               <p className="text-xs text-gray-400 mt-0.5">
-                Desmarque se for um sangramento fora da menstruação (mancha)
+                Desmarque se for um sangramento fora da menstruação
               </p>
             </div>
             <button
