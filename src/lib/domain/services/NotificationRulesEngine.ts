@@ -109,8 +109,8 @@ export function generateNotificationsForToday(
   const isWoman = userProfile.userType === UserType.WOMAN
   const relevantRecord = isWoman ? todayRecord : (partnerRecord ?? null)
 
-  // Lembrete diário — apenas para mulher
-  if (isWoman && !hasRecordToday) {
+  // Lembrete diário — para quem ainda não tem o registro do dia (próprio ou do casal vinculado)
+  if (!hasRecordToday) {
     notifications.push(buildNotification(
       userProfile.id,
       NotificationType.DAILY_REMINDER,

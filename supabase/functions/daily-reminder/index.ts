@@ -14,22 +14,32 @@ Deno.serve(async () => {
   const nowHour = new Date().getUTCHours() - 3 // BRT = UTC-3
   const today = new Date().toISOString().slice(0, 10)
 
-  // Busca usuárias (mulheres) com notificações ativas no horário atual
+  // Busca usuários (mulher ou homem) com notificações ativas no horário atual
   const { data: profiles } = await supabase
     .from('mob_user_profiles')
-    .select('id, name')
+    .select('id, name, user_type')
     .eq('notifications_enabled', true)
-    .eq('user_type', 'woman')
     .eq('notification_hour', ((nowHour % 24) + 24) % 24)
 
   if (!profiles?.length) return new Response('ok', { status: 200 })
 
   const results = await Promise.allSettled(profiles.map(async (profile) => {
-    // Verifica se já registrou hoje
+    // Vinculado, os registros do casal ficam sob o id da mulher (registro compartilhado)
+    let recordOwnerId = profile.id
+    if (profile.user_type === 'man') {
+      const { data: link } = await supabase
+        .from('mob_couple_links')
+        .select('woman_id')
+        .eq('man_id', profile.id)
+        .maybeSingle()
+      if (link?.woman_id) recordOwnerId = link.woman_id
+    }
+
+    // Verifica se o casal (ou a própria pessoa, se sozinha) já registrou hoje
     const { data: record } = await supabase
       .from('mob_daily_records')
       .select('id')
-      .eq('user_id', profile.id)
+      .eq('user_id', recordOwnerId)
       .eq('date', today)
       .maybeSingle()
 
