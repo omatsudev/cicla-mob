@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Bell, Share, X } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { SupabaseUserProfileRepository } from '@/lib/infrastructure/repositories/SupabaseUserProfileRepository'
@@ -16,8 +16,36 @@ export function NotificationPrompt({ userId, notificationsEnabled }: Notificatio
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [activated, setActivated] = useState(false)
+  const [checked, setChecked] = useState(false)
+  const [hasSubscription, setHasSubscription] = useState(false)
 
-  if (notificationsEnabled || dismissed || activated) return null
+  useEffect(() => {
+    let cancelled = false
+
+    async function checkSubscription() {
+      if (!isPushSupported()) {
+        if (!cancelled) setChecked(true)
+        return
+      }
+      const reg = await navigator.serviceWorker.getRegistration('/sw.js')
+      const sub = await reg?.pushManager.getSubscription()
+      if (cancelled) return
+      setHasSubscription(!!sub)
+      setChecked(true)
+
+      // notificationsEnabled=true no banco sem inscrição real (ex: permissão negada
+      // depois de ativado, ou o bug antigo que salvava true mesmo em falha) — corrige.
+      if (!sub && notificationsEnabled) {
+        const repo = new SupabaseUserProfileRepository(supabase)
+        await repo.upsert({ userId, notificationsEnabled: false })
+      }
+    }
+
+    checkSubscription()
+    return () => { cancelled = true }
+  }, [userId, notificationsEnabled])
+
+  if (!checked || hasSubscription || dismissed || activated) return null
   if (!isPushSupported() && !isIos()) return null
 
   const iosNeedsInstall = isIos() && !isStandalonePwa()
