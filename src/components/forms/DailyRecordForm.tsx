@@ -49,10 +49,10 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
     setBleeding(value)
     if (value === 'nenhum') {
       if (sensation === 'menstruacao' || sensation === 'mancha') setSensation('seca')
-    } else if (value === 'leve') {
+    } else if (sensation !== 'menstruacao' && sensation !== 'mancha') {
+      // Primeira vez marcando sangramento neste registro: começa como "mancha"
+      // até a pessoa confirmar manualmente se é menstruação ou não.
       setSensation('mancha')
-    } else {
-      setSensation('menstruacao')
     }
   }
 
@@ -108,6 +108,25 @@ export function DailyRecordForm({ defaultDate, existingRecord, userId }: Props) 
             ))}
           </div>
         </fieldset>
+
+        {/* Is menstruation */}
+        {hasBleeding && (
+          <div className="flex items-center justify-between p-3 border border-gray-200 rounded-xl">
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Este sangramento é menstruação?</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Desmarque se for um sangramento fora da menstruação (mancha)
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSensation(v => v === 'menstruacao' ? 'mancha' : 'menstruacao')}
+              className={`w-12 h-6 rounded-full transition-colors ${sensation === 'menstruacao' ? 'bg-rose-500' : 'bg-gray-200'} relative`}
+            >
+              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${sensation === 'menstruacao' ? 'translate-x-6' : 'translate-x-0.5'}`} />
+            </button>
+          </div>
+        )}
 
         {/* New cycle */}
         {hasBleeding && (
