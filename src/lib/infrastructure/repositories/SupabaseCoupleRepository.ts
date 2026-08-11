@@ -35,16 +35,6 @@ export class SupabaseCoupleRepository implements ICoupleRepository {
     return data ? { id: data.id as string, name: (data.name as string) ?? '' } : null
   }
 
-  async link(womanId: string, manId: string): Promise<CoupleLink> {
-    const { data, error } = await this.supabase
-      .from('mob_couple_links')
-      .insert({ woman_id: womanId, man_id: manId })
-      .select('*')
-      .single()
-    if (error) throw error
-    return mapRow(data)
-  }
-
   async unlink(userId: string): Promise<void> {
     await this.supabase
       .from('mob_couple_links')

@@ -4,7 +4,6 @@ import { UserPlus, X, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useProfile } from '@/lib/context/ProfileContext'
 import { SupabaseDailyRecordRepository } from '@/lib/infrastructure/repositories/SupabaseDailyRecordRepository'
-import { SupabaseCoupleRepository } from '@/lib/infrastructure/repositories/SupabaseCoupleRepository'
 import { getDashboardData } from '@/lib/application/use-cases/GetDashboardDataUseCase'
 import { CycleStatusCard } from '@/components/cycle/CycleStatusCard'
 import { FertilityLegend } from '@/components/cycle/FertilityLegend'
@@ -72,30 +71,17 @@ export default function Dashboard() {
 
   async function handleAcceptRequest(req: CoupleRequest) {
     setRespondingId(req.id)
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session?.user) return
-
-    const { data: myProfile } = await supabase
-      .from('mob_user_profiles')
-      .select('user_type')
-      .eq('id', session.user.id)
-      .single()
-
-    const { data: requesterProfile } = await supabase
-      .from('mob_user_profiles')
-      .select('user_type')
-      .eq('id', req.requester_id)
-      .single()
-
-    const myType = myProfile?.user_type ?? 'woman'
-    const requesterType = requesterProfile?.user_type ?? 'man'
-
-    const womanId = requesterType === 'woman' ? req.requester_id : session.user.id
-    const manId   = requesterType === 'man'   ? req.requester_id : session.user.id
-
-    const coupleRepo = new SupabaseCoupleRepository(supabase)
-    await coupleRepo.link(womanId, manId)
-    await supabase.from('mob_couple_requests').update({ status: 'accepted' }).eq('id', req.id)
+    // Roda no servidor (service role): além de criar o vínculo, migra os
+    // registros que a pessoa já tinha feito sozinha para o conjunto
+    // compartilhado do casal, o que exige mover dados entre duas contas
+    // diferentes — algo que o RLS por usuário não permite fazer do client.
+    const { error } = await supabase.functions.invoke('link-couple', {
+      body: { requestId: req.id },
+    })
+    if (error) {
+      setRespondingId(null)
+      return
+    }
 
     setCoupleRequests([])
     window.location.reload()
