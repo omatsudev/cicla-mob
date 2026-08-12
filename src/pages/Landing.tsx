@@ -174,6 +174,7 @@ export default function Landing() {
             <a href="#features" className="text-sm text-gray-600">Funcionalidades</a>
             <a href="#how" className="text-sm text-gray-600">Como funciona</a>
             <a href="#referencias" className="text-sm text-gray-600">Referências</a>
+            <Link to="/login" className="text-sm font-medium text-rose-500 text-center">Entrar</Link>
             <Link to="/signup" className="bg-rose-500 text-white text-sm font-medium px-4 py-2 rounded-full text-center">Começar</Link>
           </div>
         )}
