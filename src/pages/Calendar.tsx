@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils/cn'
 type ViewMode = 'grafico' | 'lista'
 
 export default function Calendar() {
-  const { dataUserId, isMan, loading: profileLoading } = useProfile()
+  const { dataUserId, loading: profileLoading } = useProfile()
   const [cycleIndex, setCycleIndex] = useState(0)
   const [calendarData, setCalendarData] = useState<CycleCalendarData | null>(null)
   const [cycleName, setCycleName] = useState('')
@@ -209,7 +209,6 @@ export default function Calendar() {
             <CardContent className="pt-5">
               <CycleChartView
                 data={calendarData}
-                isMan={isMan}
                 cycleName={cycleName}
                 onNavigate={setCycleIndex}
                 onNameSave={handleNameSave}

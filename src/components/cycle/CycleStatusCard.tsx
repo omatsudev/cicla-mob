@@ -6,25 +6,12 @@ import type { CurrentStatusSummary } from '@/lib/domain/services/CycleStatusPres
 interface CycleStatusCardProps {
   summary: CurrentStatusSummary
   showRegisterPrompt?: boolean
-  isMan?: boolean
-  isLinked?: boolean
 }
 
-export function CycleStatusCard({ summary, showRegisterPrompt, isMan, isLinked }: CycleStatusCardProps) {
+export function CycleStatusCard({ summary, showRegisterPrompt }: CycleStatusCardProps) {
   const { status, title, message, recommendation, cycleDay } = summary
 
   if (!status) {
-    if (isMan && isLinked) {
-      return (
-        <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100 p-6 text-center space-y-2">
-          <div className="text-5xl">🌸</div>
-          <p className="font-semibold text-gray-800">Aguardando registros</p>
-          <p className="text-sm text-gray-500">
-            Sua esposa ainda não fez nenhum registro. Assim que ela começar, você verá o acompanhamento aqui.
-          </p>
-        </div>
-      )
-    }
     return (
       <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100 p-6 space-y-4">
         <div className="text-center space-y-2">
@@ -86,7 +73,7 @@ export function CycleStatusCard({ summary, showRegisterPrompt, isMan, isLinked }
         <p className={cn('opacity-90', displayInfo.textColor)}>{recommendation}</p>
       </div>
 
-      {showRegisterPrompt && !isMan && (
+      {showRegisterPrompt && (
         <Link
           to="/record"
           className={cn(

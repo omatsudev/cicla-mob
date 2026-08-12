@@ -29,7 +29,7 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
-  const { profile, isMan, isLinked, dataUserId, loading: profileLoading } = useProfile()
+  const { profile, isLinked, dataUserId, loading: profileLoading } = useProfile()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([])
@@ -148,8 +148,6 @@ export default function Dashboard() {
       <CycleStatusCard
         summary={statusSummary}
         showRegisterPrompt={!todayRecord}
-        isMan={isMan}
-        isLinked={isLinked}
       />
 
       {todayRecord && (
@@ -157,11 +155,9 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Registro de hoje</CardTitle>
-              {!isMan && (
-                <Link to="/record" className="text-xs text-rose-600 font-medium hover:underline">
-                  Editar
-                </Link>
-              )}
+              <Link to="/record" className="text-xs text-rose-600 font-medium hover:underline">
+                Editar
+              </Link>
             </div>
           </CardHeader>
           <CardContent>

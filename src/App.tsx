@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase'
 
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
-import { useProfile } from '@/lib/context/ProfileContext'
 
 import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
@@ -16,13 +15,6 @@ import RecordEntry from '@/pages/RecordEntry'
 import Calendar from '@/pages/Calendar'
 import Notifications from '@/pages/Notifications'
 import Profile from '@/pages/Profile'
-
-function ManGuard({ children }: { children: React.ReactNode }) {
-  const { isMan, loading } = useProfile()
-  if (loading) return null
-  if (isMan) return <Navigate to="/dashboard" replace />
-  return <>{children}</>
-}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)

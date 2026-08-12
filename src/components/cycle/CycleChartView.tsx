@@ -62,13 +62,12 @@ const COL_W   = 'w-9 min-w-[36px]'
 
 interface Props {
   data: CycleCalendarData
-  isMan: boolean
   cycleName?: string
   onNavigate: (newIndex: number) => void
   onNameSave?: (name: string) => void
 }
 
-export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onNameSave }: Props) {
+export function CycleChartView({ data, cycleName = '', onNavigate, onNameSave }: Props) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
@@ -89,13 +88,13 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
   }
 
   // First unmarked day whose expected date ≤ today
-  const nextDayToMark = !isMan ? data.days.find(d => {
+  const nextDayToMark = data.days.find(d => {
     if (d.record) return false
     const expected = data.startDate
       ? format(addDays(parseISO(data.startDate), d.cycleDay - 1), 'yyyy-MM-dd')
       : null
     return (expected ?? d.date ?? '') <= today
-  }) : undefined
+  })
 
   // Auto-scroll so today is the last visible column (right edge)
   useEffect(() => {
@@ -240,7 +239,7 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                 const targetDate = day.date ?? expectedDate
 
                 // Any past/today unmarked day can be registered (not just the first one)
-                const isMarkable = !isMan && !day.record && !!targetDate && targetDate <= today
+                const isMarkable = !day.record && !!targetDate && targetDate <= today
 
                 const dateLabel = targetDate
                   ? format(parseISO(targetDate), 'dd/MM')
@@ -381,16 +380,14 @@ export function CycleChartView({ data, isMan, cycleName = '', onNavigate, onName
                   {selectedDayData.record.notes && (
                     <p className="text-xs text-gray-500 italic border-t border-gray-50 pt-2">{selectedDayData.record.notes}</p>
                   )}
-                  {!isMan && (
-                    <Link to={`/record?date=${selectedDayData.date}`} className="block text-xs text-rose-600 font-medium hover:underline text-right">
-                      Editar registro
-                    </Link>
-                  )}
+                  <Link to={`/record?date=${selectedDayData.date}`} className="block text-xs text-rose-600 font-medium hover:underline text-right">
+                    Editar registro
+                  </Link>
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-400">Sem registro para este dia.</p>
-                  {!isMan && selectedDayData.date && (
+                  {selectedDayData.date && (
                     <Link to={`/record?date=${selectedDayData.date}`} className="text-xs text-rose-600 font-medium hover:underline">
                       Registrar
                     </Link>
