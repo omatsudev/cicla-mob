@@ -212,7 +212,7 @@ export default function Calendar() {
                 isMan={isMan}
                 cycleName={cycleName}
                 onNavigate={setCycleIndex}
-                onNameSave={!isMan ? handleNameSave : undefined}
+                onNameSave={handleNameSave}
               />
             </CardContent>
           </Card>
