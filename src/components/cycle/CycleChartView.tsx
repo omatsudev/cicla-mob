@@ -57,7 +57,7 @@ const ROW = {
   intercourse:  'h-5',
 }
 
-const LABEL_W = 'w-[68px] min-w-[68px]'
+const LABEL_W = 'w-[78px] min-w-[78px]'
 const COL_W   = 'w-9 min-w-[36px]'
 
 interface Props {
@@ -215,15 +215,15 @@ export function CycleChartView({ data, cycleName = '', onNavigate, onNameSave }:
 
               {/* ── Sticky label column ── */}
               <div className={cn('sticky left-0 z-20 bg-white border-r-2 border-gray-300 flex flex-col shrink-0', LABEL_W)}>
-                <Cell cls={cn(ROW.cycleDay, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia ciclo</Cell>
-                <Cell cls={cn(ROW.symbol,  'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Símbolo</Cell>
-                <Cell cls={cn(ROW.dayOfMonth,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Dia mês</Cell>
-                <Cell cls={cn(ROW.sensation, 'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500 items-start pt-1')}>
+                <Cell cls={cn(ROW.cycleDay, 'border-b border-gray-200 justify-start pl-1 text-[11px] font-semibold text-gray-500 whitespace-nowrap')}>Dia ciclo</Cell>
+                <Cell cls={cn(ROW.symbol,  'border-b border-gray-200 justify-start pl-1 text-[11px] font-semibold text-gray-500 whitespace-nowrap')}>Símbolo</Cell>
+                <Cell cls={cn(ROW.dayOfMonth,   'border-b border-gray-200 justify-start pl-1 text-[11px] font-semibold text-gray-500 whitespace-nowrap')}>Dia mês</Cell>
+                <Cell cls={cn(ROW.sensation, 'border-b border-gray-200 justify-start pl-1 text-[11px] font-semibold text-gray-500 items-start pt-1 whitespace-nowrap')}>
                   <span>Descrição das</span>
                   <span>sensações</span>
                 </Cell>
-                <Cell cls={cn(ROW.rule,   'border-b border-gray-200 justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Regra MOB</Cell>
-                <Cell cls={cn(ROW.intercourse, 'justify-start pl-1 text-[9px] font-semibold text-gray-500')}>Relação</Cell>
+                <Cell cls={cn(ROW.rule,   'border-b border-gray-200 justify-start pl-1 text-[11px] font-semibold text-gray-500 whitespace-nowrap')}>Regra MOB</Cell>
+                <Cell cls={cn(ROW.intercourse, 'justify-start pl-1 text-[11px] font-semibold text-gray-500 whitespace-nowrap')}>Relação</Cell>
               </div>
 
               {/* ── Day columns ── */}
@@ -283,7 +283,7 @@ export function CycleChartView({ data, cycleName = '', onNavigate, onNameSave }:
                           onClick={e => e.stopPropagation()}
                           className={cn(
                             'w-full h-full rounded flex items-center justify-center text-white transition',
-                            isNext ? 'bg-rose-500 hover:bg-rose-600' : 'bg-gray-300 hover:bg-gray-400',
+                            'bg-gray-300 hover:bg-gray-400',
                           )}
                           style={{ touchAction: 'manipulation' }}
                         >
