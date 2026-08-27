@@ -226,6 +226,7 @@ export function interpretCycle(records: DailyRecord[]): InterpretedRecord[] {
   const peakDates = identifyPeakDates(sorted)
 
   let cycleDay = 0
+  let cycleStartDate: string | null = null
   let lastMenstruationDate: string | null = null
 
   return sorted.map((record, index) => {
@@ -234,17 +235,19 @@ export function interpretCycle(records: DailyRecord[]): InterpretedRecord[] {
 
     if (record.isNewCycle || cycleDay === 0) {
       cycleDay = 1
+      cycleStartDate = record.date
       if (isMenstruation(record)) lastMenstruationDate = record.date
     } else if (isMenstruation(record)) {
       const isNewCycle = !lastMenstruationDate || history.some((r) => !isMenstruation(r) && r.date > lastMenstruationDate!)
       if (isNewCycle) {
         cycleDay = 1
+        cycleStartDate = record.date
         lastMenstruationDate = record.date
       } else {
-        cycleDay++
+        cycleDay = differenceInDays(parseISO(record.date), parseISO(cycleStartDate!)) + 1
       }
     } else {
-      cycleDay++
+      cycleDay = differenceInDays(parseISO(record.date), parseISO(cycleStartDate!)) + 1
     }
 
     return { ...record, cycleStatus: status, cycleDay, ruleApplied }
