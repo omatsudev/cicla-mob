@@ -230,7 +230,6 @@ export function CycleChartView({ data, cycleName = '', onNavigate, onNameSave }:
               {data.days.map((day) => {
                 const status = day.record?.cycleStatus ?? null
                 const info   = status ? CYCLE_STATUS_DISPLAY[status] : null
-                const isNext = nextDayToMark?.cycleDay === day.cycleDay
                 const isSel  = selectedDay === day.cycleDay
 
                 const expectedDate = data.startDate
@@ -265,8 +264,7 @@ export function CycleChartView({ data, cycleName = '', onNavigate, onNameSave }:
                     className={cn(
                       'flex flex-col shrink-0 border-r border-gray-200 transition cursor-pointer select-none',
                       COL_W,
-                      isSel ? 'bg-blue-50' : isNext ? 'bg-rose-50' : columnBg,
-                      day.isToday && 'outline outline-1 outline-rose-400',
+                      isSel ? 'bg-blue-50' : columnBg,
                     )}
                     style={{ touchAction: 'pan-x' }}
                   >
